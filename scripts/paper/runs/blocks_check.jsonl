@@ -1,0 +1,10 @@
+{"l": 7, "h": 20, "K": 21, "split": false, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 11, "h": 32, "K": 33, "split": true, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 13, "h": 38, "K": 39, "split": false, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 17, "h": 50, "K": 51, "split": false, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 19, "h": 56, "K": 57, "split": true, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 23, "h": 68, "K": 69, "split": false, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 29, "h": 86, "K": 87, "split": true, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 31, "h": 92, "K": 93, "split": true, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 37, "h": 110, "K": 111, "split": false, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}
+{"l": 41, "h": 122, "K": 123, "split": true, "n_bad": 0, "bad": [], "Xdiag_val_minmax": [2, 2]}

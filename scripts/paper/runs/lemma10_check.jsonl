@@ -1,0 +1,9 @@
+{"h": 4, "K": 5, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 20}
+{"h": 8, "K": 9, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 48}
+{"h": 12, "K": 13, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 72}
+{"h": 16, "K": 17, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 112}
+{"h": 24, "K": 25, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 168}
+{"h": 32, "K": 33, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 256}
+{"h": 40, "K": 41, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 320}
+{"h": 48, "K": 49, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 384}
+{"h": 64, "K": 65, "violations": 0, "viol": [], "min_slack_L": 1, "min_slack_U": 0, "n2_bound_t": 576}

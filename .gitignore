@@ -1,0 +1,11 @@
+/.lake
+__pycache__/
+/paper/build/
+*.npz
+
+# internal development files (not published)
+/CLAUDE.md
+/STATUS.md
+/WORKERS.md
+/notes/
+/attic/

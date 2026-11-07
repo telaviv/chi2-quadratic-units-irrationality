@@ -1,0 +1,350 @@
+% Bibliography for "pi^2 - 18 log^2 phi is irrational" (Theorem U).
+% Compiled 2026-11-07.
+% Entries Hata1990 ... ViolaZudilin2018, SaffTotik, Lewin1981, Mathlib, Mathlib4, LeanFour, PNTplus, zeta5 are copied
+% verbatim from lean_chi2/paper/references.bib, where each carries a verification comment (checked 2026-10-16/18).
+% Own work: "Krisman, S." (rendered "S. Krisman"), as requested.
+% 2026-11-07 whole-chain referee: every entry not copied from the chi_2 bibliography was checked against Crossref,
+% arXiv or the publisher (comments at each entry); sample re-check of copied entries against Crossref: Hata1993,
+% DHK2020, DHK2022, ViolaZudilin2018, LeanFour, SaffTotik -- all agree.
+
+% ---------------------------------------------------------------------------
+% Own work
+% Hexagon record 2610.00372 checked through the Hexagon API on 2026-11-07 (title "chi_2(1/3) and chi_2(1/5) are
+% irrational", sponsor Shawn Krisman, current version v2, 30 pp.). Hexagon 2611.00170 (Waldschmidt subgroup theorem in
+% Lean) and 2611.00171 (four exponentials at CM and Beta periods) are not cited: this paper does not refer to that work.
+% The chi_2(1/3) paper is in the public repository telaviv/chi2-irrationality as paper/chi2-irrationality.pdf
+% (added in commit 55fa479, 2026-10-18; HEAD 35b030db9fdae70b97583f6ded0781bf1b379fdc = origin/main, checked
+% with git on 2026-11-07). That paper cites its own repository as the entry Chi2Repo below (with commit 0d781d2);
+% we cite the current HEAD.
+@misc{Chi2Paper,
+  author       = {Krisman, S.},
+  title        = {$\chi_2(1/3)$ and $\chi_2(1/5)$ are irrational},
+  howpublished = {Hexagon 2610.00372v2, \url{https://hexagonmath.org/abs/2610.00372v2}; also file
+                  \texttt{paper/chi2-irrationality.pdf} in \url{https://github.com/telaviv/chi2-irrationality}},
+  year         = {2026},
+  note         = {Not peer reviewed; produced largely by AI models, see its disclosure}
+}
+
+@misc{Chi2Repo,
+  author       = {Krisman, S.},
+  title        = {Lean formalisation: $\chi_2(1/3)$ and $\chi_2(1/5)$ are irrational},
+  howpublished = {\url{https://github.com/telaviv/chi2-irrationality}},
+  year         = {2026},
+  note         = {Commit 35b030db9fdae70b97583f6ded0781bf1b379fdc}
+}
+
+% The repository of this paper: the Lean project (development name lean_chi2u), this paper as
+% paper/pi2-log2-golden-irrationality.pdf, and the computation scripts of Section 10 under scripts/paper/.
+% No commit hash: the paper is part of the repository's initial commit.
+@misc{PiTwoRepo,
+  author       = {Krisman, S.},
+  title        = {Lean formalisation: $\pi^2-18\log^2\varphi$ is irrational},
+  howpublished = {\url{https://github.com/telaviv/pi2-log2-golden-irrationality}},
+  year         = {2026},
+  note         = {Lean proof, this paper, and the computation scripts (folder \texttt{scripts/paper})}
+}
+
+% ---------------------------------------------------------------------------
+% Copied from lean_chi2/paper/references.bib (verification comments there).
+@article{Hata1990,
+  author   = {Hata, Masayoshi},
+  title    = {On the linear independence of the values of polylogarithmic functions},
+  journal  = {J. Math. Pures Appl. (9)},
+  volume   = {69},
+  number   = {2},
+  year     = {1990},
+  pages    = {133--173},
+  note     = {Zbl 0712.11040},
+}
+
+@article{Hata1993,
+  author   = {Hata, Masayoshi},
+  title    = {Rational approximations to the dilogarithm},
+  journal  = {Trans. Amer. Math. Soc.},
+  volume   = {336},
+  number   = {1},
+  year     = {1993},
+  pages    = {363--387},
+  doi      = {10.1090/S0002-9947-1993-1147401-5},
+  note     = {MR 1147401},
+}
+
+@article{DHK2022,
+  author        = {David, Sinnou and Hirata-Kohno, Noriko and Kawashima, Makoto},
+  title         = {Linear independence criteria for generalized polylogarithms with distinct shifts},
+  journal       = {Acta Arith.},
+  volume        = {206},
+  number        = {2},
+  year          = {2022},
+  pages         = {127--169},
+  doi           = {10.4064/aa220307-18-10},
+  eprint        = {2202.13931},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NT},
+}
+
+@article{DHK2020,
+  author        = {David, Sinnou and Hirata-Kohno, Noriko and Kawashima, Makoto},
+  title         = {Can polylogarithms at algebraic points be linearly independent?},
+  journal       = {Mosc. J. Comb. Number Theory},
+  volume        = {9},
+  number        = {4},
+  year          = {2020},
+  pages         = {389--406},
+  doi           = {10.2140/moscow.2020.9.389},
+  eprint        = {1912.03811},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NT},
+}
+
+@misc{Prellberg2026,
+  author        = {Prellberg, Thomas},
+  title         = {Three irrationality results for the dilogarithm: {R}hin--{V}iola and {V}iola--{Z}udilin constructions at $-1/4$, $1/5$, and $-1/3$},
+  year          = {2026},
+  howpublished  = {arXiv:2609.06895},
+  eprint        = {2609.06895},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NT},
+  doi           = {10.48550/arXiv.2609.06895},
+  note          = {Preprint, September 7, 2026; not peer reviewed (AI-assisted, see the paper's statement on AI assistance)},
+}
+
+@misc{LiuLi2,
+  author       = {Liu, Si-Qi},
+  title        = {{Li2Rational}: {L}ean 4 proofs of the irrationality of $\mathrm{Li}_2(r)$ at certain rational points $r$},
+  year         = {2026},
+  howpublished = {GitHub repository, \url{https://github.com/siqiliu-tsinghua/Li2Rational}},
+  note         = {Accessed 2026-10-18 (commit b2a61c4). Lean formalisation, not peer reviewed; AI-assisted per README},
+}
+
+@misc{TangLi2,
+  author       = {Tang, Qian},
+  title        = {Irrationality of $\mathrm{Li}_2(1/2)$: a {L}ean 4 proof},
+  year         = {2026},
+  howpublished = {GitHub repository, \url{https://github.com/dtq1997/li2-half-irrationality}},
+  note         = {Accessed 2026-10-18 (commit 950ee9d). Lean formalisation, no accompanying paper found, not peer reviewed},
+}
+
+@book{SaffTotik,
+  author    = {Saff, Edward B. and Totik, Vilmos},
+  title     = {Logarithmic Potentials with External Fields},
+  series    = {Grundlehren der mathematischen Wissenschaften},
+  volume    = {316},
+  publisher = {Springer-Verlag},
+  address   = {Berlin},
+  year      = {1997},
+  doi       = {10.1007/978-3-662-03329-6},
+}
+
+@book{Lewin1981,
+  author    = {Lewin, Leonard},
+  title     = {Polylogarithms and Associated Functions},
+  publisher = {North-Holland},
+  address   = {New York and Oxford},
+  year      = {1981},
+  note      = {Zbl 0465.33001},
+}
+
+@article{RhinViola2005,
+  author   = {Rhin, Georges and Viola, Carlo},
+  title    = {The permutation group method for the dilogarithm},
+  journal  = {Ann. Sc. Norm. Super. Pisa Cl. Sci. (5)},
+  volume   = {4},
+  number   = {3},
+  year     = {2005},
+  pages    = {389--437},
+  note     = {MR 2185863, Zbl 1170.11316},
+}
+
+@article{ViolaZudilin2018,
+  author   = {Viola, Carlo and Zudilin, Wadim},
+  title    = {Linear independence of dilogarithmic values},
+  journal  = {J. Reine Angew. Math.},
+  volume   = {736},
+  year     = {2018},
+  pages    = {193--223},
+  doi      = {10.1515/crelle-2015-0030},
+}
+
+@inproceedings{Mathlib,
+  author    = {{The mathlib Community}},
+  title     = {The {L}ean mathematical library},
+  booktitle = {Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs (CPP 2020)},
+  publisher = {ACM},
+  year      = {2020},
+  pages     = {367--381},
+  doi       = {10.1145/3372885.3373824},
+  note      = {arXiv:1910.09336}
+}
+
+@misc{Mathlib4,
+  author       = {{The mathlib Community}},
+  title        = {mathlib4},
+  howpublished = {\url{https://github.com/leanprover-community/mathlib4}},
+  year         = {2026},
+  note         = {Tag v4.35.0, commit 56a005855ea17e0b0958f73ec801ae140b0a1679}
+}
+
+@inproceedings{LeanFour,
+  author    = {de Moura, Leonardo and Ullrich, Sebastian},
+  title     = {The {L}ean 4 Theorem Prover and Programming Language},
+  booktitle = {Automated Deduction -- CADE 28},
+  series    = {Lecture Notes in Comput. Sci.},
+  volume    = {12699},
+  publisher = {Springer},
+  year      = {2021},
+  pages     = {625--635},
+  doi       = {10.1007/978-3-030-79876-5_37}
+}
+
+@misc{PNTplus,
+  author       = {Kontorovich, Alex and Tao, Terence and others},
+  title        = {{PrimeNumberTheoremAnd}},
+  howpublished = {\url{https://github.com/AlexKontorovich/PrimeNumberTheoremAnd}},
+  year         = {2026},
+  note         = {Lean project, Apache License 2.0; the formalisation uses files from commit
+                  a5154676af9aa3095150ee410cdda80555aa0642 (30 August 2026)}
+}
+
+@misc{zeta5,
+  author       = {Del Solar, C\'esar},
+  title        = {$\zeta(5)$ is irrational: a {L}ean~4 formalization},
+  howpublished = {\url{https://github.com/domino14/zeta5}},
+  year         = {2026},
+  note         = {Source of the port of the prime number theorem used here
+                  (commit 3da8eb1b91f9a90a1c0b7959e845c060dbd16256, 23 September 2026)}
+}
+
+% ---------------------------------------------------------------------------
+% Not in the chi_2 bibliography.
+% Standard reference for the Gel'fond--Schneider theorem (Chapter 2). Checked against Crossref 2026-11-07
+% (doi 10.1017/CBO9780511565977, Cambridge University Press, 1975).
+@book{Baker1975,
+  author    = {Baker, Alan},
+  title     = {Transcendental Number Theory},
+  publisher = {Cambridge University Press},
+  address   = {Cambridge},
+  year      = {1975},
+  doi       = {10.1017/CBO9780511565977},
+}
+
+% Checked against Crossref 2026-11-07 (doi below): IEEE Trans. Comput. 66 (2017), no. 8, 1281--1292.
+@article{Arb,
+  author  = {Johansson, Fredrik},
+  title   = {Arb: efficient arbitrary-precision midpoint-radius interval arithmetic},
+  journal = {IEEE Trans. Comput.},
+  volume  = {66},
+  number  = {8},
+  year    = {2017},
+  pages   = {1281--1292},
+  doi     = {10.1109/TC.2017.2690633},
+}
+
+% ---------------------------------------------------------------------------
+% Copied from lean_chi2/paper/references.bib (checked there 2026-10-18: arXiv v2, no journal publication found).
+@misc{CDT,
+  author        = {Calegari, Frank and Dimitrov, Vesselin and Tang, Yunqing},
+  title         = {The linear independence of $1$, $\zeta(2)$, and ${L}(2,\chi_{-3})$},
+  year          = {2024},
+  howpublished  = {arXiv:2408.15403},
+  eprint        = {2408.15403},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NT},
+  note          = {Preprint},
+}
+
+% ---------------------------------------------------------------------------
+% The following entries are taken from pilot_U/novelty/NOVELTY.md (2026-11-07), whose author read the statements in
+% downloaded copies (Kawashima, DHK 2022b, CDT, Prellberg, Tan--Zhang), the abstract (Orr, Rhin--Viola 2019), or only
+% zbMATH reviews / snippets (Hata 1998, Lewin 1982).
+% Bibliographic data checked 2026-11-07 by the whole-chain referee: DHK 2022b against Crossref and the journal page
+% (journals.sns.it, article 5693: vol. 23, no. 3); Rhin--Viola 2019, Hata 1998, Lewin 1982 against Crossref (issue
+% numbers and DOIs added); Kawashima, Orr, Tan--Zhang against the arXiv API (Tan--Zhang: Hu Tan, Ying Zhang).
+@article{DHK2022b,
+  author        = {David, Sinnou and Hirata-Kohno, Noriko and Kawashima, Makoto},
+  title         = {Linear forms in polylogarithms},
+  journal       = {Ann. Sc. Norm. Super. Pisa Cl. Sci. (5)},
+  volume        = {23},
+  number        = {3},
+  year          = {2022},
+  pages         = {1447--1490},
+  doi           = {10.2422/2036-2145.202010_047},
+  eprint        = {2010.09167},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NT},
+}
+
+@misc{Kawashima2026,
+  author        = {Kawashima, Makoto},
+  title         = {Linear independence of periods related to polylogarithms},
+  year          = {2026},
+  howpublished  = {arXiv:2605.17756},
+  eprint        = {2605.17756},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NT},
+  note          = {Preprint, May 2026; not peer reviewed},
+}
+
+@misc{Orr2026,
+  author        = {Orr, Martin},
+  title         = {Explicit height bounds for {G}-functions and unlikely intersections with lines in tori},
+  year          = {2026},
+  howpublished  = {arXiv:2607.09565},
+  eprint        = {2607.09565},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NT},
+  note          = {Preprint, July 2026; not peer reviewed},
+}
+
+@misc{TanZhang2026,
+  author        = {Tan, Hu and Zhang, Ying},
+  title         = {Uniform cubic bounds for irrational values of the dilogarithm},
+  year          = {2026},
+  howpublished  = {arXiv:2611.01066},
+  eprint        = {2611.01066},
+  archivePrefix = {arXiv},
+  primaryClass  = {math.NT},
+  note          = {Preprint; not peer reviewed},
+}
+
+@article{RhinViola2019,
+  author   = {Rhin, Georges and Viola, Carlo},
+  title    = {Linear independence of $1$, ${\rm Li}_1$ and ${\rm Li}_2$},
+  journal  = {Mosc. J. Comb. Number Theory},
+  volume   = {8},
+  number   = {1},
+  year     = {2019},
+  pages    = {81--96},
+  doi      = {10.2140/moscow.2019.8.81},
+}
+
+@article{Hata1998,
+  author   = {Hata, Masayoshi},
+  title    = {The irrationality of $\log(1+1/q)\log(1-1/q)$},
+  journal  = {Trans. Amer. Math. Soc.},
+  volume   = {350},
+  number   = {6},
+  year     = {1998},
+  pages    = {2311--2327},
+  doi      = {10.1090/S0002-9947-98-01764-4},
+}
+
+@article{Lewin1982,
+  author   = {Lewin, Leonard},
+  title    = {The dilogarithm in algebraic fields},
+  journal  = {J. Austral. Math. Soc. Ser. A},
+  volume   = {33},
+  number   = {3},
+  year     = {1982},
+  pages    = {302--330},
+  doi      = {10.1017/S1446788700018747},
+}
+
+% Version 0.9.0 is the one installed in the environment that ran the scripts (checked with python, 2026-11-07).
+@misc{pythonflint,
+  author       = {{The FLINT team}},
+  title        = {python-flint: {P}ython bindings for {FLINT}},
+  howpublished = {\url{https://github.com/flintlib/python-flint}},
+  year         = {2026},
+  note         = {Version 0.9.0}
+}

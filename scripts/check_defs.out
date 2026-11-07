@@ -1,0 +1,14 @@
+Smom == odd_moments for n <= 80; parity ok
+Lean Delta == umach_core poly_sym for h = 2..10
+h=4: Lemma 10' entry violations 0; det_anchored ok: True
+h=8: Lemma 10' entry violations 0; det_anchored ok: True
+h=12: Lemma 10' entry violations 0; det_anchored ok: True
+h=16: Lemma 10' entry violations 0; det_anchored ok: True
+Lemma B sign/normalisation ok (h = 2, 4, 6)
+Lemma 8', 9', eOdd, e2 bounds hold on exact Delta_h, h = 8..20
+row claim holds (h = 8, 12; p = 3, 5, 7)
+Lemma 8A' (AK_eq, AK_eq_zero) holds, h = 10..40
+l=7: block/B statements violations 0; v_l(c0) = -42 (want -42); gap ok: True
+l=11: block/B statements violations 0; v_l(c0) = -66 (want -66); gap ok: True
+
+[exited with code 0]
