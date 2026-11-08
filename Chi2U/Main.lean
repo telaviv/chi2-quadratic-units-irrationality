@@ -35,6 +35,9 @@ noncomputable def boundsU : MachineBoundsU where
   nonvan := nonvan_frequently
 
 /-- **Theorem U.** `χ₂(√5 − 2) = π²/24 − ¾ log²φ` is irrational. -/
-theorem chi2_sqrt5_sub_two_irrational : TheoremU := irrational_of_boundsU boundsU
+theorem chi2_sqrt5_sub_two_irrational : TheoremU := by
+  have := irrational_of_boundsU boundsU
+  unfold TU at this
+  rwa [zU_two] at this
 
 end Chi2U

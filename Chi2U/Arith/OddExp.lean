@@ -10,20 +10,22 @@ import Chi2U.Arith.ClassCount
 
 namespace Chi2U
 
+variable {mz : ℕ} [Fact (1 ≤ mz)]
+
 open Polynomial Finset
 
 variable {h p : ℕ}
 
-/-- Lemmas 8′, 8A′, 9′ combined: `n_p ≤ eOdd h p` for every odd prime. -/
-theorem padicNorm_Delta_odd [Fact p.Prime] (hp : p ≠ 2) (hh : Even h) (k : ℕ) :
-    padicNorm p ((Delta h).coeff k) ≤ (p : ℚ) ^ eOdd h p := by
+/-- Lemmas 8′, 8A′, 9′ combined: `n_p ≤ eOdd h p` for every odd prime `p ∤ mz`. -/
+theorem padicNorm_Delta_odd [Fact p.Prime] (hp : p ≠ 2) (hpm : ¬ p ∣ mz) (hh : Even h) (k : ℕ) :
+    padicNorm p ((Delta mz h).coeff k) ≤ (p : ℚ) ^ eOdd h p := by
   have hodd : Odd p := (Fact.out : p.Prime).odd_of_ne_two hp
   unfold eOdd
   split_ifs with h1 h2
-  · exact lemma9 hp hh k
-  · have := lemma8_one hp hh (by omega) k
+  · exact lemma9 hp hpm hh k
+  · have := lemma8_one hp hpm hh (by omega) k
     rwa [AK_eq hh hodd (by omega) h2] at this
-  · have := lemma8_one hp hh (by omega) k
+  · have := lemma8_one hp hpm hh (by omega) k
     rwa [AK_eq_zero (by omega)] at this
 
 end Chi2U

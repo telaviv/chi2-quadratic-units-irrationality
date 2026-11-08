@@ -19,71 +19,73 @@ import Chi2U.MomentSeries
 
 namespace Chi2U
 
+variable {mz : ℕ} [Fact (1 ≤ mz)]
+
 open Polynomial
 
 /-- `T = χ₂(z)`, `z = √5 − 2`. -/
-noncomputable def TU : ℝ := chi2 zU
+noncomputable def TU (mz : ℕ) : ℝ := chi2 (zU mz)
 
 /-- The moment series: `Σ_{s≥0} z^{2s+1} (2s+1)^n = emb S_n`. -/
 theorem hasSum_Smom (n : ℕ) :
-    HasSum (fun s : ℕ => zU ^ (2 * s + 1) * ((2 * s + 1 : ℕ) : ℝ) ^ n) (emb (Smom n)) :=
+    HasSum (fun s : ℕ => (zU mz) ^ (2 * s + 1) * ((2 * s + 1 : ℕ) : ℝ) ^ n) (emb (Smom mz n)) :=
   hasSum_Smom' n
 
 /-- The moment functional as a series: `Σ_{s≥0} z^{2s+1} p(2s+1) = emb (Lmom p)`. -/
 theorem hasSum_Lmom (p : ℚ[X]) :
-    HasSum (fun s : ℕ => zU ^ (2 * s + 1) * aeval ((2 * s + 1 : ℕ) : ℝ) p) (emb (Lmom p)) :=
+    HasSum (fun s : ℕ => (zU mz) ^ (2 * s + 1) * aeval ((2 * s + 1 : ℕ) : ℝ) p) (emb (Lmom mz p)) :=
   hasSum_Lmom' p
 
-lemma hasSum_chi2Term_zU : HasSum (chi2Term zU) TU :=
+lemma hasSum_chi2Term_zU : HasSum (chi2Term (zU mz)) (TU mz) :=
   (summable_chi2Term (by rw [abs_of_pos zU_pos]; exact zU_lt_one.le)).hasSum
 
 /-- The pole `x = −2i ≤ 0`. -/
 lemma hasSum_pole_nonpos (i : ℕ) :
-    HasSum (fun s : ℕ => -(zU ^ (2 * s + 1) / (((2 * s + 1 : ℕ) : ℝ) - (((-(i : ℤ)) + (-(i : ℤ)) : ℤ) : ℝ)) ^ 2))
-      (-(zU ^ ((-(i : ℤ)) + (-(i : ℤ)))) * (TU - emb (Psum ((-(i : ℤ)) + (-(i : ℤ)))))) := by
-  have hz0 : zU ≠ 0 := zU_pos.ne'
-  have hshift := (hasSum_nat_add_iff' (f := chi2Term zU) i).mpr hasSum_chi2Term_zU
-  have hPs : Psum ((-(i : ℤ)) + (-(i : ℤ))) =
-      ∑ k ∈ Finset.range i, zK ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : Q5) ^ 2 := by
+    HasSum (fun s : ℕ => -((zU mz) ^ (2 * s + 1) / (((2 * s + 1 : ℕ) : ℝ) - (((-(i : ℤ)) + (-(i : ℤ)) : ℤ) : ℝ)) ^ 2))
+      (-((zU mz) ^ ((-(i : ℤ)) + (-(i : ℤ)))) * ((TU mz) - emb (Psum mz ((-(i : ℤ)) + (-(i : ℤ)))))) := by
+  have hz0 : (zU mz) ≠ 0 := zU_pos.ne'
+  have hshift := (hasSum_nat_add_iff' (f := chi2Term (zU mz)) i).mpr hasSum_chi2Term_zU
+  have hPs : Psum mz ((-(i : ℤ)) + (-(i : ℤ))) =
+      ∑ k ∈ Finset.range i, (zK mz) ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2 := by
     unfold Psum
     rw [if_pos (by omega), show ((-(i : ℤ)) + (-(i : ℤ))).natAbs / 2 = i by omega]
-  have hfin : emb (Psum ((-(i : ℤ)) + (-(i : ℤ)))) = ∑ k ∈ Finset.range i, chi2Term zU k := by
+  have hfin : emb (Psum mz ((-(i : ℤ)) + (-(i : ℤ)))) = ∑ k ∈ Finset.range i, chi2Term (zU mz) k := by
     rw [hPs, map_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     simp only [map_div₀, map_pow, emb_zK, map_natCast, chi2Term]
     push_cast; ring
   rw [hfin]
-  convert (hshift.mul_left (zU ^ ((-(i : ℤ)) + (-(i : ℤ))))).neg using 1
+  convert (hshift.mul_left ((zU mz) ^ ((-(i : ℤ)) + (-(i : ℤ))))).neg using 1
   · funext s
     simp only [chi2Term]
     rw [show ((2 * s + 1 : ℕ) : ℝ) - ((((-(i : ℤ)) + (-(i : ℤ))) : ℤ) : ℝ) = 2 * ((s + i : ℕ) : ℝ) + 1 by
       push_cast; ring]
-    have e2 : zU ^ (2 * s + 1) = zU ^ ((-(i : ℤ)) + (-(i : ℤ))) * zU ^ (2 * (s + i) + 1) := by
+    have e2 : (zU mz) ^ (2 * s + 1) = (zU mz) ^ ((-(i : ℤ)) + (-(i : ℤ))) * (zU mz) ^ (2 * (s + i) + 1) := by
       rw [← zpow_natCast, ← zpow_natCast, ← zpow_add₀ hz0]; congr 1; push_cast; ring
     rw [e2]; ring
   · ring
 
 /-- The pole `x = 2i > 0`. -/
 lemma hasSum_pole_pos {i : ℕ} (hi : 0 < i) :
-    HasSum (fun s : ℕ => -(zU ^ (2 * s + 1) / (((2 * s + 1 : ℕ) : ℝ) - ((((i : ℤ)) + ((i : ℤ)) : ℤ) : ℝ)) ^ 2))
-      (-(zU ^ (((i : ℤ)) + ((i : ℤ)))) * (TU - emb (Psum (((i : ℤ)) + ((i : ℤ)))))) := by
-  have hz0 : zU ≠ 0 := zU_pos.ne'
-  set t : ℕ → ℝ := fun s => -(zU ^ (2 * s + 1) / (((2 * s + 1 : ℕ) : ℝ) - ((((i : ℤ)) + ((i : ℤ)) : ℤ) : ℝ)) ^ 2)
+    HasSum (fun s : ℕ => -((zU mz) ^ (2 * s + 1) / (((2 * s + 1 : ℕ) : ℝ) - ((((i : ℤ)) + ((i : ℤ)) : ℤ) : ℝ)) ^ 2))
+      (-((zU mz) ^ (((i : ℤ)) + ((i : ℤ)))) * ((TU mz) - emb (Psum mz (((i : ℤ)) + ((i : ℤ)))))) := by
+  have hz0 : (zU mz) ≠ 0 := zU_pos.ne'
+  set t : ℕ → ℝ := fun s => -((zU mz) ^ (2 * s + 1) / (((2 * s + 1 : ℕ) : ℝ) - ((((i : ℤ)) + ((i : ℤ)) : ℤ) : ℝ)) ^ 2)
     with ht
-  have hshift : HasSum (fun s => t (s + i)) (-(zU ^ ((i : ℤ) + (i : ℤ))) * TU) := by
-    convert (hasSum_chi2Term_zU.mul_left (zU ^ ((i : ℤ) + (i : ℤ)))).neg using 1
+  have hshift : HasSum (fun s => t (s + i)) (-((zU mz) ^ ((i : ℤ) + (i : ℤ))) * (TU mz)) := by
+    convert ((hasSum_chi2Term_zU (mz := mz)).mul_left ((zU mz) ^ ((i : ℤ) + (i : ℤ)))).neg using 1
     · funext s
       simp only [ht, chi2Term]
       rw [show ((2 * (s + i) + 1 : ℕ) : ℝ) - ((((i : ℤ) + (i : ℤ)) : ℤ) : ℝ) = 2 * (s : ℝ) + 1 by
         push_cast; ring]
-      have e2 : zU ^ (2 * (s + i) + 1) = zU ^ ((i : ℤ) + (i : ℤ)) * zU ^ (2 * s + 1) := by
+      have e2 : (zU mz) ^ (2 * (s + i) + 1) = (zU mz) ^ ((i : ℤ) + (i : ℤ)) * (zU mz) ^ (2 * s + 1) := by
         rw [← zpow_natCast, ← zpow_natCast, ← zpow_add₀ hz0]; congr 1; push_cast; ring
       rw [e2]; ring
     · ring
   have hfull := (hasSum_nat_add_iff (f := t) i).mp hshift
   have hfin : ∑ s ∈ Finset.range i, t s =
-      -(zU ^ ((i : ℤ) + (i : ℤ)) *
-        emb (∑ k ∈ Finset.range i, (zK ^ (2 * k + 1))⁻¹ / ((2 * k + 1 : ℕ) : Q5) ^ 2)) := by
+      -((zU mz) ^ ((i : ℤ) + (i : ℤ)) *
+        emb (∑ k ∈ Finset.range i, ((zK mz) ^ (2 * k + 1))⁻¹ / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2)) := by
     rw [map_sum, Finset.mul_sum, ← Finset.sum_neg_distrib, ← Finset.sum_range_reflect]
     refine Finset.sum_congr rfl (fun k hk => ?_)
     have hk := Finset.mem_range.mp hk
@@ -91,34 +93,34 @@ lemma hasSum_pole_pos {i : ℕ} (hi : 0 < i) :
     have e1 : ((2 * (i - 1 - k) + 1 : ℕ) : ℝ) - ((((i : ℤ) + (i : ℤ)) : ℤ) : ℝ) = -((2 * k + 1 : ℕ) : ℝ) := by
       push_cast [Nat.cast_sub (by omega : k ≤ i - 1), Nat.cast_sub (by omega : 1 ≤ i)]; ring
     rw [e1, neg_sq]
-    have e2 : zU ^ (2 * (i - 1 - k) + 1) = zU ^ ((i : ℤ) + (i : ℤ)) * (zU ^ (2 * k + 1))⁻¹ := by
+    have e2 : (zU mz) ^ (2 * (i - 1 - k) + 1) = (zU mz) ^ ((i : ℤ) + (i : ℤ)) * ((zU mz) ^ (2 * k + 1))⁻¹ := by
       rw [← zpow_natCast, ← zpow_natCast, ← zpow_neg, ← zpow_add₀ hz0]
       congr 1; push_cast [Nat.cast_sub (by omega : k ≤ i - 1), Nat.cast_sub (by omega : 1 ≤ i)]; ring
     rw [e2]; ring
   convert hfull using 1
   rw [hfin]
-  have hPs : Psum ((i : ℤ) + (i : ℤ)) =
-      -∑ k ∈ Finset.range i, (zK ^ (2 * k + 1))⁻¹ / ((2 * k + 1 : ℕ) : Q5) ^ 2 := by
+  have hPs : Psum mz ((i : ℤ) + (i : ℤ)) =
+      -∑ k ∈ Finset.range i, ((zK mz) ^ (2 * k + 1))⁻¹ / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2 := by
     unfold Psum
     rw [if_neg (by omega), show ((i : ℤ) + i).natAbs / 2 = i by omega]
   rw [hPs, map_neg]; ring
 
 /-- `μ(1/(t − x)) = −Σ_{t odd ≥ 1} z^t/(t − x)² = −z^x (T − P(x))` for even `x`. -/
 theorem hasSum_pole {x : ℤ} (hx : Even x) :
-    HasSum (fun s : ℕ => -(zU ^ (2 * s + 1) / (((2 * s + 1 : ℕ) : ℝ) - x) ^ 2))
-      (-(emb (zK ^ x)) * (TU - emb (Psum x))) := by
+    HasSum (fun s : ℕ => -((zU mz) ^ (2 * s + 1) / (((2 * s + 1 : ℕ) : ℝ) - x) ^ 2))
+      (-(emb ((zK mz) ^ x)) * ((TU mz) - emb (Psum mz x))) := by
   rw [map_zpow₀, emb_zK]
   obtain ⟨j, rfl⟩ := hx
   rcases Int.eq_nat_or_neg j with ⟨i, rfl | rfl⟩
   · rcases Nat.eq_zero_or_pos i with rfl | hi
-    · have := hasSum_pole_nonpos 0
+    · have := hasSum_pole_nonpos (mz := mz) 0
       simpa using this
     · exact hasSum_pole_pos hi
   · exact hasSum_pole_nonpos i
 
 /-- The real functional `Λ(g) = Σ_{s≥0} z^{2s+1} (g/D)′(2s+1)`. -/
-noncomputable def LamR (h : ℕ) (g : ℚ[X]) : ℝ :=
-  ∑' s : ℕ, zU ^ (2 * s + 1) * deriv (fun t : ℝ => aeval t g / aeval t (Dpoly h)) ((2 * s + 1 : ℕ) : ℝ)
+noncomputable def LamR (mz : ℕ) [Fact (1 ≤ mz)] (h : ℕ) (g : ℚ[X]) : ℝ :=
+  ∑' s : ℕ, (zU mz) ^ (2 * s + 1) * deriv (fun t : ℝ => aeval t g / aeval t (Dpoly h)) ((2 * s + 1 : ℕ) : ℝ)
 
 /-! ### Partial fractions -/
 
@@ -264,12 +266,12 @@ lemma deriv_gD_odd (h : ℕ) (g : ℚ[X]) (s : ℕ) :
 
 /-- **Lemma 1′.** `Λ(g) = A(g) + T·B(g)` (as a convergent series). -/
 theorem lemma1 {h : ℕ} (hh : Even h) (g : ℚ[X]) :
-    HasSum (fun s : ℕ => zU ^ (2 * s + 1) *
+    HasSum (fun s : ℕ => (zU mz) ^ (2 * s + 1) *
         deriv (fun t : ℝ => aeval t g / aeval t (Dpoly h)) ((2 * s + 1 : ℕ) : ℝ))
-      (emb (Afun h g) + TU * emb (Bfun h g)) := by
-  have hQ := hasSum_Lmom' (derivative (g /ₘ Dpoly h))
+      (emb (Afun mz h g) + (TU mz) * emb (Bfun mz h g)) := by
+  have hQ := hasSum_Lmom' (mz := mz) (derivative (g /ₘ Dpoly h))
   have hP := hasSum_sum (s := Finset.range (h + 1)) (fun m _ =>
-    (hasSum_pole (even_poleZ h m)).mul_left (cPole h g m : ℝ))
+    (hasSum_pole (mz := mz) (even_poleZ h m)).mul_left (cPole h g m : ℝ))
   convert hQ.add hP using 1
   · funext s
     rw [deriv_gD_odd, mul_add, Finset.mul_sum]
@@ -283,12 +285,12 @@ theorem lemma1 {h : ℕ} (hh : Even h) (g : ℚ[X]) :
     refine Finset.sum_congr rfl (fun m _ => ?_)
     ring
 
-theorem LamR_eq {h : ℕ} (hh : Even h) (g : ℚ[X]) : LamR h g = emb (Afun h g) + TU * emb (Bfun h g) :=
+theorem LamR_eq {h : ℕ} (hh : Even h) (g : ℚ[X]) : LamR mz h g = emb (Afun mz h g) + (TU mz) * emb (Bfun mz h g) :=
   (lemma1 hh g).tsum_eq
 
 /-- `Δ_h(T) = det(Λ(t^{i+j}))` (Corollary R + Lemma 1′). -/
 theorem aeval_chi2_Delta {h : ℕ} (hh : Even h) :
-    aeval TU (Delta h) = (Matrix.of fun i j : Fin h => LamR h (X ^ ((i : ℕ) + j))).det := by
+    aeval (TU mz) (Delta mz h) = (Matrix.of fun i j : Fin h => LamR mz h (X ^ ((i : ℕ) + j))).det := by
   rw [aeval_Delta hh]
   congr 1
   ext i j

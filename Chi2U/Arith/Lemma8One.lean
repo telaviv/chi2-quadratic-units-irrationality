@@ -25,6 +25,8 @@ import Chi2U.Mahler
 
 namespace Chi2U
 
+variable {mz : ℕ} [Fact (1 ≤ mz)]
+
 open Polynomial Finset
 
 variable {h p : ℕ}
@@ -82,8 +84,8 @@ lemma l8_fLag_eq (i : ℕ) : fLag h i = (l8fZ h i).map (Int.castRingHom ℚ) := 
 lemma l8_DZ_monic : (l8DZ h).Monic := monic_prod_of_monic _ _ (fun _ _ => monic_X_sub_C _)
 
 /-- `μ(f_i f_j div D)` is `p`-integral. -/
-lemma l8_vGe_muPoly_fLag [Fact p.Prime] (hp : p ≠ 2) (i j : ℕ) :
-    vGe p 0 (muPoly ((fLag h i * fLag h j) /ₘ Dpoly h)) := by
+lemma l8_vGe_muPoly_fLag [Fact p.Prime] (hp : ¬ p ∣ 2 * mz) (i j : ℕ) :
+    vGe p 0 (muPoly mz ((fLag h i * fLag h j) /ₘ Dpoly h)) := by
   have hQ : (fLag h i * fLag h j) /ₘ Dpoly h =
       ((l8fZ h i * l8fZ h j) /ₘ l8DZ h).map (Int.castRingHom ℚ) := by
     rw [l8_fLag_eq, l8_fLag_eq, l8_Dpoly_eq, ← Polynomial.map_mul, Polynomial.map_divByMonic _ l8_DZ_monic]
@@ -121,12 +123,12 @@ lemma l8_padicNorm_inv_sq [hpp : Fact p.Prime] (h3 : h + 1 ≤ 3 * p) {m k : ℕ
 
 /-- `v_p(P(x_m)) ≥ −w(m)` for `3p ≥ K`. -/
 lemma l8_vGe_Psum [Fact p.Prime] (h3 : h + 1 ≤ 3 * p) {m : ℕ} (hm : m ≤ h) :
-    vGe p (-(wU h p m : ℤ)) (Psum (poleZ h m)) := by
-  have hterm : ∀ k ∈ range ((poleZ h m).natAbs / 2), ∀ u : Q5, pInt p u →
-      vGe p (-(wU h p m : ℤ)) (u / ((2 * k + 1 : ℕ) : Q5) ^ 2) := by
+    vGe p (-(wU h p m : ℤ)) (Psum mz (poleZ h m)) := by
+  have hterm : ∀ k ∈ range ((poleZ h m).natAbs / 2), ∀ u : (Qd mz), pInt p u →
+      vGe p (-(wU h p m : ℤ)) (u / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2) := by
     intro k hk u hu
     have hk' : 2 * k + 1 < (poleZ h m).natAbs := by have := mem_range.mp hk; omega
-    have e : u / ((2 * k + 1 : ℕ) : Q5) ^ 2 = u * (((1 / ((2 * k + 1 : ℕ) : ℚ) ^ 2 : ℚ)) : Q5) := by
+    have e : u / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2 = u * (((1 / ((2 * k + 1 : ℕ) : ℚ) ^ 2 : ℚ)) : (Qd mz)) := by
       push_cast; ring
     rw [e]
     have := vGe_mul (vGe_of_pInt hu) (vGe_ratCast_of_padicNorm (n := -(wU h p m : ℤ))
@@ -139,10 +141,10 @@ lemma l8_vGe_Psum [Fact p.Prime] (h3 : h + 1 ≤ 3 * p) {m : ℕ} (hm : m ≤ h)
 
 /-! ### The crude bound `n_p ≤ Σ_i max(v_p(D′(x_i)), w_i)` -/
 
-lemma l8_vGeX_mono {n m : ℤ} [Fact p.Prime] (hmn : m ≤ n) {F : Q5[X]} (hF : vGeX p n F) : vGeX p m F :=
+lemma l8_vGeX_mono {n m : ℤ} [Fact p.Prime] (hmn : m ≤ n) {F : (Qd mz)[X]} (hF : vGeX p n F) : vGeX p m F :=
   fun k => vGe_mono hmn (hF k)
 
-lemma l8_vGeX_zero [Fact p.Prime] (n : ℤ) : vGeX p n (0 : Q5[X]) := fun k => by
+lemma l8_vGeX_zero [Fact p.Prime] (n : ℤ) : vGeX p n (0 : (Qd mz)[X]) := fun k => by
   simpa using vGe_zero (p := p) n
 
 lemma l8_padicNorm_prod [Fact p.Prime] (s : Finset ℕ) (f : ℕ → ℚ) :
@@ -162,11 +164,11 @@ noncomputable def l8rho (h p : ℕ) (w : ℕ → ℤ) (i : ℕ) : ℤ := min 0 (
 
 section Crude
 
-variable [Fact p.Prime] (hp : p ≠ 2) (w : ℕ → ℤ) (hw0 : ∀ m, 0 ≤ w m)
-  (hw : ∀ m ≤ h, vGe p (-w m) (Psum (poleZ h m)))
+variable [Fact p.Prime] (hp : ¬ p ∣ 2 * mz) (w : ℕ → ℤ) (hw0 : ∀ m, 0 ≤ w m)
+  (hw : ∀ m ≤ h, vGe p (-w m) (Psum mz (poleZ h m)))
 include hp hw0 hw
 
-lemma l8_vGe_A {i : ℕ} (hi : i ≤ h) (j : ℕ) : vGe p (l8rho h p w i) (Afun h (fLag h i * fLag h j)) := by
+lemma l8_vGe_A {i : ℕ} (hi : i ≤ h) (j : ℕ) : vGe p (l8rho h p w i) (Afun mz h (fLag h i * fLag h j)) := by
   unfold Afun
   refine vGe_add (vGe_mono (min_le_left _ _) (l8_vGe_muPoly_fLag hp _ _)) (vGe_sum _ _ (fun m hm => ?_))
   have hm' : m ≤ h := Nat.lt_succ_iff.mp (mem_range.mp hm)
@@ -179,26 +181,26 @@ lemma l8_vGe_A {i : ℕ} (hi : i ≤ h) (j : ℕ) : vGe p (l8rho h p w i) (Afun 
   · rw [Rat.cast_zero, zero_mul, zero_mul]; exact vGe_zero _
 
 omit hp hw in
-lemma l8_vGe_B {i : ℕ} (j : ℕ) : vGe p (l8rho h p w i) (Bfun h (fLag h i * fLag h j)) := by
+lemma l8_vGe_B {i : ℕ} (j : ℕ) : vGe p (l8rho h p w i) (Bfun mz h (fLag h i * fLag h j)) := by
   unfold Bfun
   refine vGe_neg (vGe_sum _ _ (fun m hm => ?_))
   have hm' : m ≤ h := Nat.lt_succ_iff.mp (mem_range.mp hm)
   rw [l8_cPole_fLag_mul hm']
   split_ifs with hc
   · obtain ⟨rfl, -⟩ := hc
-    have := vGe_mul (vGe_ratCast (p := p) (dPrime h i)) (vGe_zK_zpow (p := p) (poleZ h i))
+    have := vGe_mul (vGe_ratCast (p := p) (dPrime h i)) (vGe_zK_zpow (mz := mz) (p := p) (poleZ h i))
     refine vGe_mono ?_ this
     unfold l8rho; have := hw0 i; omega
   · rw [Rat.cast_zero, zero_mul]; exact vGe_zero _
 
-lemma l8_vGeX_GramF (i j : Fin (h + 1)) : vGeX p (l8rho h p w i) (GramF h i j) := by
+lemma l8_vGeX_GramF (i j : Fin (h + 1)) : vGeX p (l8rho h p w i) (GramF mz h i j) := by
   have hi : (i : ℕ) ≤ h := Nat.lt_succ_iff.mp i.isLt
-  change vGeX p _ (LamX h (fLag h i * fLag h j))
+  change vGeX p _ (LamX mz h (fLag h i * fLag h j))
   unfold LamX
   exact vGeX_add (vGeX_C (l8_vGe_A hp w hw0 hw hi j)) (vGeX_X_mul (vGeX_C (l8_vGe_B w hw0 j)))
 
 lemma l8_vGeX_adj (a b : Fin (h + 1)) :
-    vGeX p (∑ i : Fin (h + 1), l8rho h p w i) ((GramF h).adjugate a b) := by
+    vGeX p (∑ i : Fin (h + 1), l8rho h p w i) ((GramF mz h).adjugate a b) := by
   rw [Matrix.adjugate_apply]
   refine l8_vGeX_mono ?_ (vGeX_det _ (fun r : Fin (h + 1) => if r = b then 0 else l8rho h p w r) (fun r c => ?_))
   · refine sum_le_sum (fun r _ => ?_)
@@ -216,17 +218,17 @@ lemma l8_vGeX_adj (a b : Fin (h + 1)) :
 /-- **Crude bound** (any odd `p`, any weights `w ≥ 0` with `v_p(P(x_m)) ≥ −w_m`):
 `|c_k|_p ≤ p^{Σ_m max(v_p(D′(x_m)), w_m)}` for the coefficients of `Δ_h`. -/
 theorem padicNorm_Delta_crude (hh : Even h) (k : ℕ) :
-    padicNorm p ((Delta h).coeff k) ≤
+    padicNorm p ((Delta mz h).coeff k) ≤
       (p : ℚ) ^ (∑ m ∈ range (h + 1), max (padicValRat p (dPrime h m)) (w m)) := by
   have hp0 : (p : ℚ) ≠ 0 := by exact_mod_cast (Fact.out : p.Prime).ne_zero
   have hppos : (0 : ℚ) < p := by exact_mod_cast (Fact.out : p.Prime).pos
   have hS : vGeX p (∑ i : Fin (h + 1), l8rho h p w i)
-      (C ((-1 : Q5) ^ ((h + 1) * h / 2)) * ∑ a, ∑ b, (GramF h).adjugate a b) := by
-    have h1 : vGeX p 0 (C ((-1 : Q5) ^ ((h + 1) * h / 2))) :=
+      (C ((-1 : (Qd mz)) ^ ((h + 1) * h / 2)) * ∑ a, ∑ b, (GramF mz h).adjugate a b) := by
+    have h1 : vGeX p 0 (C ((-1 : (Qd mz)) ^ ((h + 1) * h / 2))) :=
       vGeX_C (vGe_of_pInt (pInt_pow (pInt_neg pInt_one) _))
     simpa using vGeX_mul h1 (vGeX_sum _ _ (fun a _ => vGeX_sum _ _ (fun b _ => l8_vGeX_adj hp w hw0 hw a b)))
   rw [← lemmaB hh] at hS
-  have hk := padicNorm_le_of_vGe (p := p) (r := (Delta h).coeff k * ∏ i ∈ range (h + 1), dPrime h i) (by
+  have hk := padicNorm_le_of_vGe (mz := mz) (p := p) (r := (Delta mz h).coeff k * ∏ i ∈ range (h + 1), dPrime h i) (by
     have := hS k
     rw [coeff_mul_C, coeff_map, eq_ratCast] at this
     push_cast
@@ -239,8 +241,8 @@ theorem padicNorm_Delta_crude (hh : Even h) (k : ℕ) :
     exact sum_congr rfl (fun m _ => by unfold l8rho; omega)
   rw [← hexp, zpow_add₀ hp0]
   have hpos : (0 : ℚ) < (p : ℚ) ^ (∑ i ∈ range (h + 1), padicValRat p (dPrime h i)) := zpow_pos hppos _
-  calc padicNorm p ((Delta h).coeff k)
-      = padicNorm p ((Delta h).coeff k) * (p : ℚ) ^ (∑ i ∈ range (h + 1), -padicValRat p (dPrime h i)) *
+  calc padicNorm p ((Delta mz h).coeff k)
+      = padicNorm p ((Delta mz h).coeff k) * (p : ℚ) ^ (∑ i ∈ range (h + 1), -padicValRat p (dPrime h i)) *
           (p : ℚ) ^ (∑ i ∈ range (h + 1), padicValRat p (dPrime h i)) := by
         rw [mul_assoc, ← zpow_add₀ hp0, sum_neg_distrib, neg_add_cancel, zpow_zero, mul_one]
     _ ≤ _ := by gcongr
@@ -409,10 +411,10 @@ lemma l8_sum_le_AK [Fact p.Prime] (hp : p ≠ 2) (hh : Even h) (h3 : h + 1 ≤ 3
   exact sum_le_sum (fun c hc => l8_class_le hp hh h3 (mem_range.mp hc))
 
 /-- **Lemma 8′ for `3p ≥ K`** (one level `e = 1` if `p < K`, none if `p ≥ K`): `|c_k|_p ≤ p^{A_K(p)}`. -/
-theorem lemma8_one [Fact p.Prime] (hp : p ≠ 2) (hh : Even h) (h3 : h + 1 ≤ 3 * p) (k : ℕ) :
-    padicNorm p ((Delta h).coeff k) ≤ (p : ℚ) ^ AK h p := by
+theorem lemma8_one [Fact p.Prime] (hp : p ≠ 2) (hpm : ¬ p ∣ mz) (hh : Even h) (h3 : h + 1 ≤ 3 * p) (k : ℕ) :
+    padicNorm p ((Delta mz h).coeff k) ≤ (p : ℚ) ^ AK h p := by
   have hp1 : (1 : ℚ) ≤ p := by exact_mod_cast (Fact.out : p.Prime).one_lt.le
-  refine (padicNorm_Delta_crude hp (fun m => (wU h p m : ℤ)) (fun m => by positivity)
+  refine (padicNorm_Delta_crude (not_dvd_two_mul hp hpm) (fun m => (wU h p m : ℤ)) (fun m => by positivity)
     (fun m hm => l8_vGe_Psum h3 hm) hh k).trans ?_
   have hsum : (∑ m ∈ range (h + 1), max (padicValRat p (dPrime h m)) (wU h p m : ℤ)) ≤ (AK h p : ℤ) := by
     calc _ ≤ ∑ m ∈ range (h + 1), ((max ((clU h p (m % p)).card - 1) (wU h p m) : ℕ) : ℤ) :=

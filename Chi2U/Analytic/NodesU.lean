@@ -17,6 +17,8 @@ import Chi2U.Analytic.PoleBoundU
 
 namespace Chi2U
 
+variable {mz : ℕ} [Fact (1 ≤ mz)]
+
 open Polynomial Finset Filter Topology Matrix
 
 /-- `φ(u) = 1/D(u)`. -/
@@ -40,13 +42,13 @@ lemma deriv_pow_phi {h : ℕ} (hh : Even h) (n s : ℕ) :
 /-! ### The truncations -/
 
 /-- The node term of `Λ(u^n)` at `τ = 2t + 1`. -/
-noncomputable def nodeTerm (h n t : ℕ) : ℝ :=
-  zU ^ (2 * t + 1) * ((n : ℝ) * ((2 * t + 1 : ℕ) : ℝ) ^ (n - 1) * phiU h ((2 * t + 1 : ℕ) : ℝ) +
+noncomputable def nodeTerm (mz : ℕ) [Fact (1 ≤ mz)] (h n t : ℕ) : ℝ :=
+  (zU mz) ^ (2 * t + 1) * ((n : ℝ) * ((2 * t + 1 : ℕ) : ℝ) ^ (n - 1) * phiU h ((2 * t + 1 : ℕ) : ℝ) +
     ((2 * t + 1 : ℕ) : ℝ) ^ n * deriv (phiU h) ((2 * t + 1 : ℕ) : ℝ))
 
 /-- The truncated matrix. -/
-noncomputable def HT (h T : ℕ) : Matrix (Fin h) (Fin h) ℝ :=
-  fun i j => ∑ t ∈ range T, nodeTerm h ((i : ℕ) + j) t
+noncomputable def HT (mz : ℕ) [Fact (1 ≤ mz)] (h T : ℕ) : Matrix (Fin h) (Fin h) ℝ :=
+  fun i j => ∑ t ∈ range T, nodeTerm mz h ((i : ℕ) + j) t
 
 /-! ### Rank-one form -/
 
@@ -60,8 +62,8 @@ def xslot {T : ℕ} (k : Fin T × Fin 3) : ℕ × Bool := (tnode k, decide ((k.2
 def yslot {T : ℕ} (k : Fin T × Fin 3) : ℕ × Bool := (tnode k, decide ((k.2 : ℕ) = 2))
 
 /-- The coefficient of a triple. -/
-noncomputable def cN (h : ℕ) {T : ℕ} (k : Fin T × Fin 3) : ℝ :=
-  zU ^ tnode k * (if (k.2 : ℕ) = 0 then deriv (phiU h) (tnode k) else phiU h (tnode k))
+noncomputable def cN (mz : ℕ) [Fact (1 ≤ mz)] (h : ℕ) {T : ℕ} (k : Fin T × Fin 3) : ℝ :=
+  (zU mz) ^ tnode k * (if (k.2 : ℕ) = 0 then deriv (phiU h) (tnode k) else phiU h (tnode k))
 
 lemma pow_deriv_split (s : ℝ) (i j : ℕ) :
     ((i : ℝ) + j) * s ^ (i + j - 1) =
@@ -77,11 +79,11 @@ lemma pow_deriv_split (s : ℝ) (i j : ℕ) :
   ring
 
 lemma HT_rankOne (h T : ℕ) :
-    HT h T = Matrix.of fun i j => ∑ k : Fin T × Fin 3,
-      cN h k * slotRow h (xslot k) i * slotRow h (yslot k) j := by
+    HT mz h T = Matrix.of fun i j => ∑ k : Fin T × Fin 3,
+      cN mz h k * slotRow h (xslot k) i * slotRow h (yslot k) j := by
   ext i j
   simp only [HT, Matrix.of_apply]
-  rw [Fintype.sum_prod_type, ← Fin.sum_univ_eq_sum_range (fun t => nodeTerm h ((i : ℕ) + j) t) T]
+  rw [Fintype.sum_prod_type, ← Fin.sum_univ_eq_sum_range (fun t => nodeTerm mz h ((i : ℕ) + j) t) T]
   refine Finset.sum_congr rfl (fun t _ => ?_)
   rw [Fin.sum_univ_three]
   simp only [cN, xslot, yslot, tnode, slotRow, Fin.isValue, Fin.val_zero, Fin.val_one, Fin.val_two]
@@ -99,14 +101,14 @@ lemma HT_rankOne (h T : ℕ) :
 noncomputable def Kslot (h : ℕ) : ℝ := (h : ℝ) ^ h * (1 + 2 / (h : ℝ)) ^ (h ^ 2)
 
 /-- The node weight `b(τ) = z^τ |φ(τ)| (2 + log(2h+1))`. -/
-noncomputable def bN (h τ : ℕ) : ℝ := zU ^ τ * |phiU h τ| * (2 + Real.log (2 * (h : ℝ) + 1))
+noncomputable def bN (mz : ℕ) [Fact (1 ≤ mz)] (h τ : ℕ) : ℝ := (zU mz) ^ τ * |phiU h τ| * (2 + Real.log (2 * (h : ℝ) + 1))
 
 lemma two_add_log_ge_one (h : ℕ) : 1 ≤ 2 + Real.log (2 * (h : ℝ) + 1) := by
   have : 0 ≤ Real.log (2 * (h : ℝ) + 1) := Real.log_nonneg (by have := (Nat.cast_nonneg h : (0 : ℝ) ≤ h); linarith)
   linarith
 
-lemma abs_cN_le {h T : ℕ} (hh : Even h) (k : Fin T × Fin 3) : |cN h k| ≤ bN h (tnode k) := by
-  have hz := zU_pos
+lemma abs_cN_le {h T : ℕ} (hh : Even h) (k : Fin T × Fin 3) : |cN mz h k| ≤ bN mz h (tnode k) := by
+  have hz := zU_pos (mz := mz)
   have hA := two_add_log_ge_one h
   unfold cN bN
   rw [abs_mul, abs_of_pos (pow_pos hz _), mul_assoc]
@@ -117,8 +119,8 @@ lemma abs_cN_le {h T : ℕ} (hh : Even h) (k : Fin T × Fin 3) : |cN h k| ≤ bN
   · have := abs_nonneg (phiU h (tnode k))
     nlinarith
 
-lemma bN_pos {h : ℕ} (hh : Even h) (s : ℕ) : 0 < bN h (2 * s + 1) := by
-  have hz := zU_pos
+lemma bN_pos {h : ℕ} (hh : Even h) (s : ℕ) : 0 < bN mz h (2 * s + 1) := by
+  have hz := zU_pos (mz := mz)
   have hA := two_add_log_ge_one h
   have hphi : 0 < |phiU h ((2 * s + 1 : ℕ) : ℝ)| := by
     obtain ⟨J, rfl⟩ := hh
@@ -127,20 +129,20 @@ lemma bN_pos {h : ℕ} (hh : Even h) (s : ℕ) : 0 < bN h (2 * s + 1) := by
   have : (0 : ℝ) < 2 + Real.log (2 * (h : ℝ) + 1) := by linarith
   positivity
 
-lemma bN_tnode_pos {h T : ℕ} (hh : Even h) (k : Fin T × Fin 3) : 0 < bN h (tnode k) := bN_pos hh _
+lemma bN_tnode_pos {h T : ℕ} (hh : Even h) (k : Fin T × Fin 3) : 0 < bN mz h (tnode k) := bN_pos hh _
 
 /-- **The truncated determinant, slot form.** -/
 theorem abs_det_HT_le {h T : ℕ} (hh : Even h) (h2 : 2 ≤ h) :
-    |(HT h T).det| ≤ ((h.factorial : ℝ))⁻¹ * Kslot h ^ 2 *
+    |(HT mz h T).det| ≤ ((h.factorial : ℝ))⁻¹ * Kslot h ^ 2 *
       ∑ f : Fin h → Fin T × Fin 3, (if Function.Injective (fun i => xslot (f i)) then
-        (∏ i, bN h (tnode (f i))) *
+        (∏ i, bN mz h (tnode (f i))) *
           ∏ i, ∏ j ∈ Ioi i, pairFactor (tnode (f i)) (tnode (f j)) ^ 2 else 0) := by
   have hfac : (0 : ℝ) < h.factorial := by exact_mod_cast Nat.factorial_pos h
-  have hA := factorial_smul_det_sum_rankOne (R := ℝ) (cN h (T := T)) (fun k => slotRow h (xslot k))
+  have hA := factorial_smul_det_sum_rankOne (R := ℝ) (cN mz h (T := T)) (fun k => slotRow h (xslot k))
     (fun k => slotRow h (yslot k))
   rw [← HT_rankOne, Fintype.card_fin, nsmul_eq_mul] at hA
-  have hdet : (HT h T).det = ((h.factorial : ℝ))⁻¹ * ∑ f : Fin h → Fin T × Fin 3,
-      (∏ i, cN h (f i)) * (Matrix.of fun i j => slotRow h (xslot (f i)) j).det *
+  have hdet : (HT mz h T).det = ((h.factorial : ℝ))⁻¹ * ∑ f : Fin h → Fin T × Fin 3,
+      (∏ i, cN mz h (f i)) * (Matrix.of fun i j => slotRow h (xslot (f i)) j).det *
         (Matrix.of fun i j => slotRow h (yslot (f i)) j).det := by
     rw [← hA]; field_simp
   rw [hdet, abs_mul, abs_of_pos (inv_pos.mpr hfac), mul_assoc]
@@ -152,21 +154,21 @@ theorem abs_det_HT_le {h T : ℕ} (hh : Even h) (h2 : 2 ≤ h) :
     have hX := abs_det_slot_le h2 (fun i => xslot (f i))
     have hY := abs_det_slot_le h2 (fun i => yslot (f i))
     simp only [xslot, yslot] at hX hY
-    have hc : ∏ i, |cN h (f i)| ≤ ∏ i, bN h (tnode (f i)) :=
+    have hc : ∏ i, |cN mz h (f i)| ≤ ∏ i, bN mz h (tnode (f i)) :=
       Finset.prod_le_prod₀ (fun i _ => abs_nonneg _) (fun i _ => abs_cN_le hh (f i))
     have hP : 0 ≤ ∏ i, ∏ j ∈ Ioi i, pairFactor (tnode (f i)) (tnode (f j)) :=
       Finset.prod_nonneg (fun i _ => Finset.prod_nonneg (fun j _ => pairFactor_nonneg _ _))
     have hK : 0 ≤ Kslot h := by unfold Kslot; positivity
-    have hb : 0 ≤ ∏ i, bN h (tnode (f i)) :=
+    have hb : 0 ≤ ∏ i, bN mz h (tnode (f i)) :=
       Finset.prod_nonneg (fun i _ => (bN_tnode_pos hh (f i)).le)
-    calc (∏ i, |cN h (f i)|) * |(Matrix.of fun i j => slotRow h (xslot (f i)) j).det| *
+    calc (∏ i, |cN mz h (f i)|) * |(Matrix.of fun i j => slotRow h (xslot (f i)) j).det| *
           |(Matrix.of fun i j => slotRow h (yslot (f i)) j).det|
-        ≤ (∏ i, bN h (tnode (f i))) * (Kslot h * ∏ i, ∏ j ∈ Ioi i, pairFactor (tnode (f i)) (tnode (f j))) *
+        ≤ (∏ i, bN mz h (tnode (f i))) * (Kslot h * ∏ i, ∏ j ∈ Ioi i, pairFactor (tnode (f i)) (tnode (f j))) *
             (Kslot h * ∏ i, ∏ j ∈ Ioi i, pairFactor (tnode (f i)) (tnode (f j))) := by
           gcongr
           · unfold Kslot; exact hX
           · unfold Kslot; exact hY
-      _ = Kslot h ^ 2 * ((∏ i, bN h (tnode (f i))) *
+      _ = Kslot h ^ 2 * ((∏ i, bN mz h (tnode (f i))) *
             ∏ i, ∏ j ∈ Ioi i, pairFactor (tnode (f i)) (tnode (f j)) ^ 2) := by
           simp_rw [Finset.prod_pow]; ring
   · -- two equal x-slots: the x-minor vanishes

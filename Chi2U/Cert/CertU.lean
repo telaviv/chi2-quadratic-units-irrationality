@@ -102,14 +102,25 @@ theorem valid : data.Valid where
 
 lemma phiQ_lt : data.PhiQ < -27 / 20 := by decide +kernel
 
+/-- The sharper bound used by the Theorem V margins (`scripts/margins_lean.py`). -/
+lemma phiQ_lt' : data.PhiQ < -13538792 / 10000000 := by decide +kernel
+
 end Cert.DataU
 
 open Cert Cert.DataU in
 /-- A certificate with `Φ < −27/20` exists. -/
-theorem exists_certU : ∃ C : DualCertU, C.Phi < -27 / 20 := by
+theorem exists_certU : ∃ C : DualCertU 2, C.Phi < -27 / 20 := by
   refine ⟨CDataU.toCert valid, ?_⟩
   have h1 := CDataU.Phi_le valid
   have h2 : (data.PhiQ : ℝ) < -27 / 20 := by exact_mod_cast phiQ_lt
+  linarith
+
+open Cert Cert.DataU in
+/-- A certificate with `Φ < −1.3538792` exists (the constant `Φ_L` of the Theorem V margins). -/
+theorem exists_certU' : ∃ C : DualCertU 2, C.Phi < -13538792 / 10000000 := by
+  refine ⟨CDataU.toCert valid, ?_⟩
+  have h1 := CDataU.Phi_le valid
+  have h2 : (data.PhiQ : ℝ) < -13538792 / 10000000 := by exact_mod_cast phiQ_lt'
   linarith
 
 end Chi2U

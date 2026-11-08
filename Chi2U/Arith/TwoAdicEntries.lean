@@ -102,7 +102,7 @@ lemma gAB_comp (h i j : ℕ) (hj : j ≤ h + 1) :
 
 /-! ### Linearity of `A`, `B` -/
 
-lemma Afun_add (h : ℕ) (f g : ℚ[X]) : Afun h (f + g) = Afun h f + Afun h g := by
+lemma Afun_add (h : ℕ) (f g : ℚ[X]) : Afun 2 h (f + g) = Afun 2 h f + Afun 2 h g := by
   unfold Afun cPole
   rw [add_divByMonic, muPoly_add]
   simp only [eval_add, add_div]
@@ -110,14 +110,14 @@ lemma Afun_add (h : ℕ) (f g : ℚ[X]) : Afun h (f + g) = Afun h f + Afun h g :
   simp only [add_mul, sum_add_distrib]
   ring
 
-lemma Bfun_add (h : ℕ) (f g : ℚ[X]) : Bfun h (f + g) = Bfun h f + Bfun h g := by
+lemma Bfun_add (h : ℕ) (f g : ℚ[X]) : Bfun 2 h (f + g) = Bfun 2 h f + Bfun 2 h g := by
   unfold Bfun cPole
   simp only [eval_add, add_div]
   push_cast
   simp only [add_mul, sum_add_distrib]
   ring
 
-lemma Afun_C_mul (h : ℕ) (c : ℚ) (g : ℚ[X]) : Afun h (C c * g) = (c : Q5) * Afun h g := by
+lemma Afun_C_mul (h : ℕ) (c : ℚ) (g : ℚ[X]) : Afun 2 h (C c * g) = (c : Q5) * Afun 2 h g := by
   unfold Afun cPole
   rw [← smul_eq_C_mul, smul_divByMonic, muPoly_smul, Algebra.smul_def, eq_ratCast]
   simp only [eval_smul, smul_eq_mul, mul_div_assoc]
@@ -127,7 +127,7 @@ lemma Afun_C_mul (h : ℕ) (c : ℚ) (g : ℚ[X]) : Afun h (C c * g) = (c : Q5) 
   refine sum_congr rfl (fun m _ => ?_)
   ring
 
-lemma Bfun_C_mul (h : ℕ) (c : ℚ) (g : ℚ[X]) : Bfun h (C c * g) = (c : Q5) * Bfun h g := by
+lemma Bfun_C_mul (h : ℕ) (c : ℚ) (g : ℚ[X]) : Bfun 2 h (C c * g) = (c : Q5) * Bfun 2 h g := by
   unfold Bfun cPole
   simp only [eval_mul, eval_C, mul_div_assoc]
   push_cast
@@ -145,13 +145,13 @@ lemma scale_eq (h i j : ℕ) :
 
 lemma GA_eq {h i j : ℕ} (hj : j ≤ h + 1) :
     GA h i j = (((2 : ℚ) ^ ((h : ℤ) + 2 - i - j) : ℚ) : Q5) *
-      Afun h (PZ h (range i) * PZ h (Ico (h + 1 - j) (h + 1))) := by
+      Afun 2 h (PZ h (range i) * PZ h (Ico (h + 1 - j) (h + 1))) := by
   unfold GA
   rw [gAB_comp h i j hj, Afun_C_mul, ← mul_assoc, scale_eq]
 
 lemma GB_eq {h i j : ℕ} (hj : j ≤ h + 1) :
     GB h i j = (((2 : ℚ) ^ ((h : ℤ) + 2 - i - j) : ℚ) : Q5) *
-      Bfun h (PZ h (range i) * PZ h (Ico (h + 1 - j) (h + 1))) := by
+      Bfun 2 h (PZ h (range i) * PZ h (Ico (h + 1 - j) (h + 1))) := by
   unfold GB
   rw [gAB_comp h i j hj, Bfun_C_mul, ← mul_assoc, scale_eq]
 
@@ -165,7 +165,7 @@ lemma PZ_L {i j : ℕ} (hi : i ≤ h + 1) (hj : j ≤ h + 1) (hij : h + 1 ≤ i 
     ← prod_range_mul_prod_Ico _ (show h + 1 - j ≤ h + 1 by omega)]
   ring
 
-lemma Afun_D_mul (h : ℕ) (F : ℚ[X]) : Afun h (Dpoly h * F) = muPoly F := by
+lemma Afun_D_mul (h : ℕ) (F : ℚ[X]) : Afun 2 h (Dpoly h * F) = muPoly 2 F := by
   unfold Afun
   rw [mul_divByMonic_cancel_left _ (Dpoly_monic h)]
   rw [sum_eq_zero, add_zero]
@@ -174,7 +174,7 @@ lemma Afun_D_mul (h : ℕ) (F : ℚ[X]) : Afun h (Dpoly h * F) = muPoly F := by
   rw [eval_mul, Dpoly_eq_PZ, eval_PZ_eq_zero hm]
   simp
 
-lemma Bfun_D_mul (h : ℕ) (F : ℚ[X]) : Bfun h (Dpoly h * F) = 0 := by
+lemma Bfun_D_mul (h : ℕ) (F : ℚ[X]) : Bfun 2 h (Dpoly h * F) = 0 := by
   unfold Bfun
   rw [sum_eq_zero, neg_zero]
   intro m hm
@@ -206,12 +206,12 @@ lemma V2_mahlerCoeff_map (q : ℤ[X]) (b : ℕ) :
 
 /-- `v₂(Lmom p) ≥ −⌊log₂ n⌋ − 3` for `p ∈ ℤ[X]` of degree `< n` (Mahler form). -/
 lemma vGe_Lmom_int (q : ℤ[X]) {n : ℕ} (hq : (q.map (Int.castRingHom ℚ)).natDegree < n) :
-    vGe 2 (-(Nat.log 2 n : ℤ) - 3) (Lmom (q.map (Int.castRingHom ℚ))) := by
-  rw [Lmom_eq_mahler]
+    vGe 2 (-(Nat.log 2 n : ℤ) - 3) (Lmom 2 (q.map (Int.castRingHom ℚ))) := by
+  rw [Lmom_eq_mahler_two]
   refine vGe_sum _ _ (fun b hb => ?_)
   have hb' : b < n := by have := mem_range.mp hb; omega
-  have e : (mahlerCoeff (q.map (Int.castRingHom ℚ)) b : Q5) * zK ^ b / 4 ^ (b + 1) =
-      (mahlerCoeff (q.map (Int.castRingHom ℚ)) b : Q5) * zK ^ (b : ℤ) *
+  have e : (mahlerCoeff (q.map (Int.castRingHom ℚ)) b : Q5) * (zK 2) ^ b / 4 ^ (b + 1) =
+      (mahlerCoeff (q.map (Int.castRingHom ℚ)) b : Q5) * (zK 2) ^ (b : ℤ) *
         ((((2 : ℚ) ^ (-2 : ℤ)) ^ (b + 1) : ℚ) : Q5) := by
     rw [zpow_natCast, div_eq_mul_inv]
     congr 1
@@ -220,7 +220,7 @@ lemma vGe_Lmom_int (q : ℤ[X]) {n : ℕ} (hq : (q.map (Int.castRingHom ℚ)).na
     norm_num
   rw [e]
   have h1 := vGe_of_V2 (V2_mahlerCoeff_map q b)
-  have h2 : vGe 2 0 (zK ^ (b : ℤ)) := vGe_zK_zpow _
+  have h2 : vGe 2 0 ((zK 2) ^ (b : ℤ)) := vGe_zK_zpow _
   have h3 := vGe_of_V2 (V2_pow (V2_two_zpow (-2)) (b + 1))
   refine vGe_mono ?_ (vGe_mul (vGe_mul h1 h2) h3)
   have := vf_ge b
@@ -231,7 +231,7 @@ lemma vGe_Lmom_int (q : ℤ[X]) {n : ℕ} (hq : (q.map (Int.castRingHom ℚ)).na
 /-- The (L) entries: `G_A = 2^{1−π} Lmom(F′)`, `G_B = 0`. -/
 lemma GA_L {i j : ℕ} (hi : i ≤ h + 1) (hj : j ≤ h + 1) (hij : h + 1 ≤ i + j) :
     GA h i j = (((2 : ℚ) ^ ((h : ℤ) + 2 - i - j) : ℚ) : Q5) *
-      Lmom ((derivative (PZint h (Ico (h + 1 - j) i))).map (Int.castRingHom ℚ)) := by
+      Lmom 2 ((derivative (PZint h (Ico (h + 1 - j) i))).map (Int.castRingHom ℚ)) := by
   rw [GA_eq hj, PZ_L hi hj hij, Afun_D_mul, muPoly, PZ_eq_map, derivative_map]
 
 lemma GB_L {i j : ℕ} (hi : i ≤ h + 1) (hj : j ≤ h + 1) (hij : h + 1 ≤ i + j) : GB h i j = 0 := by
@@ -245,7 +245,7 @@ lemma PZ_U {i j : ℕ} (hij : i + j ≤ h) :
   rw [prod_union]
   rw [Finset.disjoint_left]; intro m h1 h2; simp only [mem_range, mem_Ico] at h1 h2; omega
 
-lemma muPoly_zero : muPoly 0 = 0 := by simp [muPoly]
+lemma muPoly_zero : muPoly 2 0 = 0 := by simp [muPoly]
 
 lemma divD_U {i j : ℕ} (hij : i + j ≤ h) : PZ h (range i ∪ Ico (h + 1 - j) (h + 1)) /ₘ Dpoly h = 0 := by
   rw [divByMonic_eq_zero_iff (Dpoly_monic h)]
@@ -364,10 +364,10 @@ lemma sum_U {i j : ℕ} (hij : i + j ≤ h) (Y : ℕ → Q5) :
 /-! ### The (U) entries as finite differences -/
 
 /-- `T(l) = z^{x_{i+l}} P(x_{i+l})`. -/
-noncomputable def TseqA (h i l : ℕ) : Q5 := zK ^ poleZ h (i + l) * Psum (poleZ h (i + l))
+noncomputable def TseqA (h i l : ℕ) : Q5 := (zK 2) ^ poleZ h (i + l) * Psum 2 (poleZ h (i + l))
 
 /-- `T_B(l) = z^{x_{i+l}}`. -/
-noncomputable def TseqB (h i l : ℕ) : Q5 := zK ^ poleZ h (i + l)
+noncomputable def TseqB (h i l : ℕ) : Q5 := (zK 2) ^ poleZ h (i + l)
 
 lemma scale_U {i j : ℕ} (hij : i + j ≤ h) :
     (2 : ℚ) ^ ((h : ℤ) + 2 - i - j) * (1 / (2 ^ (h - i - j) * (((h - i - j) ! : ℕ) : ℚ))) =
@@ -383,19 +383,19 @@ lemma GA_U {i j : ℕ} (hij : i + j ≤ h) :
   unfold Afun
   rw [divD_U hij, muPoly_zero, zero_add]
   simp_rw [mul_assoc]
-  rw [sum_U hij (fun m => zK ^ poleZ h m * Psum (poleZ h m)), ← mul_assoc, ← Rat.cast_mul, scale_U hij]
+  rw [sum_U hij (fun m => (zK 2) ^ poleZ h m * Psum 2 (poleZ h m)), ← mul_assoc, ← Rat.cast_mul, scale_U hij]
   rfl
 
 lemma GB_U {i j : ℕ} (hij : i + j ≤ h) :
     GB h i j = -(((4 / (((h - i - j) ! : ℕ) : ℚ) : ℚ) : Q5) * (Δ_[1])^[h - i - j] (TseqB h i) 0) := by
   rw [GB_eq (by omega), PZ_U hij]
   unfold Bfun
-  rw [sum_U hij (fun m => zK ^ poleZ h m), mul_neg, ← mul_assoc, ← Rat.cast_mul, scale_U hij]
+  rw [sum_U hij (fun m => (zK 2) ^ poleZ h m), mul_neg, ← mul_assoc, ← Rat.cast_mul, scale_U hij]
   rfl
 
 /-! ### The recurrences -/
 
-lemma Psum_add_two {x : ℤ} (hx : Even x) : Psum (x + 2) = Psum x - zK ^ (-x - 1) / ((x + 1 : ℤ) : Q5) ^ 2 := by
+lemma Psum_add_two {x : ℤ} (hx : Even x) : Psum 2 (x + 2) = Psum 2 x - (zK 2) ^ (-x - 1) / ((x + 1 : ℤ) : Q5) ^ 2 := by
   obtain ⟨r, rfl⟩ := hx
   rcases lt_or_ge r 0 with hr | hr
   · obtain ⟨n, rfl⟩ : ∃ n : ℕ, r = -((n : ℤ) + 1) := ⟨(-r - 1).toNat, by omega⟩
@@ -410,7 +410,7 @@ lemma Psum_add_two {x : ℤ} (hx : Even x) : Psum (x + 2) = Psum x - zK ^ (-x - 
       sum_range_succ, zpow_natCast]
     ring
   · lift r to ℕ using hr with n
-    have hPx : Psum ((n : ℤ) + n) = -∑ k ∈ range n, (zK ^ (2 * k + 1))⁻¹ / ((2 * k + 1 : ℕ) : Q5) ^ 2 := by
+    have hPx : Psum 2 ((n : ℤ) + n) = -∑ k ∈ range n, ((zK 2) ^ (2 * k + 1))⁻¹ / ((2 * k + 1 : ℕ) : Q5) ^ 2 := by
       unfold Psum
       rcases Nat.eq_zero_or_pos n with rfl | hn
       · simp
@@ -428,21 +428,21 @@ lemma Psum_add_two {x : ℤ} (hx : Even x) : Psum (x + 2) = Psum x - zK ^ (-x - 
 lemma oddS (h i : ℕ) : Odd (poleZ h i + 1) := (even_poleZ h i).add_one
 
 lemma TU_rec (h i l : ℕ) :
-    TseqA h i (l + 1) = zK ^ 2 * TseqA h i l + (-zK) * ((gSZ (poleZ h i + 1) l : ℚ) : Q5) := by
+    TseqA h i (l + 1) = (zK 2) ^ 2 * TseqA h i l + (-(zK 2)) * ((gSZ (poleZ h i + 1) l : ℚ) : Q5) := by
   unfold TseqA
   set x := poleZ h (i + l) with hx
   have hx2 : poleZ h (i + (l + 1)) = x + 2 := by rw [hx, poleZ_add, poleZ_add]; push_cast; ring
   have hg : ((gSZ (poleZ h i + 1) l : ℚ) : Q5) = 1 / ((x + 1 : ℤ) : Q5) ^ 2 := by
     unfold gSZ; rw [hx, poleZ_add]; push_cast; ring
   rw [hx2, Psum_add_two (even_poleZ h (i + l)), hg]
-  have hz1 : zK ^ (x + 2) = zK ^ 2 * zK ^ x := by
+  have hz1 : (zK 2) ^ (x + 2) = (zK 2) ^ 2 * (zK 2) ^ x := by
     rw [zpow_add₀ zK_ne_zero, mul_comm]; norm_cast
-  have hz2 : zK ^ (x + 2) * zK ^ (-x - 1) = zK := by
+  have hz2 : (zK 2) ^ (x + 2) * (zK 2) ^ (-x - 1) = (zK 2) := by
     rw [← zpow_add₀ zK_ne_zero, show x + 2 + (-x - 1) = 1 by ring, zpow_one]
   rw [mul_sub, mul_div_assoc', hz2, hz1]
   ring
 
-lemma TB_rec (h i l : ℕ) : TseqB h i (l + 1) = zK ^ 2 * TseqB h i l + 0 * ((gSZ (poleZ h i + 1) l : ℚ) : Q5) := by
+lemma TB_rec (h i l : ℕ) : TseqB h i (l + 1) = (zK 2) ^ 2 * TseqB h i l + 0 * ((gSZ (poleZ h i + 1) l : ℚ) : Q5) := by
   unfold TseqB
   rw [show poleZ h (i + (l + 1)) = poleZ h (i + l) + 2 by rw [poleZ_add, poleZ_add]; push_cast; ring,
     zpow_add₀ zK_ne_zero, zero_mul, add_zero, zpow_two, sq]
@@ -450,15 +450,15 @@ lemma TB_rec (h i l : ℕ) : TseqB h i (l + 1) = zK ^ 2 * TseqB h i l + 0 * ((gS
 
 /-! ### Valuations of the ingredients -/
 
-lemma vGe_zK : vGe 2 0 zK := by simpa using vGe_zK_zpow (p := 2) 1
+lemma vGe_zK : vGe 2 0 (zK 2) := by simpa using vGe_zK_zpow (p := 2) 1
 
 lemma vGe_four : vGe 2 2 (4 : Q5) := by
   have := vGe_of_V2 (V2_two_zpow 2)
   norm_num at this
   exact this
 
-lemma vGe_zK_sq_sub_one : vGe 2 2 (zK ^ 2 - 1) := by
-  have e : zK ^ 2 - 1 = -(4 * zK) := by linear_combination (-1 : Q5) * one_sub_zK_sq
+lemma vGe_zK_sq_sub_one : vGe 2 2 ((zK 2) ^ 2 - 1) := by
+  have e : (zK 2) ^ 2 - 1 = -(4 * (zK 2)) := by linear_combination (-1 : Q5) * one_sub_zK_sq (mz := 2)
   rw [e]
   simpa using vGe_neg (vGe_mul vGe_four vGe_zK)
 
@@ -469,7 +469,7 @@ lemma vGe_inv_odd_sq (k : ℕ) : vGe 2 0 ((((2 * k + 1 : ℕ) : Q5) ^ 2)⁻¹) :
   have := V2_pow (V2_inv_oddInt (n := 2 * k + 1) ⟨k, rfl⟩) 2
   simpa using vGe_of_V2 this
 
-lemma vGe_Psum (x : ℤ) : vGe 2 0 (Psum x) := by
+lemma vGe_Psum (x : ℤ) : vGe 2 0 (Psum 2 x) := by
   unfold Psum
   split_ifs
   · refine vGe_sum _ _ (fun k _ => ?_)

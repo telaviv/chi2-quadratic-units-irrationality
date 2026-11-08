@@ -16,6 +16,8 @@ import Chi2U.Machine
 
 namespace Chi2U
 
+variable {mz : ℕ} [Fact (1 ≤ mz)]
+
 open Polynomial Matrix
 
 variable {h : ℕ}
@@ -115,19 +117,19 @@ lemma cPole_reflect (hh : Even h) (n : ℕ) {m : ℕ} (hm : m ≤ h) :
 
 /-! ### The conjugation on the pole data -/
 
-lemma sig_zK_zpow_even {x : ℤ} (hx : Even x) : sig (zK ^ x) = zK ^ (-x) := by
+lemma sig_zK_zpow_even {x : ℤ} (hx : Even x) : sig ((zK mz) ^ x) = (zK mz) ^ (-x) := by
   rw [map_zpow₀, sig_zK, hx.neg_zpow, _root_.inv_zpow']
 
-lemma sig_zK_pow_odd (k : ℕ) : sig (zK ^ (2 * k + 1)) = -(zK ^ (2 * k + 1))⁻¹ := by
+lemma sig_zK_pow_odd (k : ℕ) : sig ((zK mz) ^ (2 * k + 1)) = -((zK mz) ^ (2 * k + 1))⁻¹ := by
   rw [map_pow, sig_zK, Odd.neg_pow ⟨k, rfl⟩, inv_pow]
 
-lemma sig_inv_zK_pow_odd (k : ℕ) : sig ((zK ^ (2 * k + 1))⁻¹) = -zK ^ (2 * k + 1) := by
+lemma sig_inv_zK_pow_odd (k : ℕ) : sig (((zK mz) ^ (2 * k + 1))⁻¹) = -(zK mz) ^ (2 * k + 1) := by
   rw [map_inv₀, sig_zK_pow_odd, inv_neg, inv_inv]
 
-lemma sig_natCast_Q5 (n : ℕ) : sig (n : Q5) = n := map_natCast sig n
+lemma sig_natCast_Q5 (n : ℕ) : sig (n : (Qd mz)) = n := map_natCast sig n
 
 /-- `σ P(x) = P(−x)`. -/
-lemma sig_Psum (x : ℤ) : sig (Psum x) = Psum (-x) := by
+lemma sig_Psum (x : ℤ) : sig (Psum mz x) = Psum mz (-x) := by
   unfold Psum
   rcases lt_trichotomy x 0 with hx | rfl | hx
   · rw [if_pos hx.le, if_neg (by omega), Int.natAbs_neg, map_sum, ← Finset.sum_neg_distrib]
@@ -139,20 +141,20 @@ lemma sig_Psum (x : ℤ) : sig (Psum x) = Psum (-x) := by
     rw [map_div₀, sig_inv_zK_pow_odd, map_pow, sig_natCast_Q5, neg_div, neg_neg]
 
 /-- Reflection of a sum over the poles. -/
-lemma sig_sum_reflect (f : ℕ → Q5) (s : Q5)
+lemma sig_sum_reflect (f : ℕ → (Qd mz)) (s : (Qd mz))
     (hf : ∀ m ≤ h, sig (f m) = s * f (h - m)) :
     sig (∑ m ∈ Finset.range (h + 1), f m) = s * ∑ m ∈ Finset.range (h + 1), f m := by
   rw [map_sum, Finset.mul_sum]
   rw [Finset.sum_congr rfl (fun m hm => hf m (Nat.lt_succ_iff.mp (Finset.mem_range.mp hm)))]
   simpa using Finset.sum_range_reflect (fun m => s * f m) (h + 1)
 
-lemma neg_one_pow_mul_self_Q5 (n : ℕ) : ((-1 : Q5) ^ n) * (-1) ^ n = 1 := by
+lemma neg_one_pow_mul_self_Q5 (n : ℕ) : ((-1 : (Qd mz)) ^ n) * (-1) ^ n = 1 := by
   rw [← mul_pow]; simp
 
 /-! ### Lemma R -/
 
 /-- **Lemma R** for `B`: `σ B(t^n) = (−1)^n B(t^n)`. -/
-theorem sig_Bfun (hh : Even h) (n : ℕ) : sig (Bfun h (X ^ n)) = (-1) ^ n * Bfun h (X ^ n) := by
+theorem sig_Bfun (hh : Even h) (n : ℕ) : sig (Bfun mz h (X ^ n)) = (-1) ^ n * Bfun mz h (X ^ n) := by
   unfold Bfun
   rw [map_neg, sig_sum_reflect (s := (-1) ^ n), mul_neg]
   intro m hm
@@ -162,7 +164,7 @@ theorem sig_Bfun (hh : Even h) (n : ℕ) : sig (Bfun h (X ^ n)) = (-1) ^ n * Bfu
   simp only [← mul_assoc, neg_one_pow_mul_self_Q5, one_mul]
 
 /-- **Lemma R** for `A`: `σ A(t^n) = (−1)^n A(t^n)`. -/
-theorem sig_Afun (hh : Even h) (n : ℕ) : sig (Afun h (X ^ n)) = (-1) ^ n * Afun h (X ^ n) := by
+theorem sig_Afun (hh : Even h) (n : ℕ) : sig (Afun mz h (X ^ n)) = (-1) ^ n * Afun mz h (X ^ n) := by
   unfold Afun
   rw [map_add, mul_add]
   congr 1
@@ -176,13 +178,13 @@ theorem sig_Afun (hh : Even h) (n : ℕ) : sig (Afun h (X ^ n)) = (-1) ^ n * Afu
     push_cast
     simp only [← mul_assoc, neg_one_pow_mul_self_Q5, one_mul]
 
-lemma im_eq_zero_of_sig {e : Q5} {n : ℕ} (he : sig e = (-1) ^ n * e) (hn : Even n) : e.im = 0 := by
+lemma im_eq_zero_of_sig {e : (Qd mz)} {n : ℕ} (he : sig e = (-1) ^ n * e) (hn : Even n) : e.im = 0 := by
   rw [hn.neg_one_pow, one_mul] at he
   have := congrArg QuadraticAlgebra.im he
   simp at this
   linarith
 
-lemma re_eq_zero_of_sig {e : Q5} {n : ℕ} (he : sig e = (-1) ^ n * e) (hn : Odd n) : e.re = 0 := by
+lemma re_eq_zero_of_sig {e : (Qd mz)} {n : ℕ} (he : sig e = (-1) ^ n * e) (hn : Odd n) : e.re = 0 := by
   rw [hn.neg_one_pow, neg_one_mul] at he
   have := congrArg QuadraticAlgebra.re he
   simp at this
@@ -191,22 +193,23 @@ lemma re_eq_zero_of_sig {e : Q5} {n : ℕ} (he : sig e = (-1) ^ n * e) (hn : Odd
 /-! ### Corollary R -/
 
 /-- The diagonal scaling `w_i = √5^{[i odd]}`. -/
-noncomputable def wSc (i : ℕ) : Q5 := if Even i then 1 else sqrt5
+noncomputable def wSc (mz : ℕ) [Fact (1 ≤ mz)] (i : ℕ) : (Qd mz) := if Even i then 1 else (sqrtd mz)
 
 /-- Its inverse `w_i⁻¹`. -/
-noncomputable def wScInv (i : ℕ) : Q5 := if Even i then 1 else (1 / 5 : ℚ) • sqrt5
+noncomputable def wScInv (mz : ℕ) [Fact (1 ≤ mz)] (i : ℕ) : (Qd mz) := if Even i then 1 else (1 / dQ mz : ℚ) • (sqrtd mz)
 
-lemma wSc_mul_inv (i : ℕ) : wSc i * wScInv i = 1 := by
+lemma wSc_mul_inv (i : ℕ) : wSc mz i * wScInv mz i = 1 := by
   unfold wSc wScInv
   split_ifs
   · simp
-  · ext <;> simp [sqrt5]
+  · rw [mul_smul_comm, sqrtd_mul_self, Algebra.smul_def, eq_ratCast, ← Rat.cast_mul, one_div,
+      inv_mul_cancel₀ dQ_ne_zero, Rat.cast_one]
 
-lemma ratCast_Q5 (r : ℚ) : ((r : ℚ) : Q5) = ⟨r, 0⟩ := rfl
+lemma ratCast_Q5 (r : ℚ) : ((r : ℚ) : (Qd mz)) = ⟨r, 0⟩ := rfl
 
 /-- The entry identity behind Corollary R: `Ẽ_{ij} w_j = w_i E_{i+j}`. -/
-lemma tildeCoord_mul (i j : ℕ) {e : Q5} (he : sig e = (-1) ^ (i + j) * e) :
-    ((tildeCoord i j e : ℚ) : Q5) * wSc j = wSc i * e := by
+lemma tildeCoord_mul (i j : ℕ) {e : (Qd mz)} (he : sig e = (-1) ^ (i + j) * e) :
+    ((tildeCoord i j e : ℚ) : (Qd mz)) * wSc mz j = wSc mz i * e := by
   unfold tildeCoord wSc
   rw [ratCast_Q5]
   rcases Nat.even_or_odd i with hi | hi <;> rcases Nat.even_or_odd j with hj | hj
@@ -218,30 +221,30 @@ lemma tildeCoord_mul (i j : ℕ) {e : Q5} (he : sig e = (-1) ^ (i + j) * e) :
     have hre := re_eq_zero_of_sig he hij
     rw [if_neg (Nat.not_even_iff_odd.mpr hij), if_neg (Nat.not_even_iff_odd.mpr hj), if_pos hi,
       if_neg (Nat.not_even_iff_odd.mpr hj)]
-    ext <;> simp [sqrt5, hre, QuadraticAlgebra.re_ofNat, QuadraticAlgebra.im_ofNat]
+    ext <;> simp [sqrtd, hre, QuadraticAlgebra.re_ofNat, QuadraticAlgebra.im_ofNat]
   · have hij : Odd (i + j) := hi.add_even hj
     have hre := re_eq_zero_of_sig he hij
     rw [if_neg (Nat.not_even_iff_odd.mpr hij), if_pos hj, if_neg (Nat.not_even_iff_odd.mpr hi), if_pos hj]
-    ext <;> simp [sqrt5, hre, QuadraticAlgebra.re_ofNat, QuadraticAlgebra.im_ofNat]
+    ext <;> simp [sqrtd, hre, QuadraticAlgebra.re_ofNat, QuadraticAlgebra.im_ofNat]
   · have hij : Even (i + j) := hi.add_odd hj
     have him := im_eq_zero_of_sig he hij
     rw [if_pos hij, if_neg (Nat.not_even_iff_odd.mpr hi), if_neg (Nat.not_even_iff_odd.mpr hj)]
-    ext <;> simp [sqrt5, him]
+    ext <;> simp [sqrtd, him]
 
 /-- **Corollary R.** For any ring hom `ι : ℚ(√5) → L` and `x ∈ L`:
 `Δ_h(x) = det(ι A(t^{i+j}) + x · ι B(t^{i+j}))`. -/
-theorem eval₂_Delta (hh : Even h) {L : Type*} [CommRing L] (ι : Q5 →+* L) (x : L) :
-    (Delta h).eval₂ (ι.comp (algebraMap ℚ Q5)) x =
-      (Matrix.of fun i j : Fin h => ι (Afun h (X ^ ((i : ℕ) + j))) + x * ι (Bfun h (X ^ ((i : ℕ) + j)))).det := by
-  set f := ι.comp (algebraMap ℚ Q5) with hf
-  have hf' : ∀ r : ℚ, f r = ι (r : Q5) := fun r => by rw [hf, RingHom.comp_apply, eq_ratCast]
+theorem eval₂_Delta (hh : Even h) {L : Type*} [CommRing L] (ι : (Qd mz) →+* L) (x : L) :
+    (Delta mz h).eval₂ (ι.comp (algebraMap ℚ (Qd mz))) x =
+      (Matrix.of fun i j : Fin h => ι (Afun mz h (X ^ ((i : ℕ) + j))) + x * ι (Bfun mz h (X ^ ((i : ℕ) + j)))).det := by
+  set f := ι.comp (algebraMap ℚ (Qd mz)) with hf
+  have hf' : ∀ r : ℚ, f r = ι (r : (Qd mz)) := fun r => by rw [hf, RingHom.comp_apply, eq_ratCast]
   unfold Delta
   rw [← coe_eval₂RingHom, RingHom.map_det]
-  set Mt : Matrix (Fin h) (Fin h) L := (eval₂RingHom f x).mapMatrix ((X : ℚ[X]) • (Btil h).map C + (Atil h).map C)
+  set Mt : Matrix (Fin h) (Fin h) L := (eval₂RingHom f x).mapMatrix ((X : ℚ[X]) • (Btil mz h).map C + (Atil mz h).map C)
   set M : Matrix (Fin h) (Fin h) L :=
-    Matrix.of fun i j : Fin h => ι (Afun h (X ^ ((i : ℕ) + j))) + x * ι (Bfun h (X ^ ((i : ℕ) + j))) with hM
-  set W : Matrix (Fin h) (Fin h) L := Matrix.diagonal (fun i => ι (wSc i))
-  set W' : Matrix (Fin h) (Fin h) L := Matrix.diagonal (fun i => ι (wScInv i))
+    Matrix.of fun i j : Fin h => ι (Afun mz h (X ^ ((i : ℕ) + j))) + x * ι (Bfun mz h (X ^ ((i : ℕ) + j))) with hM
+  set W : Matrix (Fin h) (Fin h) L := Matrix.diagonal (fun i => ι (wSc mz i))
+  set W' : Matrix (Fin h) (Fin h) L := Matrix.diagonal (fun i => ι (wScInv mz i))
   have hWW' : W.det * W'.det = 1 := by
     rw [← det_mul, diagonal_mul_diagonal]
     simp only [← map_mul, wSc_mul_inv, map_one]
@@ -263,16 +266,16 @@ theorem eval₂_Delta (hh : Even h) {L : Type*} [CommRing L] (ι : Q5 →+* L) (
 
 /-- Corollary R over `ℝ`: `Δ_h(x) = det(emb A + x · emb B)`. -/
 theorem aeval_Delta (hh : Even h) (x : ℝ) :
-    aeval x (Delta h) =
-      (Matrix.of fun i j : Fin h => emb (Afun h (X ^ ((i : ℕ) + j))) + x * emb (Bfun h (X ^ ((i : ℕ) + j)))).det := by
-  rw [aeval_def, ← emb_comp_algebraMap]
+    aeval x (Delta mz h) =
+      (Matrix.of fun i j : Fin h => emb (Afun mz h (X ^ ((i : ℕ) + j))) + x * emb (Bfun mz h (X ^ ((i : ℕ) + j)))).det := by
+  rw [aeval_def, ← emb_comp_algebraMap (mz := mz)]
   exact eval₂_Delta hh emb x
 
 /-- Corollary R over `ℚ(√5)[X]`: `Δ_h = det(A(t^{i+j}) + X B(t^{i+j}))` (so the `K`-valued Hankel determinant is
 rational). -/
 theorem Delta_map (hh : Even h) :
-    (Delta h).map (algebraMap ℚ Q5) =
-      (Matrix.of fun i j : Fin h => C (Afun h (X ^ ((i : ℕ) + j))) + X * C (Bfun h (X ^ ((i : ℕ) + j)))).det :=
+    (Delta mz h).map (algebraMap ℚ (Qd mz)) =
+      (Matrix.of fun i j : Fin h => C (Afun mz h (X ^ ((i : ℕ) + j))) + X * C (Bfun mz h (X ^ ((i : ℕ) + j)))).det :=
   eval₂_Delta hh C X
 
 end Chi2U

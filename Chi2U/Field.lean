@@ -1,109 +1,156 @@
 /-
-# The field ℚ(√5), the unit `z = √5 − 2`, and the real embedding
+# The field `ℚ(√d)`, `d = m² + 1`, the unit `z = √d − m`, and the real embedding
 
-* `Q5 := QuadraticAlgebra ℚ 5 0`: elements `re + im·√5`; a field (`5` is not a square in `ℚ`).
-* `sig`: the Galois conjugation `√5 ↦ −√5` (Mathlib's `star` on `QuadraticAlgebra`), as a ring hom.
-* `zK = √5 − 2`: `z² + 4z = 1`, `z⁻¹ = √5 + 2`, `σz = −z⁻¹`, `1 − z² = 4z`.
-* `emb : Q5 →+* ℝ`, `re + im√5 ↦ re + im·Real.sqrt 5`, with `emb zK = √5 − 2 = zU`.
+Parametrised by a natural number `mz` (the `m` of PROOF_V; named `mz` because `m` is the pole index throughout the
+machine files) with `[Fact (1 ≤ mz)]`. Theorem U is `mz = 2` (`d = 5`, `z = √5 − 2`).
+
+* `Qd mz := QuadraticAlgebra ℚ (mz² + 1) 0`: elements `re + im·√d`; a field (`mz² + 1` is not a square for
+  `mz ≥ 1`: `not_isSquare_d`). `Q5 := Qd 2`.
+* `sig`: the Galois conjugation `√d ↦ −√d` (Mathlib's `star` on `QuadraticAlgebra`), as a ring hom.
+* `zK mz = √d − mz`: `z² + 2mz·z = 1`, `z⁻¹ = √d + mz`, `σz = −z⁻¹`, `1 − z² = 2mz·z`.
+* `emb : Qd mz →+* ℝ`, `re + im√d ↦ re + im·Real.sqrt d`, with `emb (zK mz) = √d − mz = zU mz`.
 -/
 import Mathlib
+
+set_option linter.unusedSectionVars false
 
 namespace Chi2U
 
 open QuadraticAlgebra
 
-lemma not_isSquare_five : ¬ IsSquare (5 : ℚ) := by
-  rintro ⟨r, hr⟩
-  have h5 : Irrational (Real.sqrt 5) := by
-    have : Nat.Prime 5 := by norm_num
-    exact_mod_cast this.irrational_sqrt
-  apply h5
-  refine ⟨|r|, ?_⟩
-  have hr' : ((5 : ℚ) : ℝ) = (r : ℝ) * r := by exact_mod_cast congrArg (fun q : ℚ => (q : ℝ)) hr
-  push_cast at hr' ⊢
-  rw [hr', Real.sqrt_mul_self_eq_abs]
+/-- `mz² + 1` is not a rational square for `mz ≥ 1`. -/
+lemma not_isSquare_d (mz : ℕ) (hm : 1 ≤ mz) : ¬ IsSquare ((mz : ℚ) ^ 2 + 1) := by
+  intro h
+  have h' : IsSquare (((mz ^ 2 + 1 : ℕ)) : ℚ) := by push_cast; exact h
+  rw [Rat.isSquare_natCast_iff] at h'
+  obtain ⟨k, hk⟩ := h'
+  have h1 : mz < k := by
+    by_contra hc
+    push Not at hc
+    have : k * k ≤ mz * mz := Nat.mul_le_mul hc hc
+    nlinarith
+  have h2 : k < mz + 1 := by
+    by_contra hc
+    push Not at hc
+    have : (mz + 1) * (mz + 1) ≤ k * k := Nat.mul_le_mul hc hc
+    nlinarith
+  omega
 
-instance fact_not_isSquare_five : Fact (¬ IsSquare (5 : ℚ)) := ⟨not_isSquare_five⟩
+/-- `d = mz² + 1` (a `def`, so that rewriting with `pow` lemmas never touches the type `Qd mz`). -/
+def dQ (mz : ℕ) : ℚ := (mz : ℚ) ^ 2 + 1
 
-/-- `ℚ(√5)`, as `re + im·√5`. -/
-abbrev Q5 : Type := QuadraticAlgebra ℚ 5 0
+lemma dQ_eq (mz : ℕ) : dQ mz = (mz : ℚ) ^ 2 + 1 := rfl
 
-/-- `√5 ∈ Q5`. -/
-def sqrt5 : Q5 := ⟨0, 1⟩
+lemma dQ_two : dQ 2 = 5 := by norm_num [dQ]
 
-/-- The unit `z = √5 − 2 = φ⁻³`. -/
-def zK : Q5 := ⟨-2, 1⟩
+lemma dQ_pos (mz : ℕ) : 0 < dQ mz := by unfold dQ; positivity
 
-/-- The Galois conjugation `σ : √5 ↦ −√5`. -/
-def sig : Q5 →+* Q5 := starRingEnd Q5
+lemma dQ_ne_zero {mz : ℕ} : dQ mz ≠ 0 := (dQ_pos mz).ne'
 
-@[simp] lemma re_sig (x : Q5) : (sig x).re = x.re := by simp [sig, starRingEnd_apply, re_star]
+instance fact_not_isSquare_d (mz : ℕ) [hm : Fact (1 ≤ mz)] : Fact (¬ IsSquare (dQ mz)) :=
+  ⟨not_isSquare_d mz hm.out⟩
 
-@[simp] lemma im_sig (x : Q5) : (sig x).im = -x.im := by simp [sig, starRingEnd_apply, im_star]
+instance fact_one_le_two : Fact (1 ≤ 2) := ⟨by norm_num⟩
 
-lemma sig_sig (x : Q5) : sig (sig x) = x := by ext <;> simp
+/-- `ℚ(√d)`, `d = mz² + 1`, as `re + im·√d`. -/
+abbrev Qd (mz : ℕ) : Type := QuadraticAlgebra ℚ (dQ mz) 0
 
-lemma sig_ratCast (r : ℚ) : sig (r : Q5) = r := by ext <;> simp
+/-- `ℚ(√5) = Qd 2` (Theorem U). -/
+abbrev Q5 : Type := Qd 2
 
-lemma sig_smul (r : ℚ) (x : Q5) : sig (r • x) = r • sig x := by ext <;> simp
+variable {mz : ℕ} [Fact (1 ≤ mz)]
 
-lemma sqrt5_mul_self : sqrt5 * sqrt5 = 5 := by ext <;> simp [sqrt5]
+/-- `√d ∈ Qd mz`. -/
+def sqrtd (mz : ℕ) : Qd mz := ⟨0, 1⟩
 
-lemma sig_sqrt5 : sig sqrt5 = -sqrt5 := by ext <;> simp [sqrt5]
+/-- The unit `z = √d − mz` (`= φ⁻³` for `mz = 2`). -/
+def zK (mz : ℕ) : Qd mz := ⟨-(mz : ℚ), 1⟩
 
-lemma zK_inv : zK⁻¹ = ⟨2, 1⟩ :=
-  inv_eq_of_mul_eq_one_right (by ext <;> simp [zK] <;> norm_num)
+/-- The Galois conjugation `σ : √d ↦ −√d`. -/
+def sig : Qd mz →+* Qd mz := starRingEnd (Qd mz)
 
-lemma zK_ne_zero : zK ≠ 0 := by
+@[simp] lemma re_sig (x : Qd mz) : (sig x).re = x.re := by simp [sig, starRingEnd_apply, re_star]
+
+@[simp] lemma im_sig (x : Qd mz) : (sig x).im = -x.im := by simp [sig, starRingEnd_apply, im_star]
+
+lemma sig_sig (x : Qd mz) : sig (sig x) = x := by ext <;> simp
+
+lemma sig_ratCast (r : ℚ) : sig (r : Qd mz) = r := by ext <;> simp
+
+lemma sig_smul (r : ℚ) (x : Qd mz) : sig (r • x) = r • sig x := by ext <;> simp
+
+lemma sqrtd_mul_self : sqrtd mz * sqrtd mz = (dQ mz : Qd mz) := by
+  ext <;> simp [sqrtd]
+
+lemma sig_sqrtd : sig (sqrtd mz) = -sqrtd mz := by ext <;> simp [sqrtd]
+
+lemma zK_inv : (zK mz)⁻¹ = ⟨(mz : ℚ), 1⟩ :=
+  inv_eq_of_mul_eq_one_right (by ext <;> simp [zK] <;> (try simp only [dQ_eq]) <;> ring)
+
+lemma zK_ne_zero : zK mz ≠ 0 := by
   intro h
   have := congrArg QuadraticAlgebra.im h
   simp [zK] at this
 
-lemma zK_sq_add : zK ^ 2 + 4 * zK = 1 := by ext <;> simp [zK, sq] <;> norm_num
+lemma natCast_mz_ne_zero : ((mz : ℕ) : Qd mz) ≠ 0 := by
+  intro h
+  have := congrArg QuadraticAlgebra.re h
+  simp only [re_natCast, re_zero, Nat.cast_eq_zero] at this
+  have := (Fact.out : 1 ≤ mz); omega
 
-/-- `1 − z² = 4z`. -/
-lemma one_sub_zK_sq : 1 - zK ^ 2 = 4 * zK := by linear_combination -zK_sq_add
+lemma natCast_mz_eq : ((mz : ℕ) : Qd mz) = ⟨(mz : ℚ), 0⟩ := by ext <;> simp
 
-lemma one_sub_zK_sq_ne_zero : (1 : Q5) - zK ^ 2 ≠ 0 := by
+lemma zK_sq_add : zK mz ^ 2 + 2 * (mz : Qd mz) * zK mz = 1 := by
+  rw [natCast_mz_eq]; ext <;> simp [zK, sq] <;> (try simp only [dQ_eq]) <;> ring
+
+/-- `1 − z² = 2mz·z`. -/
+lemma one_sub_zK_sq : 1 - zK mz ^ 2 = 2 * (mz : Qd mz) * zK mz := by linear_combination -(zK_sq_add (mz := mz))
+
+lemma one_sub_zK_sq_ne_zero : (1 : Qd mz) - zK mz ^ 2 ≠ 0 := by
   rw [one_sub_zK_sq]
-  exact mul_ne_zero (by norm_num) zK_ne_zero
+  exact mul_ne_zero (mul_ne_zero two_ne_zero natCast_mz_ne_zero) zK_ne_zero
 
-lemma sig_zK : sig zK = -zK⁻¹ := by
+lemma sig_zK : sig (zK mz) = -(zK mz)⁻¹ := by
   rw [zK_inv]; ext <;> simp [zK]
 
-/-- The real embedding `re + im√5 ↦ re + im·√5`. -/
-noncomputable def emb : Q5 →+* ℝ where
-  toFun x := x.re + x.im * Real.sqrt 5
+/-- The real embedding `re + im√d ↦ re + im·√d`. -/
+noncomputable def emb : Qd mz →+* ℝ where
+  toFun x := x.re + x.im * Real.sqrt ((mz : ℝ) ^ 2 + 1)
   map_one' := by simp
   map_mul' x y := by
     simp only [re_mul, im_mul]
     push_cast
-    have h5 : Real.sqrt 5 * Real.sqrt 5 = 5 := Real.mul_self_sqrt (by norm_num)
+    simp only [dQ_eq]
+    push_cast
+    have h5 : Real.sqrt ((mz : ℝ) ^ 2 + 1) * Real.sqrt ((mz : ℝ) ^ 2 + 1) = (mz : ℝ) ^ 2 + 1 :=
+      Real.mul_self_sqrt (by positivity)
     linear_combination -(↑x.im * ↑y.im : ℝ) * h5
   map_zero' := by simp
   map_add' x y := by simp only [re_add, im_add]; push_cast; ring
 
-lemma emb_apply (x : Q5) : emb x = x.re + x.im * Real.sqrt 5 := rfl
+lemma emb_apply (x : Qd mz) : emb x = x.re + x.im * Real.sqrt ((mz : ℝ) ^ 2 + 1) := rfl
 
-/-- `z = √5 − 2` as a real number. -/
-noncomputable def zU : ℝ := Real.sqrt 5 - 2
+/-- `z = √(mz² + 1) − mz` as a real number. -/
+noncomputable def zU (mz : ℕ) : ℝ := Real.sqrt ((mz : ℝ) ^ 2 + 1) - mz
 
-lemma emb_zK : emb zK = zU := by simp [emb_apply, zK, zU]; ring
+lemma emb_zK : emb (zK mz) = zU mz := by simp [emb_apply, zK, zU]; ring
 
-lemma zU_pos : 0 < zU := by
+lemma zU_two : zU 2 = Real.sqrt 5 - 2 := by unfold zU; norm_num
+
+lemma zU_pos : 0 < zU mz := by
   unfold zU
-  have : (2 : ℝ) < Real.sqrt 5 := by
-    rw [show (2 : ℝ) = Real.sqrt 4 by rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
-    exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  have : (mz : ℝ) < Real.sqrt ((mz : ℝ) ^ 2 + 1) :=
+    (Real.lt_sqrt (by positivity)).mpr (by linarith)
   linarith
 
-lemma zU_lt_one : zU < 1 := by
+lemma zU_lt_one : zU mz < 1 := by
   unfold zU
-  have : Real.sqrt 5 < 3 := by
-    rw [show (3 : ℝ) = Real.sqrt 9 by rw [show (9 : ℝ) = 3 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
-    exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  have hm : (1 : ℝ) ≤ mz := by exact_mod_cast (Fact.out : 1 ≤ mz)
+  have : Real.sqrt ((mz : ℝ) ^ 2 + 1) < mz + 1 :=
+    (Real.sqrt_lt' (by positivity)).mpr (by nlinarith)
   linarith
 
-lemma emb_comp_algebraMap : emb.comp (algebraMap ℚ Q5) = algebraMap ℚ ℝ := Subsingleton.elim _ _
+lemma emb_comp_algebraMap : (emb (mz := mz)).comp (algebraMap ℚ (Qd mz)) = algebraMap ℚ ℝ :=
+  Subsingleton.elim _ _
 
 end Chi2U

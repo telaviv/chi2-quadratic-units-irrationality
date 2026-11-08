@@ -46,16 +46,16 @@ lemma sum_cPole_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) (F : ℕ → Q5) :
   · intro hh; exact absurd (mem_range.mpr (Nat.lt_succ_of_le hi)) hh
 
 lemma Bfun_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) :
-    Bfun h (fLag h i * fLag h j) = if i = j then -((dPrime h i : Q5) * zK ^ (poleZ h i)) else 0 := by
-  have := sum_cPole_ff j hi (fun m => zK ^ (poleZ h m))
+    Bfun 2 h (fLag h i * fLag h j) = if i = j then -((dPrime h i : Q5) * (zK 2) ^ (poleZ h i)) else 0 := by
+  have := sum_cPole_ff j hi (fun m => (zK 2) ^ (poleZ h m))
   unfold Bfun
   rw [this]
   split_ifs <;> simp
 
 lemma Afun_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) :
-    Afun h (fLag h i * fLag h j) = muPoly ((fLag h i * fLag h j) /ₘ Dpoly h) +
-      if i = j then (dPrime h i : Q5) * zK ^ (poleZ h i) * Psum (poleZ h i) else 0 := by
-  have := sum_cPole_ff j hi (fun m => zK ^ (poleZ h m) * Psum (poleZ h m))
+    Afun 2 h (fLag h i * fLag h j) = muPoly 2 ((fLag h i * fLag h j) /ₘ Dpoly h) +
+      if i = j then (dPrime h i : Q5) * (zK 2) ^ (poleZ h i) * Psum 2 (poleZ h i) else 0 := by
+  have := sum_cPole_ff j hi (fun m => (zK 2) ^ (poleZ h m) * Psum 2 (poleZ h m))
   simp only [← mul_assoc] at this
   unfold Afun
   rw [this]
@@ -78,7 +78,7 @@ lemma castHom_intCast (n : ℤ) : ZMod.castHom (dvd_refl ℓ) (Fl ℓ) (n : ZMod
 
 /-- The polynomial part of `G^f(0)_{ij}` mod `ℓ`. -/
 theorem Cong_mu (hℓ2 : ℓ ≠ 2) {i j : ℕ} (hi : i < 3 * ℓ) (hj : j < 3 * ℓ) :
-    Cong ℓ (muPoly ((fLag (3 * ℓ - 1) i * fLag (3 * ℓ - 1) j) /ₘ Dpoly (3 * ℓ - 1)))
+    Cong ℓ (muPoly 2 ((fLag (3 * ℓ - 1) i * fLag (3 * ℓ - 1) j) /ₘ Dpoly (3 * ℓ - 1)))
       (if i % ℓ = j % ℓ then -(((4 * zb ℓ) ^ ℓ)⁻¹ * zb ℓ ^ (2 * (i % ℓ) + 1)) else 0) := by
   rw [divByMonic_eq_map, muPoly, derivative_map]
   refine Cong_congr (Cong_Lmom hℓ2 _) rfl ?_
@@ -148,7 +148,7 @@ lemma Cong_sum_inv_sq (hℓ2 : ℓ ≠ 2) {u : Q5} {ub : Fl ℓ} (hu : Cong ℓ 
 
 /-- `ℓ² P(x)` mod `ℓ`, `x` even with `|x| < 3ℓ`. -/
 lemma Cong_Psum (hℓ2 : ℓ ≠ 2) {x : ℤ} (hx : Even x) (hx3 : x.natAbs < 3 * ℓ) :
-    Cong ℓ ((ℓ : Q5) ^ 2 * Psum x)
+    Cong ℓ ((ℓ : Q5) ^ 2 * Psum 2 x)
       (if ℓ < x.natAbs then (if x ≤ 0 then zb ℓ ^ ℓ else -(zb ℓ ^ ℓ)⁻¹) else 0) := by
   have h2N : 2 * (x.natAbs / 2) = x.natAbs := by
     have := Int.natAbs_even.mpr hx

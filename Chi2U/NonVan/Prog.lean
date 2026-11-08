@@ -18,9 +18,9 @@ open Polynomial Finset
 
 /-- The shift identity. -/
 lemma Lmom_shift (p : ℚ[X]) (n : ℕ) :
-    Lmom (p.comp (X - C (2 * (n : ℚ)))) =
-      zK ^ (2 * n) * Lmom p +
-        ∑ j ∈ range n, zK ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * n) : ℚ) : Q5) := by
+    Lmom 2 (p.comp (X - C (2 * (n : ℚ)))) =
+      (zK 2) ^ (2 * n) * Lmom 2 p +
+        ∑ j ∈ range n, (zK 2) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * n) : ℚ) : Q5) := by
   induction n with
   | zero => simp
   | succ n ih =>
@@ -31,13 +31,13 @@ lemma Lmom_shift (p : ℚ[X]) (n : ℕ) :
       congr 2
       push_cast; ring
     rw [hc]
-    have h1 := Lmom_rec1 (p.comp (X - C (2 * (n : ℚ))))
+    have h1 := Lmom_rec1 (mz := 2) (p.comp (X - C (2 * (n : ℚ))))
     rw [ih, eval_comp] at h1
     simp only [eval_sub, eval_X, eval_C] at h1
     rw [sum_range_succ']
-    have hsum : ∑ j ∈ range n, zK ^ (2 * (j + 1) + 1) *
+    have hsum : ∑ j ∈ range n, (zK 2) ^ (2 * (j + 1) + 1) *
         ((p.eval (2 * ((j + 1 : ℕ) : ℚ) + 1 - 2 * ((n + 1 : ℕ) : ℚ)) : ℚ) : Q5) =
-        zK ^ 2 * ∑ j ∈ range n, zK ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * n) : ℚ) : Q5) := by
+        (zK 2) ^ 2 * ∑ j ∈ range n, (zK 2) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * n) : ℚ) : Q5) := by
       rw [mul_sum]
       refine sum_congr rfl (fun j _ => ?_)
       have : (2 * ((j + 1 : ℕ) : ℚ) + 1 - 2 * ((n + 1 : ℕ) : ℚ)) = 2 * (j : ℚ) + 1 - 2 * n := by
@@ -55,16 +55,16 @@ lemma eval_map_int (P : ℤ[X]) (a : ℤ) : (P.map (Int.castRingHom ℚ)).eval (
 
 /-- **Progression formula** mod `ℓ`. -/
 theorem Cong_Lmom (hℓ2 : ℓ ≠ 2) (P : ℤ[X]) :
-    Cong ℓ (Lmom (P.map (Int.castRingHom ℚ)))
+    Cong ℓ (Lmom 2 (P.map (Int.castRingHom ℚ)))
       (((4 * zb ℓ) ^ ℓ)⁻¹ * ∑ j ∈ range ℓ, zb ℓ ^ (2 * j + 1) * ((P.eval (2 * (j : ℤ) + 1) : ℤ) : Fl ℓ)) := by
   set p := P.map (Int.castRingHom ℚ) with hp
   have hcast : ∀ k : ℕ, (2 * (k : ℚ) + 1) = ((2 * (k : ℤ) + 1 : ℤ) : ℚ) := fun k => by push_cast; ring
-  have hint : vGe ℓ 0 (Lmom p) := vGe_Lmom_odd hℓ2 p 0 (fun k => by
+  have hint : vGe ℓ 0 (Lmom 2 p) := vGe_Lmom_odd_two hℓ2 p 0 (fun k => by
     rw [hcast, hp, eval_map_int]; simpa using padicNorm.of_int (p := ℓ) _)
-  obtain ⟨L, hL⟩ : ∃ L, Cong ℓ (Lmom p) L := ⟨_, Cong_red ⟨_, pInt_of_vGe hint⟩⟩
-  have hsh : vGe ℓ 1 (Lmom (p.comp (X - C (2 * (ℓ : ℚ)))) - Lmom p) := by
+  obtain ⟨L, hL⟩ : ∃ L, Cong ℓ (Lmom 2 p) L := ⟨_, Cong_red ⟨_, pInt_of_vGe hint⟩⟩
+  have hsh : vGe ℓ 1 (Lmom 2 (p.comp (X - C (2 * (ℓ : ℚ)))) - Lmom 2 p) := by
     rw [← map_sub]
-    refine vGe_Lmom_odd hℓ2 _ 1 (fun k => ?_)
+    refine vGe_Lmom_odd_two hℓ2 _ 1 (fun k => ?_)
     rw [eval_sub, eval_comp, eval_sub, eval_X, eval_C, hcast,
       show ((2 * (k : ℤ) + 1 : ℤ) : ℚ) - 2 * (ℓ : ℚ) = ((2 * (k : ℤ) + 1 - 2 * ℓ : ℤ) : ℚ) by push_cast; ring,
       hp, eval_map_int, eval_map_int, ← Int.cast_sub]
@@ -73,9 +73,9 @@ theorem Cong_Lmom (hℓ2 : ℓ ≠ 2) (P : ℤ[X]) :
       refine dvd_trans ⟨-2, ?_⟩ this
       push_cast; ring
     exact padicNorm.dvd_iff_norm_le.mp hd
-  have hL' : Cong ℓ (Lmom (p.comp (X - C (2 * (ℓ : ℚ))))) L := Cong_of_vGe_sub hL hsh
+  have hL' : Cong ℓ (Lmom 2 (p.comp (X - C (2 * (ℓ : ℚ))))) L := Cong_of_vGe_sub hL hsh
   rw [Lmom_shift] at hL'
-  have hS : Cong ℓ (∑ j ∈ range ℓ, zK ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * ℓ) : ℚ) : Q5))
+  have hS : Cong ℓ (∑ j ∈ range ℓ, (zK 2) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * ℓ) : ℚ) : Q5))
       (∑ j ∈ range ℓ, zb ℓ ^ (2 * j + 1) * ((P.eval (2 * (j : ℤ) + 1) : ℤ) : Fl ℓ)) := by
     refine Cong_sum _ _ _ (fun j _ => Cong_mul (Cong_pow Cong_zK _) ?_)
     rw [show (2 * (j : ℚ) + 1 - 2 * ℓ) = ((2 * (j : ℤ) + 1 - 2 * ℓ : ℤ) : ℚ) by push_cast; ring, hp,

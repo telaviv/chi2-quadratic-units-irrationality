@@ -34,7 +34,7 @@ lemma mem_Rl {x : Q5} : x ∈ Rl ℓ ↔ pInt ℓ x := Iff.rfl
 def Il : Ideal (Rl ℓ) := Ideal.span {(ℓ : Rl ℓ)}
 
 lemma vGe_ell : vGe ℓ 1 (ℓ : Q5) := by
-  have := vGe_ratCast (p := ℓ) (ℓ : ℚ)
+  have := vGe_ratCast (mz := 2) (p := ℓ) (ℓ : ℚ)
   rw [padicValRat.self hℓ.out.one_lt] at this
   simpa using this
 
@@ -58,7 +58,7 @@ lemma mem_Il_iff {x : Rl ℓ} : x ∈ Il ℓ ↔ vGe ℓ 1 (x : Q5) := by
 
 lemma not_vGe_one : ¬ vGe ℓ 1 (1 : Q5) := by
   intro h
-  have := padicNorm_le_of_vGe (p := ℓ) (r := 1) (by simpa using h)
+  have := padicNorm_le_of_vGe (mz := 2) (p := ℓ) (r := 1) (by simpa using h)
   rw [padicNorm.one] at this
   have h1 : (1 : ℚ) < ℓ := by exact_mod_cast hℓ.out.one_lt
   have : (ℓ : ℚ) ^ (-1 : ℤ) < 1 := by
@@ -208,25 +208,25 @@ lemma padicNorm_eq_one_of_Cong {r : ℚ} {a : Fl ℓ} (h : Cong ℓ (r : Q5) a) 
 
 variable (ℓ) in
 /-- `z` reduced. -/
-noncomputable def zb : Fl ℓ := red ℓ ⟨zK, pInt_zK⟩
+noncomputable def zb : Fl ℓ := red ℓ ⟨(zK 2), pInt_zK⟩
 
-lemma Cong_zK : Cong ℓ zK (zb ℓ) := ⟨pInt_zK, rfl⟩
+lemma Cong_zK : Cong ℓ (zK 2) (zb ℓ) := ⟨pInt_zK, rfl⟩
 
-lemma Cong_zK_inv : Cong ℓ zK⁻¹ (zb ℓ)⁻¹ := by
+lemma Cong_zK_inv : Cong ℓ (zK 2)⁻¹ (zb ℓ)⁻¹ := by
   have h : zb ℓ ≠ 0 := by
     intro h0
-    have := Cong_mul (Cong_zK (ℓ := ℓ)) (Cong_red ⟨zK⁻¹, pInt_zK_inv⟩)
+    have := Cong_mul (Cong_zK (ℓ := ℓ)) (Cong_red ⟨(zK 2)⁻¹, pInt_zK_inv⟩)
     rw [mul_inv_cancel₀ zK_ne_zero, h0, zero_mul] at this
     exact one_ne_zero (Cong_one.unique this)
   exact Cong_inv Cong_zK h pInt_zK_inv
 
 lemma zb_ne_zero : zb ℓ ≠ 0 := by
   intro h0
-  have := Cong_mul (Cong_zK (ℓ := ℓ)) (Cong_red ⟨zK⁻¹, pInt_zK_inv⟩)
+  have := Cong_mul (Cong_zK (ℓ := ℓ)) (Cong_red ⟨(zK 2)⁻¹, pInt_zK_inv⟩)
   rw [mul_inv_cancel₀ zK_ne_zero, h0, zero_mul] at this
   exact one_ne_zero (Cong_one.unique this)
 
-lemma Cong_zK_zpow (k : ℤ) : Cong ℓ (zK ^ k) (zb ℓ ^ k) := by
+lemma Cong_zK_zpow (k : ℤ) : Cong ℓ ((zK 2) ^ k) (zb ℓ ^ k) := by
   rcases Int.eq_nat_or_neg k with ⟨n, rfl | rfl⟩
   · simpa using Cong_pow (Cong_zK (ℓ := ℓ)) n
   · rw [zpow_neg, zpow_neg, zpow_natCast, zpow_natCast, ← inv_pow, ← inv_pow]
@@ -236,7 +236,7 @@ lemma Cong_zK_zpow (k : ℤ) : Cong ℓ (zK ^ k) (zb ℓ ^ k) := by
 lemma one_sub_zb_sq : 1 - zb ℓ ^ 2 = 4 * zb ℓ := by
   have h1 := Cong_sub (Cong_one (ℓ := ℓ)) (Cong_pow (Cong_zK (ℓ := ℓ)) 2)
   have h2 := Cong_mul (Cong_ofNat (ℓ := ℓ) 4) (Cong_zK (ℓ := ℓ))
-  rw [one_sub_zK_sq] at h1
+  rw [one_sub_zK_sq, show (2 : Q5) * ((2 : ℕ) : Q5) = 4 by norm_num] at h1
   exact h1.unique h2
 
 lemma natCast_ne_zero_Fl {n : ℕ} (hn : ¬ ℓ ∣ n) : (n : Fl ℓ) ≠ 0 := by

@@ -1,45 +1,48 @@
 /-
 # The main theorem, conditional on the three inputs (PROOF_U §7)
 
-`MachineBoundsU` packages, for **even** `h`, the inputs about `Δ_h = Delta h`:
+`MachineBounds mz` packages, for **even** `h`, the inputs about `Δ_h = Delta mz h` (any `mz ≥ 1`; Theorem U is
+`mz = 2`, `MachineBoundsU`):
 * `den`: positive rationals with `den h • Δ_h ∈ ℤ[X]` and `log den h ≤ (α + ε) h²` eventually
   (odd primes: Lemmas 8′, 8A′, 9′ and Theorem A′; `p = 2`: Lemma 10′);
 * `analytic`: `|Δ_h(T)| ≤ exp((β + ε) h²)` eventually (Theorem B′ with a dual certificate);
 * `margin`: `α + β < 0`;
 * `nonvan`: for each `a/b`, `Δ_h(a/b) ≠ 0` for infinitely many even `h` (Lemma P′, along `h = 3ℓ − 1`).
-`irrational_of_boundsU` applies Lemma E (`Criterion.lean`, verbatim from lean_chi2) to `P h := Δ_{2⌊h/2⌋}`.
+`irrational_of_bounds` applies Lemma E (`Criterion.lean`, verbatim from lean_chi2) to `P h := Δ_{2⌊h/2⌋}`.
 -/
 import Chi2U.PoleExpansion
 import Chi2U.Criterion
 
 namespace Chi2U
 
+variable {mz : ℕ} [Fact (1 ≤ mz)]
+
 open Polynomial Filter Topology
 
-/-- The inputs to the endgame for the `χ₂(√5 − 2)` machine (only even `h` are used). -/
-structure MachineBoundsU where
+/-- The inputs to the endgame for the `χ₂(√(mz²+1) − mz)` machine (only even `h` are used). -/
+structure MachineBounds (mz : ℕ) [Fact (1 ≤ mz)] where
   den : ℕ → ℚ
   den_pos : ∀ h, 0 < den h
-  den_int : ∀ h k, ∃ z : ℤ, den h * (Delta h).coeff k = z
+  den_int : ∀ h k, ∃ z : ℤ, den h * (Delta mz h).coeff k = z
   α : ℝ
   β : ℝ
   margin : α + β < 0
   arith : ∀ ε > 0, ∀ᶠ h : ℕ in atTop, Even h → Real.log (den h) ≤ (α + ε) * (h : ℝ) ^ 2
   analytic : ∀ ε > 0, ∀ᶠ h : ℕ in atTop, Even h →
-    |aeval TU (Delta h)| ≤ Real.exp ((β + ε) * (h : ℝ) ^ 2)
-  nonvan : ∀ (a : ℤ) (b : ℕ), 0 < b → ∃ᶠ h : ℕ in atTop, Even h ∧ (Delta h).eval ((a : ℚ) / b) ≠ 0
+    |aeval (TU mz) (Delta mz h)| ≤ Real.exp ((β + ε) * (h : ℝ) ^ 2)
+  nonvan : ∀ (a : ℤ) (b : ℕ), 0 < b → ∃ᶠ h : ℕ in atTop, Even h ∧ (Delta mz h).eval ((a : ℚ) / b) ≠ 0
 
 lemma tendsto_evenPart : Tendsto (fun h : ℕ => 2 * (h / 2)) atTop atTop :=
   tendsto_atTop_atTop.mpr fun b => ⟨b + 1, fun h hh => by omega⟩
 
 /-- **Main theorem, conditional form.** -/
-theorem irrational_of_boundsU (H : MachineBoundsU) : Irrational TU := by
+theorem irrational_of_bounds (H : MachineBounds mz) : Irrational (TU mz) := by
   set s : ℝ := H.α + H.β with hs
   have hs0 : s < 0 := H.margin
   set c : ℝ := -s / 8 with hc_def
   have hc : 0 < c := by rw [hc_def]; linarith
   have hε : 0 < -s / 4 := by linarith
-  refine irrational_of_poly_approx TU (fun h => Delta (2 * (h / 2)))
+  refine irrational_of_poly_approx (TU mz) (fun h => Delta mz (2 * (h / 2)))
     (fun h => (natDegree_Delta_le _).trans (by omega)) (fun h => H.den (2 * (h / 2)))
     (fun h => H.den_pos _) (fun h k => H.den_int _ k) c hc ?_ ?_
   · have hA := tendsto_evenPart.eventually (H.arith (-s / 4) hε)
@@ -55,7 +58,7 @@ theorem irrational_of_boundsU (H : MachineBoundsU) : Irrational TU := by
       exact_mod_cast this
     have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
     have hh0 : (0 : ℝ) ≤ h := Nat.cast_nonneg h
-    calc ((H.den n : ℚ) : ℝ) * |aeval TU (Delta n)|
+    calc ((H.den n : ℚ) : ℝ) * |aeval (TU mz) (Delta mz n)|
         ≤ Real.exp ((H.α + -s / 4) * (n : ℝ) ^ 2) * Real.exp ((H.β + -s / 4) * (n : ℝ) ^ 2) := by
           gcongr
           rw [← Real.exp_log hd]
@@ -72,5 +75,10 @@ theorem irrational_of_boundsU (H : MachineBoundsU) : Irrational TU := by
     obtain ⟨j, rfl⟩ := hev
     have : 2 * ((j + j) / 2) = j + j := by omega
     simpa [this] using hne
+
+/-- Theorem U's instance (`mz = 2`). -/
+abbrev MachineBoundsU : Type := MachineBounds 2
+
+theorem irrational_of_boundsU (H : MachineBoundsU) : Irrational (TU 2) := irrational_of_bounds H
 
 end Chi2U

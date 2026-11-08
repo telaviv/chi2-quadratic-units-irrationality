@@ -30,12 +30,12 @@ variable {ℓ : ℕ}
 
 /-- Step 2, off-diagonal: `B(f_i f_j) = 0` for `i ≠ j` (`f_i f_j / D` is a polynomial). -/
 theorem Bfun_fLag_offdiag {h i j : ℕ} (hh : Even h) (hi : i ≤ h) (hj : j ≤ h) (hij : i ≠ j) :
-    Bfun h (fLag h i * fLag h j) = 0 := by
+    Bfun 2 h (fLag h i * fLag h j) = 0 := by
   rw [LP.Bfun_ff j hi, if_neg hij]
 
 /-- Step 2, diagonal: `B(f_i²) = −D′(x_i) z^{x_i}`. -/
 theorem Bfun_fLag_diag {h i : ℕ} (hh : Even h) (hi : i ≤ h) :
-    Bfun h (fLag h i * fLag h i) = -((dPrime h i : ℚ) : Q5) * zK ^ (poleZ h i) := by
+    Bfun 2 h (fLag h i * fLag h i) = -((dPrime h i : ℚ) : Q5) * (zK 2) ^ (poleZ h i) := by
   rw [LP.Bfun_ff i hi, if_pos rfl, neg_mul]
 
 lemma decomp_lt {i : ℕ} (hℓ0 : 0 < ℓ) (hi : i < 3 * ℓ) : i % ℓ < ℓ ∧ i / ℓ < 3 ∧ i % ℓ + i / ℓ * ℓ = i :=
@@ -43,8 +43,8 @@ lemma decomp_lt {i : ℕ} (hℓ0 : 0 < ℓ) (hi : i < 3 * ℓ) : i % ℓ < ℓ �
 
 /-- Step 3: `G^f(0)` is `ℓ`-integral and vanishes mod `𝔩` between different classes. -/
 theorem blockDiag [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) {i j : ℕ} (hi : i < 3 * ℓ) (hj : j < 3 * ℓ) :
-    vGe ℓ 0 (Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) i * fLag (3 * ℓ - 1) j)) ∧
-      (i % ℓ ≠ j % ℓ → LP.Cong ℓ (Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) i * fLag (3 * ℓ - 1) j)) 0) := by
+    vGe ℓ 0 (Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) i * fLag (3 * ℓ - 1) j)) ∧
+      (i % ℓ ≠ j % ℓ → LP.Cong ℓ (Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) i * fLag (3 * ℓ - 1) j)) 0) := by
   have hℓ2 : ℓ ≠ 2 := by omega
   obtain ⟨hγ, hr, hi'⟩ := decomp_lt (by omega) hi
   obtain ⟨hγ', hs, hj'⟩ := decomp_lt (by omega) hj
@@ -55,7 +55,7 @@ theorem blockDiag [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) {i j : ℕ} (hi : i < 3 * 
 
 /-- Step 4: the class blocks in closed form, `G^f(0)_{γ+rℓ, γ+sℓ} ≡ e_γ (c + [r = s] d_r)` mod `𝔩`. -/
 theorem blockClosed [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) {γ r s : ℕ} (hγ : γ < ℓ) (hr : r < 3) (hs : s < 3) :
-    LP.Cong ℓ (Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) (γ + r * ℓ) * fLag (3 * ℓ - 1) (γ + s * ℓ)))
+    LP.Cong ℓ (Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) (γ + r * ℓ) * fLag (3 * ℓ - 1) (γ + s * ℓ)))
       (LP.eB ℓ γ * (LP.cB ℓ + if r = s then LP.dB ℓ r else 0)) := by
   have h := LP.Cong_Afun (by omega) hγ hγ hr hs
   rwa [if_pos rfl] at h
@@ -90,7 +90,7 @@ lemma dv_eq_dB (r : Fin 3) : dv (8 * zb ℓ ^ ℓ) (-8 * zb ℓ ^ (3 * ℓ)) r =
   fin_cases r <;> simp [dv, dB]
 
 lemma Cong_G0 (hℓ2 : ℓ ≠ 2) (a b : Fin (3 * ℓ - 1 + 1)) :
-    Cong ℓ (Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) (Bmat ℓ (sig3 ℓ a) (sig3 ℓ b)) := by
+    Cong ℓ (Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) (Bmat ℓ (sig3 ℓ a) (sig3 ℓ b)) := by
   have hl := hℓ.out.pos
   have ha : (a : ℕ) < 3 * ℓ := by have := a.isLt; omega
   have hb : (b : ℕ) < 3 * ℓ := by have := b.isLt; omega
@@ -133,7 +133,7 @@ lemma sum_adj_Bmat_ne_zero (hℓ2 : ℓ ≠ 2) : ∑ p, ∑ q, (Bmat ℓ).adjuga
 
 /-- `G^f(0)` as a matrix over `ℤ_(ℓ)[φ]`. -/
 noncomputable def G0R (hℓ2 : ℓ ≠ 2) : Matrix (Fin (3 * ℓ - 1 + 1)) (Fin (3 * ℓ - 1 + 1)) (Rl ℓ) :=
-  fun a b => ⟨Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b), (Cong_G0 hℓ2 a b).mem⟩
+  fun a b => ⟨Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b), (Cong_G0 hℓ2 a b).mem⟩
 
 lemma red_sum_adj_G0R (hℓ2 : ℓ ≠ 2) : red ℓ (∑ a, ∑ b, (G0R hℓ2).adjugate a b) ≠ 0 := by
   have hmap : (red ℓ).mapMatrix (G0R hℓ2) = (Bmat ℓ).submatrix (sig3 ℓ) (sig3 ℓ) := by
@@ -152,17 +152,17 @@ lemma red_sum_adj_G0R (hℓ2 : ℓ ≠ 2) : red ℓ (∑ a, ∑ b, (G0R hℓ2).a
 omit hℓ in
 /-- Lemma B at `X = 0`. -/
 lemma lemmaB_zero (hh : Even (3 * ℓ - 1)) :
-    (((Delta (3 * ℓ - 1)).coeff 0 : ℚ) : Q5) * ∏ i ∈ range (3 * ℓ - 1 + 1), ((dPrime (3 * ℓ - 1) i : ℚ) : Q5) =
+    (((Delta 2 (3 * ℓ - 1)).coeff 0 : ℚ) : Q5) * ∏ i ∈ range (3 * ℓ - 1 + 1), ((dPrime (3 * ℓ - 1) i : ℚ) : Q5) =
       (-1) ^ ((3 * ℓ - 1 + 1) * (3 * ℓ - 1) / 2) *
         ∑ a, ∑ b, (Matrix.of fun a b : Fin (3 * ℓ - 1 + 1) =>
-          Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)).adjugate a b := by
+          Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)).adjugate a b := by
   have h := congrArg (Polynomial.evalRingHom (0 : Q5)) (lemmaB hh)
   simp only [map_mul, map_sum, coe_evalRingHom, eval_C] at h
   rw [eval_map, eval₂_at_zero, eq_ratCast] at h
   rw [h]
   congr 1
-  have hG : (evalRingHom (0 : Q5)).mapMatrix (GramF (3 * ℓ - 1)) = Matrix.of fun a b : Fin (3 * ℓ - 1 + 1) =>
-      Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b) := by
+  have hG : (evalRingHom (0 : Q5)).mapMatrix (GramF 2 (3 * ℓ - 1)) = Matrix.of fun a b : Fin (3 * ℓ - 1 + 1) =>
+      Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b) := by
     refine Matrix.ext fun a b => ?_
     simp [GramF, LamX]
   rw [← hG]
@@ -194,22 +194,22 @@ end LP
 
 /-- Step 5: `v_ℓ(c₀) = −2K`. -/
 theorem lemmaP_coeff_zero [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) :
-    padicValRat ℓ ((Delta (3 * ℓ - 1)).coeff 0) = -(2 * (3 * ℓ) : ℤ) ∧ (Delta (3 * ℓ - 1)).coeff 0 ≠ 0 := by
+    padicValRat ℓ ((Delta 2 (3 * ℓ - 1)).coeff 0) = -(2 * (3 * ℓ) : ℤ) ∧ (Delta 2 (3 * ℓ - 1)).coeff 0 ≠ 0 := by
   have hℓ2 : ℓ ≠ 2 := by omega
   have hh : Even (3 * ℓ - 1) := by
     obtain ⟨k, hk⟩ := (Fact.out : ℓ.Prime).odd_of_ne_two hℓ2
     exact ⟨3 * k + 1, by omega⟩
-  set c0 := (Delta (3 * ℓ - 1)).coeff 0
+  set c0 := (Delta 2 (3 * ℓ - 1)).coeff 0
   set P := ∏ i ∈ range (3 * ℓ - 1 + 1), dPrime (3 * ℓ - 1) i with hP
   have hP0 : P ≠ 0 := prod_ne_zero_iff.mpr (fun i _ => LB.dPrime_ne_zero _ _)
   have hB := LP.lemmaB_zero hh
   set s : Q5 := (-1) ^ ((3 * ℓ - 1 + 1) * (3 * ℓ - 1) / 2)
   -- the bordered determinant `w` reduces to a nonzero element
   have hG : (Matrix.of fun a b : Fin (3 * ℓ - 1 + 1) =>
-      Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) = (LP.Rl ℓ).subtype.mapMatrix (LP.G0R hℓ2) := by
+      Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) = (LP.Rl ℓ).subtype.mapMatrix (LP.G0R hℓ2) := by
     exact Matrix.ext fun a b => rfl
   have hw : ∑ a, ∑ b, (Matrix.of fun a b : Fin (3 * ℓ - 1 + 1) =>
-      Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)).adjugate a b =
+      Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)).adjugate a b =
       (((∑ a, ∑ b, (LP.G0R hℓ2).adjugate a b : LP.Rl ℓ)) : Q5) := by
     rw [hG]
     have e : ∀ a b, ((LP.Rl ℓ).subtype.mapMatrix (LP.G0R hℓ2)).adjugate a b =
@@ -273,32 +273,32 @@ def RX : Subring Q5[X] where
 
 /-- The substituted Gram entries `Λ_{X/ℓ²}(f_i f_j)` have `ℓ`-integral coefficients. -/
 lemma GramF_comp_mem (hℓ2 : ℓ ≠ 2) (a b : Fin (3 * ℓ - 1 + 1)) :
-    (GramF (3 * ℓ - 1) a b).comp (C ((tl ℓ : ℚ) : Q5) * X) ∈ RX ℓ := by
+    (GramF 2 (3 * ℓ - 1) a b).comp (C ((tl ℓ : ℚ) : Q5) * X) ∈ RX ℓ := by
   have hA := (Cong_G0 hℓ2 a b).mem
   have hl := hℓ.out.pos
   have ha : (a : ℕ) ≤ 3 * ℓ - 1 := Nat.lt_succ_iff.mp a.isLt
-  have hB : vGe ℓ 0 (((tl ℓ : ℚ) : Q5) * Bfun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) := by
+  have hB : vGe ℓ 0 (((tl ℓ : ℚ) : Q5) * Bfun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) := by
     rw [Bfun_ff _ ha]
     split_ifs with hab
     · obtain ⟨hγ, hr, ha'⟩ := decomp_lt hl (show (a : ℕ) < 3 * ℓ by omega)
       have hv := padicValRat_dPrime hℓ2 hγ hr
       rw [ha'] at hv
-      have h1 := vGe_ratCast (p := ℓ) (dPrime (3 * ℓ - 1) a)
+      have h1 := vGe_ratCast (mz := 2) (p := ℓ) (dPrime (3 * ℓ - 1) a)
       rw [hv] at h1
-      have h2 := vGe_ratCast (p := ℓ) (tl ℓ)
+      have h2 := vGe_ratCast (mz := 2) (p := ℓ) (tl ℓ)
       rw [padicValRat_tl] at h2
       have h3 := vGe_mul (vGe_mul h2 h1) (vGe_zK_zpow (p := ℓ) (poleZ (3 * ℓ - 1) a))
-      have e : ((tl ℓ : ℚ) : Q5) * -((dPrime (3 * ℓ - 1) a : Q5) * zK ^ poleZ (3 * ℓ - 1) a) =
-          -(((tl ℓ : ℚ) : Q5) * ((dPrime (3 * ℓ - 1) a : ℚ) : Q5) * zK ^ poleZ (3 * ℓ - 1) a) := by
+      have e : ((tl ℓ : ℚ) : Q5) * -((dPrime (3 * ℓ - 1) a : Q5) * (zK 2) ^ poleZ (3 * ℓ - 1) a) =
+          -(((tl ℓ : ℚ) : Q5) * ((dPrime (3 * ℓ - 1) a : ℚ) : Q5) * (zK 2) ^ poleZ (3 * ℓ - 1) a) := by
         ring
       rw [e]
       refine vGe_neg ?_
       convert h3 using 2
       norm_num
     · rw [mul_zero]; exact vGe_zero 0
-  have e : (GramF (3 * ℓ - 1) a b).comp (C ((tl ℓ : ℚ) : Q5) * X) =
-      C (Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) +
-        X * C (((tl ℓ : ℚ) : Q5) * Bfun (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) := by
+  have e : (GramF 2 (3 * ℓ - 1) a b).comp (C ((tl ℓ : ℚ) : Q5) * X) =
+      C (Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) +
+        X * C (((tl ℓ : ℚ) : Q5) * Bfun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) a * fLag (3 * ℓ - 1) b)) := by
     simp only [GramF, LamX, add_comp, C_comp, mul_comp, X_comp, C_mul]
     ring
   rw [e]
@@ -313,7 +313,7 @@ end LP
 
 /-- Step 6: `v_ℓ(c_k) ≥ −2K + 2k`. -/
 theorem lemmaP_coeff_le [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (k : ℕ) :
-    padicNorm ℓ ((Delta (3 * ℓ - 1)).coeff k) ≤ (ℓ : ℚ) ^ ((2 * (3 * ℓ) : ℤ) - 2 * k) := by
+    padicNorm ℓ ((Delta 2 (3 * ℓ - 1)).coeff k) ≤ (ℓ : ℚ) ^ ((2 * (3 * ℓ) : ℤ) - 2 * k) := by
   have hℓ2 : ℓ ≠ 2 := by omega
   have hh : Even (3 * ℓ - 1) := by
     obtain ⟨k, hk⟩ := (Fact.out : ℓ.Prime).odd_of_ne_two hℓ2
@@ -324,19 +324,19 @@ theorem lemmaP_coeff_le [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (k : ℕ) :
   simp only [map_mul, map_sum] at h
   -- right side has integral coefficients
   have hR : φ (C ((-1 : Q5) ^ ((3 * ℓ - 1 + 1) * (3 * ℓ - 1) / 2))) *
-      ∑ a, ∑ b, φ ((GramF (3 * ℓ - 1)).adjugate a b) ∈ LP.RX ℓ := by
+      ∑ a, ∑ b, φ ((GramF 2 (3 * ℓ - 1)).adjugate a b) ∈ LP.RX ℓ := by
     refine (LP.RX ℓ).mul_mem ?_ ?_
     · show (C _).comp _ ∈ LP.RX ℓ
       rw [C_comp]
       exact vGeX_C (vGe_of_pInt (pInt_pow (pInt_neg pInt_one) _))
-    · have hmat : φ.mapMatrix (GramF (3 * ℓ - 1)) = (LP.RX ℓ).subtype.mapMatrix
-          (fun a b => ⟨φ (GramF (3 * ℓ - 1) a b), (show φ (GramF (3 * ℓ - 1) a b) ∈ LP.RX ℓ from
+    · have hmat : φ.mapMatrix (GramF 2 (3 * ℓ - 1)) = (LP.RX ℓ).subtype.mapMatrix
+          (fun a b => ⟨φ (GramF 2 (3 * ℓ - 1) a b), (show φ (GramF 2 (3 * ℓ - 1) a b) ∈ LP.RX ℓ from
             LP.GramF_comp_mem hℓ2 a b)⟩) := by
         exact Matrix.ext fun a b => rfl
-      have e : ∀ a b, φ ((GramF (3 * ℓ - 1)).adjugate a b) = (φ.mapMatrix (GramF (3 * ℓ - 1))).adjugate a b := by
+      have e : ∀ a b, φ ((GramF 2 (3 * ℓ - 1)).adjugate a b) = (φ.mapMatrix (GramF 2 (3 * ℓ - 1))).adjugate a b := by
         intro a b; rw [← RingHom.map_adjugate]; rfl
       set M : Matrix (Fin (3 * ℓ - 1 + 1)) (Fin (3 * ℓ - 1 + 1)) (LP.RX ℓ) :=
-        fun a b => ⟨φ (GramF (3 * ℓ - 1) a b), (show φ (GramF (3 * ℓ - 1) a b) ∈ LP.RX ℓ from
+        fun a b => ⟨φ (GramF 2 (3 * ℓ - 1) a b), (show φ (GramF 2 (3 * ℓ - 1) a b) ∈ LP.RX ℓ from
             LP.GramF_comp_mem hℓ2 a b)⟩ with hM
       have e2 : ∀ a b, ((LP.RX ℓ).subtype.mapMatrix M).adjugate a b = (LP.RX ℓ).subtype (M.adjugate a b) := by
         intro a b; rw [← RingHom.map_adjugate]; rfl
@@ -345,10 +345,10 @@ theorem lemmaP_coeff_le [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (k : ℕ) :
       exact (M.adjugate a b).2
   rw [← h] at hR
   have hk := hR k
-  have e : (φ ((Delta (3 * ℓ - 1)).map (algebraMap ℚ Q5)) *
+  have e : (φ ((Delta 2 (3 * ℓ - 1)).map (algebraMap ℚ Q5)) *
       φ (C (∏ i ∈ range (3 * ℓ - 1 + 1), ((dPrime (3 * ℓ - 1) i : ℚ) : Q5)))).coeff k =
-      ((((Delta (3 * ℓ - 1)).coeff k * t ^ k * ∏ i ∈ range (3 * ℓ - 1 + 1), dPrime (3 * ℓ - 1) i : ℚ)) : Q5) := by
-    show (((Delta (3 * ℓ - 1)).map (algebraMap ℚ Q5)).comp (C (t : Q5) * X) *
+      ((((Delta 2 (3 * ℓ - 1)).coeff k * t ^ k * ∏ i ∈ range (3 * ℓ - 1 + 1), dPrime (3 * ℓ - 1) i : ℚ)) : Q5) := by
+    show (((Delta 2 (3 * ℓ - 1)).map (algebraMap ℚ Q5)).comp (C (t : Q5) * X) *
       (C (∏ i ∈ range (3 * ℓ - 1 + 1), ((dPrime (3 * ℓ - 1) i : ℚ) : Q5))).comp (C (t : Q5) * X)).coeff k = _
     rw [C_comp, coeff_mul_C, comp_C_mul_X_coeff, coeff_map, eq_ratCast]
     push_cast; ring
@@ -360,7 +360,7 @@ theorem lemmaP_coeff_le [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (k : ℕ) :
   rw [padicNorm.eq_zpow_of_nonzero hP0, LP.padicValRat_prod_dPrime hℓ2] at hn
   have hl0 : (0 : ℚ) < ℓ := by exact_mod_cast (Fact.out : ℓ.Prime).pos
   rw [ht, LP.padicNorm_tl] at hn
-  set A := padicNorm ℓ ((Delta (3 * ℓ - 1)).coeff k)
+  set A := padicNorm ℓ ((Delta 2 (3 * ℓ - 1)).coeff k)
   have hpos : (0 : ℚ) < ((ℓ : ℚ) ^ (2 : ℤ)) ^ k * (ℓ : ℚ) ^ (-(2 * (3 * (ℓ : ℤ)))) := by positivity
   have key : A ≤ 1 / (((ℓ : ℚ) ^ (2 : ℤ)) ^ k * (ℓ : ℚ) ^ (-(2 * (3 * (ℓ : ℤ))))) := by
     rw [le_div_iff₀ hpos, ← mul_assoc]; exact hn
@@ -370,12 +370,12 @@ theorem lemmaP_coeff_le [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (k : ℕ) :
 
 /-- **Lemma P′.** `Δ_{3ℓ−1}(a/b) ≠ 0` whenever `ℓ² ∤ b`. -/
 theorem lemmaP [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (a : ℤ) {b : ℕ} (hb : 0 < b) (hb2 : ¬ ℓ ^ 2 ∣ b) :
-    (Delta (3 * ℓ - 1)).eval ((a : ℚ) / b) ≠ 0 := by
+    (Delta 2 (3 * ℓ - 1)).eval ((a : ℚ) / b) ≠ 0 := by
   have hl : (1 : ℚ) < ℓ := by exact_mod_cast (Fact.out : ℓ.Prime).one_lt
   have hl0 : (0 : ℚ) < ℓ := by linarith
   set K2 : ℤ := 2 * (3 * ℓ) with hK2
   obtain ⟨hv0, hc0⟩ := lemmaP_coeff_zero hℓ
-  have hn0 : padicNorm ℓ ((Delta (3 * ℓ - 1)).coeff 0) = (ℓ : ℚ) ^ K2 := by
+  have hn0 : padicNorm ℓ ((Delta 2 (3 * ℓ - 1)).coeff 0) = (ℓ : ℚ) ^ K2 := by
     rw [padicNorm.eq_zpow_of_nonzero hc0, hv0, neg_neg]
   -- `|a/b|_ℓ ≤ ℓ`
   have hab : padicNorm ℓ ((a : ℚ) / b) ≤ ℓ := by
@@ -395,34 +395,34 @@ theorem lemmaP [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (a : ℤ) {b : ℕ} (hb : 0 <
       _ = (ℓ : ℚ) * (ℓ : ℚ) ^ (-1 : ℤ) := by rw [zpow_neg_one, mul_inv_cancel₀ hl0.ne']
       _ ≤ (ℓ : ℚ) * padicNorm ℓ (b : ℚ) := by gcongr
   rw [eval_eq_sum_range, sum_range_succ']
-  have htail : padicNorm ℓ (∑ k ∈ range (Delta (3 * ℓ - 1)).natDegree,
-      (Delta (3 * ℓ - 1)).coeff (k + 1) * ((a : ℚ) / b) ^ (k + 1)) < (ℓ : ℚ) ^ K2 := by
+  have htail : padicNorm ℓ (∑ k ∈ range (Delta 2 (3 * ℓ - 1)).natDegree,
+      (Delta 2 (3 * ℓ - 1)).coeff (k + 1) * ((a : ℚ) / b) ^ (k + 1)) < (ℓ : ℚ) ^ K2 := by
     refine padicNorm.sum_lt' (fun k _ => ?_) (zpow_pos hl0 _)
     rw [padicNorm.mul, LP.padicNorm_pow']
     have h1 := lemmaP_coeff_le hℓ (k + 1)
     have h2 : padicNorm ℓ ((a : ℚ) / b) ^ (k + 1) ≤ (ℓ : ℚ) ^ (k + 1) :=
       pow_le_pow_left₀ (padicNorm.nonneg _) hab _
-    calc padicNorm ℓ ((Delta (3 * ℓ - 1)).coeff (k + 1)) * padicNorm ℓ ((a : ℚ) / b) ^ (k + 1)
+    calc padicNorm ℓ ((Delta 2 (3 * ℓ - 1)).coeff (k + 1)) * padicNorm ℓ ((a : ℚ) / b) ^ (k + 1)
         ≤ (ℓ : ℚ) ^ (K2 - 2 * ((k + 1 : ℕ) : ℤ)) * (ℓ : ℚ) ^ (k + 1) :=
           mul_le_mul h1 h2 (pow_nonneg (padicNorm.nonneg _) _) (zpow_pos hl0 _).le
       _ = (ℓ : ℚ) ^ (K2 - ((k + 1 : ℕ) : ℤ)) := by
           rw [← zpow_natCast, ← zpow_add₀ hl0.ne']; congr 1; ring
       _ < (ℓ : ℚ) ^ K2 := zpow_lt_zpow_right₀ hl (by omega)
-  have hne : padicNorm ℓ (∑ k ∈ range (Delta (3 * ℓ - 1)).natDegree,
-      (Delta (3 * ℓ - 1)).coeff (k + 1) * ((a : ℚ) / b) ^ (k + 1)) ≠
-      padicNorm ℓ ((Delta (3 * ℓ - 1)).coeff 0 * ((a : ℚ) / b) ^ 0) := by
+  have hne : padicNorm ℓ (∑ k ∈ range (Delta 2 (3 * ℓ - 1)).natDegree,
+      (Delta 2 (3 * ℓ - 1)).coeff (k + 1) * ((a : ℚ) / b) ^ (k + 1)) ≠
+      padicNorm ℓ ((Delta 2 (3 * ℓ - 1)).coeff 0 * ((a : ℚ) / b) ^ 0) := by
     rw [pow_zero, mul_one, hn0]; exact htail.ne
   intro h0
   have hmax := padicNorm.add_eq_max_of_ne hne
   rw [h0, padicNorm.zero, pow_zero, mul_one, hn0] at hmax
   have : (0 : ℚ) < (ℓ : ℚ) ^ K2 := zpow_pos hl0 _
-  have := le_max_right (padicNorm ℓ (∑ k ∈ range (Delta (3 * ℓ - 1)).natDegree,
-      (Delta (3 * ℓ - 1)).coeff (k + 1) * ((a : ℚ) / b) ^ (k + 1))) ((ℓ : ℚ) ^ K2)
+  have := le_max_right (padicNorm ℓ (∑ k ∈ range (Delta 2 (3 * ℓ - 1)).natDegree,
+      (Delta 2 (3 * ℓ - 1)).coeff (k + 1) * ((a : ℚ) / b) ^ (k + 1))) ((ℓ : ℚ) ^ K2)
   linarith
 
 /-- Infinitely many even `h` with `Δ_h(a/b) ≠ 0`. -/
 theorem nonvan_frequently (a : ℤ) (b : ℕ) (hb : 0 < b) :
-    ∃ᶠ h : ℕ in atTop, Even h ∧ (Delta h).eval ((a : ℚ) / b) ≠ 0 := by
+    ∃ᶠ h : ℕ in atTop, Even h ∧ (Delta 2 h).eval ((a : ℚ) / b) ≠ 0 := by
   rw [frequently_atTop]
   intro N
   obtain ⟨ℓ, hℓN, hℓp⟩ := Nat.exists_infinite_primes (N + b + 7)

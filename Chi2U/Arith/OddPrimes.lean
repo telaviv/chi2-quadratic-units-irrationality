@@ -1,7 +1,8 @@
 /-
 # Odd primes: Lemma 8′ (per-level bound) and Lemma 9′ (plateau bound) (PROOF_U §3.1–§3.5)
 
-For an odd prime `p` (including `p = 5`: `z`, `y = z²`, `1 − y = 4z` are `p`-units) and even `h`:
+For an odd prime `p ∤ mz` (including ramified `p ∣ mz² + 1`, e.g. `p = 5` for `mz = 2`: `z`, `y = z²`, `1 − y = 2mz·z`
+are `p`-units) and even `h`:
 * **Lemma 8′** (atom expansion, Laplace + Cauchy–Binet on `H = 𝒫 + Vᵀ diag(γ) V`):
   `n_p ≤ Σ_{e ≥ 1, p^e < K} A_K(p^e)`;
 * **row claim** of Lemma 9′: `v_p(G^f_{ij}) ≥ N(i) − 2 lev*(p)`, `N(i) = v_p(D′(x_i))`;
@@ -25,6 +26,8 @@ import Chi2U.Arith.VGe
 import Chi2U.Arith.Lemma9Levels
 
 namespace Chi2U
+
+variable {mz : ℕ} [Fact (1 ≤ mz)]
 
 open Polynomial Finset
 
@@ -91,9 +94,9 @@ lemma cPole_ff {h : ℕ} (i j : ℕ) {m : ℕ} (hm : m ≤ h) :
     · rw [if_pos rfl, if_neg h2, if_neg (fun hh => h2 hh.2), mul_zero, zero_div]
   · rw [if_neg h1, zero_mul, zero_div, if_neg (fun hh => h1 hh.1)]
 
-lemma sum_cPole_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) (F : ℕ → Q5) :
-    ∑ m ∈ range (h + 1), (cPole h (fLag h i * fLag h j) m : Q5) * F m =
-      if i = j then (dPrime h i : Q5) * F i else 0 := by
+lemma sum_cPole_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) (F : ℕ → (Qd mz)) :
+    ∑ m ∈ range (h + 1), (cPole h (fLag h i * fLag h j) m : (Qd mz)) * F m =
+      if i = j then (dPrime h i : (Qd mz)) * F i else 0 := by
   rw [sum_eq_single i]
   · rw [cPole_ff i j hi]
     by_cases hij : i = j
@@ -105,16 +108,16 @@ lemma sum_cPole_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) (F : ℕ → Q5) :
   · intro hh; exact absurd (mem_range.mpr (Nat.lt_succ_of_le hi)) hh
 
 lemma Bfun_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) :
-    Bfun h (fLag h i * fLag h j) = if i = j then -((dPrime h i : Q5) * zK ^ (poleZ h i)) else 0 := by
-  have := sum_cPole_ff j hi (fun m => zK ^ (poleZ h m))
+    Bfun mz h (fLag h i * fLag h j) = if i = j then -((dPrime h i : (Qd mz)) * (zK mz) ^ (poleZ h i)) else 0 := by
+  have := sum_cPole_ff j hi (fun m => (zK mz) ^ (poleZ h m))
   unfold Bfun
   rw [this]
   split_ifs <;> simp
 
 lemma Afun_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) :
-    Afun h (fLag h i * fLag h j) = muPoly ((fLag h i * fLag h j) /ₘ Dpoly h) +
-      if i = j then (dPrime h i : Q5) * zK ^ (poleZ h i) * Psum (poleZ h i) else 0 := by
-  have := sum_cPole_ff j hi (fun m => zK ^ (poleZ h m) * Psum (poleZ h m))
+    Afun mz h (fLag h i * fLag h j) = muPoly mz ((fLag h i * fLag h j) /ₘ Dpoly h) +
+      if i = j then (dPrime h i : (Qd mz)) * (zK mz) ^ (poleZ h i) * Psum mz (poleZ h i) else 0 := by
+  have := sum_cPole_ff j hi (fun m => (zK mz) ^ (poleZ h m) * Psum mz (poleZ h m))
   simp only [← mul_assoc] at this
   unfold Afun
   rw [this]
@@ -123,9 +126,9 @@ lemma Afun_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) :
 
 variable [hp : Fact p.Prime]
 
-lemma vGeX_zero' (n : ℤ) : vGeX p n (0 : Q5[X]) := fun k => by rw [coeff_zero]; exact vGe_zero n
+lemma vGeX_zero' (n : ℤ) : vGeX p n (0 : (Qd mz)[X]) := fun k => by rw [coeff_zero]; exact vGe_zero n
 
-lemma vGeX_mono' {n m : ℤ} (hmn : m ≤ n) {F : Q5[X]} (hF : vGeX p n F) : vGeX p m F :=
+lemma vGeX_mono' {n m : ℤ} (hmn : m ≤ n) {F : (Qd mz)[X]} (hF : vGeX p n F) : vGeX p m F :=
   fun k => vGe_mono hmn (hF k)
 
 lemma natAbs_poleZ_le (hh : Even h) {i : ℕ} (hi : i ≤ h) : (poleZ h i).natAbs ≤ h := by
@@ -136,7 +139,7 @@ lemma natAbs_poleZ_le (hh : Even h) {i : ℕ} (hi : i ≤ h) : (poleZ h i).natAb
   omega
 
 /-- `v_p(P(x)) ≥ −2 lev*(p)` for `|x| ≤ h`. -/
-lemma vGe_Psum {x : ℤ} (hx : x.natAbs ≤ h) : vGe p (-(2 * (levU h p : ℤ))) (Psum x) := by
+lemma vGe_Psum {x : ℤ} (hx : x.natAbs ≤ h) : vGe p (-(2 * (levU h p : ℤ))) (Psum mz x) := by
   have hterm : ∀ k ∈ range (x.natAbs / 2),
       padicNorm p ((1 : ℚ) / ((2 * (k : ℚ) + 1) * (2 * k + 1))) ≤ (p : ℚ) ^ (-(-(2 * (levU h p : ℤ)))) := by
     intro k hk
@@ -149,13 +152,13 @@ lemma vGe_Psum {x : ℤ} (hx : x.natAbs ≤ h) : vGe p (-(2 * (levU h p : ℤ)))
   unfold Psum
   split_ifs
   · refine vGe_sum _ _ (fun k hk => ?_)
-    rw [show zK ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : Q5) ^ 2 = zK ^ ((2 * k + 1 : ℕ) : ℤ) *
-        (((1 : ℚ) / ((2 * (k : ℚ) + 1) * (2 * k + 1)) : ℚ) : Q5) by rw [zpow_natCast]; push_cast; ring]
-    simpa using vGe_mul (vGe_zK_zpow (p := p) _) (vGe_ratCast_of_padicNorm (hterm k hk))
+    rw [show (zK mz) ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2 = (zK mz) ^ ((2 * k + 1 : ℕ) : ℤ) *
+        (((1 : ℚ) / ((2 * (k : ℚ) + 1) * (2 * k + 1)) : ℚ) : (Qd mz)) by rw [zpow_natCast]; push_cast; ring]
+    simpa using vGe_mul (vGe_zK_zpow (mz := mz) (p := p) _) (vGe_ratCast_of_padicNorm (hterm k hk))
   · refine vGe_neg (vGe_sum _ _ (fun k hk => ?_))
-    rw [show (zK ^ (2 * k + 1))⁻¹ / ((2 * k + 1 : ℕ) : Q5) ^ 2 = zK ^ (-((2 * k + 1 : ℕ) : ℤ)) *
-        (((1 : ℚ) / ((2 * (k : ℚ) + 1) * (2 * k + 1)) : ℚ) : Q5) by rw [zpow_neg, zpow_natCast]; push_cast; ring]
-    simpa using vGe_mul (vGe_zK_zpow (p := p) _) (vGe_ratCast_of_padicNorm (hterm k hk))
+    rw [show ((zK mz) ^ (2 * k + 1))⁻¹ / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2 = (zK mz) ^ (-((2 * k + 1 : ℕ) : ℤ)) *
+        (((1 : ℚ) / ((2 * (k : ℚ) + 1) * (2 * k + 1)) : ℚ) : (Qd mz)) by rw [zpow_neg, zpow_natCast]; push_cast; ring]
+    simpa using vGe_mul (vGe_zK_zpow (mz := mz) (p := p) _) (vGe_ratCast_of_padicNorm (hterm k hk))
 
 lemma zpow_bound {i : ℕ} :
     (p : ℚ) ^ (-(padicValRat p (dPrime h i) - 2 * (levU h p : ℤ))) =
@@ -207,16 +210,16 @@ end L9
 open L9
 
 /-- **Row claim** of Lemma 9′ (both the `A` and the `B` part of `G^f_{ij}`). -/
-theorem rowClaim [Fact p.Prime] (hp : p ≠ 2) (hh : Even h) {i j : ℕ} (hi : i ≤ h) (hj : j ≤ h) :
-    vGe p (padicValRat p (dPrime h i) - 2 * levU h p) (Afun h (fLag h i * fLag h j)) ∧
-      vGe p (padicValRat p (dPrime h i) - 2 * levU h p) (Bfun h (fLag h i * fLag h j)) := by
-  have hmu : vGe p (padicValRat p (dPrime h i) - 2 * levU h p) (muPoly ((fLag h i * fLag h j) /ₘ Dpoly h)) := by
-    refine vGe_Lmom_odd hp _ _ (fun k => ?_)
+theorem rowClaim [Fact p.Prime] (hp : p ≠ 2) (hpm : ¬ p ∣ mz) (hh : Even h) {i j : ℕ} (hi : i ≤ h) (hj : j ≤ h) :
+    vGe p (padicValRat p (dPrime h i) - 2 * levU h p) (Afun mz h (fLag h i * fLag h j)) ∧
+      vGe p (padicValRat p (dPrime h i) - 2 * levU h p) (Bfun mz h (fLag h i * fLag h j)) := by
+  have hmu : vGe p (padicValRat p (dPrime h i) - 2 * levU h p) (muPoly mz ((fLag h i * fLag h j) /ₘ Dpoly h)) := by
+    refine vGe_Lmom_odd (not_dvd_two_mul hp hpm) _ _ (fun k => ?_)
     rw [zpow_bound]
     by_cases hij : i = j
     · subst hij; rw [divByMonic_diag hi]; exact deriv_DD_le hp hi k
     · rw [divByMonic_offdiag hi hj hij]; exact deriv_Fpoly_le hp hi j k
-  have hD : vGe p (padicValRat p (dPrime h i)) ((dPrime h i : Q5) * zK ^ poleZ h i) := by
+  have hD : vGe p (padicValRat p (dPrime h i)) ((dPrime h i : (Qd mz)) * (zK mz) ^ poleZ h i) := by
     simpa using vGe_mul (vGe_ratCast (p := p) (dPrime h i)) (vGe_zK_zpow (p := p) (poleZ h i))
   constructor
   · rw [Afun_ff j hi]
@@ -232,22 +235,22 @@ theorem rowClaim [Fact p.Prime] (hp : p ≠ 2) (hh : Even h) {i j : ℕ} (hi : i
     · exact vGe_zero _
 
 /-- **Lemma 9′** (plateau bound). -/
-theorem lemma9 [Fact p.Prime] (hp : p ≠ 2) (hh : Even h) (k : ℕ) :
-    padicNorm p ((Delta h).coeff k) ≤ (p : ℚ) ^ (2 * h * levU h p + padicValNat p h.factorial) := by
+theorem lemma9 [Fact p.Prime] (hp : p ≠ 2) (hpm : ¬ p ∣ mz) (hh : Even h) (k : ℕ) :
+    padicNorm p ((Delta mz h).coeff k) ≤ (p : ℚ) ^ (2 * h * levU h p + padicValNat p h.factorial) := by
   classical
   have hN : ∀ i ≤ h, padicValRat p (dPrime h i) ≤ (padicValNat p h.factorial : ℤ) := fun i hi => by
     rw [padicValRat_dPrime hp hi]; exact_mod_cast Vexp_le_factorial i hi
-  have hG : ∀ i j : Fin (h + 1), vGeX p (padicValRat p (dPrime h i) - 2 * levU h p) (GramF h i j) :=
+  have hG : ∀ i j : Fin (h + 1), vGeX p (padicValRat p (dPrime h i) - 2 * levU h p) (GramF mz h i j) :=
     fun i j => by
-      have hrc := rowClaim hp hh (Nat.lt_succ_iff.mp i.isLt) (Nat.lt_succ_iff.mp j.isLt)
+      have hrc := rowClaim hp hpm hh (Nat.lt_succ_iff.mp i.isLt) (Nat.lt_succ_iff.mp j.isLt)
       exact vGeX_add (vGeX_C hrc.1) (vGeX_X_mul (vGeX_C hrc.2))
   set S : ℤ := ∑ i : Fin (h + 1), padicValRat p (dPrime h i) with hS
   set L : ℤ := (levU h p : ℤ) with hL
   set V : ℤ := (padicValNat p h.factorial : ℤ) with hV
-  have hadj : ∀ a b : Fin (h + 1), vGeX p (S - 2 * h * L - V) ((GramF h).adjugate a b) := by
+  have hadj : ∀ a b : Fin (h + 1), vGeX p (S - 2 * h * L - V) ((GramF mz h).adjugate a b) := by
     intro a b
     rw [Matrix.adjugate_apply]
-    have hdet := vGeX_det (p := p) ((GramF h).updateRow b (Pi.single a 1))
+    have hdet := vGeX_det (p := p) ((GramF mz h).updateRow b (Pi.single a 1))
       (fun i => if i = b then 0 else padicValRat p (dPrime h i) - 2 * L) (fun i j => by
         by_cases hib : i = b
         · subst hib
@@ -267,25 +270,25 @@ theorem lemma9 [Fact p.Prime] (hp : p ≠ 2) (hh : Even h) (k : ℕ) :
     have := hN b (Nat.lt_succ_iff.mp b.isLt)
     push_cast
     linarith
-  have hsum : vGeX p (S - 2 * h * L - V) (∑ a, ∑ b, (GramF h).adjugate a b) :=
+  have hsum : vGeX p (S - 2 * h * L - V) (∑ a, ∑ b, (GramF mz h).adjugate a b) :=
     vGeX_sum _ _ (fun a _ => vGeX_sum _ _ (fun b _ => hadj a b))
-  have hsgn : vGeX p 0 (C ((-1 : Q5) ^ ((h + 1) * h / 2))) :=
+  have hsgn : vGeX p 0 (C ((-1 : (Qd mz)) ^ ((h + 1) * h / 2))) :=
     vGeX_C (vGe_of_pInt (pInt_pow (pInt_neg pInt_one) _))
   set P : ℚ := ∏ i ∈ range (h + 1), dPrime h i with hP
   have hP0 : P ≠ 0 := prod_ne_zero_iff.mpr (fun i _ => LB.dPrime_ne_zero h i)
-  have hLB : vGeX p (S - 2 * h * L - V) ((Delta h).map (algebraMap ℚ Q5) * C ((P : ℚ) : Q5)) := by
-    have e : ((P : ℚ) : Q5) = ∏ i ∈ range (h + 1), ((dPrime h i : ℚ) : Q5) := by rw [hP, Rat.cast_prod]
+  have hLB : vGeX p (S - 2 * h * L - V) ((Delta mz h).map (algebraMap ℚ (Qd mz)) * C ((P : ℚ) : (Qd mz))) := by
+    have e : ((P : ℚ) : (Qd mz)) = ∏ i ∈ range (h + 1), ((dPrime h i : ℚ) : (Qd mz)) := by rw [hP, Rat.cast_prod]
     rw [e, lemmaB hh]
     have := vGeX_mul hsgn hsum
     rwa [zero_add] at this
   have hPv : padicValRat p P⁻¹ = -S := by
     rw [padicValRat.inv, hP, padicValRat_prod' _ _ (fun i _ => LB.dPrime_ne_zero h i), hS,
       Fin.sum_univ_eq_sum_range (fun i => padicValRat p (dPrime h i))]
-  have hinv : vGeX p (-S) (C ((P⁻¹ : ℚ) : Q5)) := vGeX_C (by rw [← hPv]; exact vGe_ratCast _)
-  have hΔ : vGeX p (S - 2 * h * L - V + -S) ((Delta h).map (algebraMap ℚ Q5)) := by
+  have hinv : vGeX p (-S) (C ((P⁻¹ : ℚ) : (Qd mz))) := vGeX_C (by rw [← hPv]; exact vGe_ratCast _)
+  have hΔ : vGeX p (S - 2 * h * L - V + -S) ((Delta mz h).map (algebraMap ℚ (Qd mz))) := by
     have := vGeX_mul hLB hinv
-    have e : (Delta h).map (algebraMap ℚ Q5) * C ((P : ℚ) : Q5) * C ((P⁻¹ : ℚ) : Q5) =
-        (Delta h).map (algebraMap ℚ Q5) := by
+    have e : (Delta mz h).map (algebraMap ℚ (Qd mz)) * C ((P : ℚ) : (Qd mz)) * C ((P⁻¹ : ℚ) : (Qd mz)) =
+        (Delta mz h).map (algebraMap ℚ (Qd mz)) := by
       rw [mul_assoc, ← C_mul, ← Rat.cast_mul, mul_inv_cancel₀ hP0, Rat.cast_one, C_1, mul_one]
     rwa [e] at this
   have hcoef := padicNorm_coeff_of_vGeX_map hΔ k

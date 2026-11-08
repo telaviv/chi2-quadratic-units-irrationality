@@ -129,8 +129,8 @@ lemma natAbs_poleZ (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3
 
 /-- The pole part of a diagonal entry mod `ℓ`. -/
 lemma Cong_pole (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) :
-    Cong ℓ ((dPrime (3 * ℓ - 1) (γ + r * ℓ) : Q5) * zK ^ (poleZ (3 * ℓ - 1) (γ + r * ℓ)) *
-      Psum (poleZ (3 * ℓ - 1) (γ + r * ℓ))) (eB ℓ γ * dB ℓ r) := by
+    Cong ℓ ((dPrime (3 * ℓ - 1) (γ + r * ℓ) : Q5) * (zK 2) ^ (poleZ (3 * ℓ - 1) (γ + r * ℓ)) *
+      Psum 2 (poleZ (3 * ℓ - 1) (γ + r * ℓ))) (eB ℓ γ * dB ℓ r) := by
   set x := poleZ (3 * ℓ - 1) (γ + r * ℓ) with hx
   have hxe : x = 2 * (γ : ℤ) + 1 + (2 * r - 3) * ℓ := natAbs_poleZ hℓ2 hγ hr
   have hev : Even x := by
@@ -140,8 +140,8 @@ lemma Cong_pole (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) :
     interval_cases r <;> omega
   have hP := Cong_Psum hℓ2 hev hx3
   have hk : ((kap r : ℚ) : Q5) = ((kap r : ℤ) : Q5) := by push_cast; rfl
-  have e : (dPrime (3 * ℓ - 1) (γ + r * ℓ) : Q5) * zK ^ x * Psum x =
-      ((kap r : ℤ) : Q5) * ((Wz ℓ γ (γ + r * ℓ) : ℚ) : Q5) * zK ^ x * ((ℓ : Q5) ^ 2 * Psum x) := by
+  have e : (dPrime (3 * ℓ - 1) (γ + r * ℓ) : Q5) * (zK 2) ^ x * Psum 2 x =
+      ((kap r : ℤ) : Q5) * ((Wz ℓ γ (γ + r * ℓ) : ℚ) : Q5) * (zK 2) ^ x * ((ℓ : Q5) ^ 2 * Psum 2 x) := by
     rw [dPrime_split hγ hr, Rat.cast_mul, Rat.cast_mul, hk]; push_cast; ring
   rw [e]
   have hC := Cong_mul (Cong_mul (Cong_mul (Cong_intCast (ℓ := ℓ) (kap r)) (Cong_Wz (r := r) hℓ2 hγ))
@@ -164,7 +164,7 @@ lemma Cong_pole (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) :
 
 /-- **Steps 3–4**: `G^f(0)` mod `ℓ` in block form. -/
 theorem Cong_Afun (hℓ2 : ℓ ≠ 2) {γ γ' r s : ℕ} (hγ : γ < ℓ) (hγ' : γ' < ℓ) (hr : r < 3) (hs : s < 3) :
-    Cong ℓ (Afun (3 * ℓ - 1) (fLag (3 * ℓ - 1) (γ + r * ℓ) * fLag (3 * ℓ - 1) (γ' + s * ℓ)))
+    Cong ℓ (Afun 2 (3 * ℓ - 1) (fLag (3 * ℓ - 1) (γ + r * ℓ) * fLag (3 * ℓ - 1) (γ' + s * ℓ)))
       (if γ = γ' then eB ℓ γ * (cB ℓ + if r = s then dB ℓ r else 0) else 0) := by
   have hi := lt_three_mul hγ hr
   have hj := lt_three_mul hγ' hs

@@ -17,6 +17,8 @@ import Chi2U.Machine
 
 namespace Chi2U
 
+variable {mz : ℕ} [Fact (1 ≤ mz)]
+
 open Finset Real Polynomial
 
 /-! ### More calculus of `ψ` -/
@@ -365,38 +367,39 @@ theorem abs_deriv_invD_le' (J s : ℕ) :
 
 /-! ### §5.1: monotonicity of the external field -/
 
-lemma zU_lt_quarter : zU < 1 / 4 := by
+lemma zU_lt_quarter (hm : 2 ≤ mz) : (zU mz) < 1 / 4 := by
   unfold zU
-  have : Real.sqrt 5 < 9 / 4 := by
-    rw [Real.sqrt_lt' (by norm_num)]; norm_num
+  have hm' : (2 : ℝ) ≤ mz := by exact_mod_cast hm
+  have : Real.sqrt ((mz : ℝ) ^ 2 + 1) < mz + 1 / 4 := by
+    rw [Real.sqrt_lt' (by positivity)]; nlinarith
   linarith
 
 /-- `v(x) = x log z − (ψ(x+1) − ψ(x−1))/2` is strictly decreasing on `[−1/2, ∞)`. -/
-theorem v_strictAntiOn :
-    StrictAntiOn (fun x : ℝ => x * Real.log zU - (psiF (x + 1) - psiF (x - 1)) / 2) (Set.Ici (-1 / 2)) := by
-  set v : ℝ → ℝ := fun x => x * Real.log zU - (psiF (x + 1) - psiF (x - 1)) / 2 with hv
-  have hz0 := zU_pos
-  have hz4 := zU_lt_quarter
+theorem v_strictAntiOn (hm : 2 ≤ mz) :
+    StrictAntiOn (fun x : ℝ => x * Real.log (zU mz) - (psiF (x + 1) - psiF (x - 1)) / 2) (Set.Ici (-1 / 2)) := by
+  set v : ℝ → ℝ := fun x => x * Real.log (zU mz) - (psiF (x + 1) - psiF (x - 1)) / 2 with hv
+  have hz0 := zU_pos (mz := mz)
+  have hz4 := zU_lt_quarter hm
   have hcont : Continuous v := (continuous_id.mul continuous_const).sub
     (((continuous_psiF.comp (continuous_id.add continuous_const)).sub
       (continuous_psiF.comp (continuous_id.sub continuous_const))).div_const 2)
   -- the derivative away from `±1`
   have hder : ∀ x : ℝ, -1 / 2 < x → x ≠ 1 →
-      HasDerivAt v (Real.log zU - (Real.log (x + 1) - Real.log (x - 1)) / 2) x := by
+      HasDerivAt v (Real.log (zU mz) - (Real.log (x + 1) - Real.log (x - 1)) / 2) x := by
     intro x hx h1
     have a : HasDerivAt (fun x : ℝ => psiF (x + 1)) (Real.log (x + 1)) x :=
       (hasDerivAt_psiF (by intro e; linarith)).comp_add_const x 1
     have b : HasDerivAt (fun x : ℝ => psiF (x - 1)) (Real.log (x - 1)) x :=
       (hasDerivAt_psiF (by intro e; apply h1; linarith)).comp_sub_const x 1
-    have c : HasDerivAt (fun x : ℝ => x * Real.log zU) (1 * Real.log zU) x :=
+    have c : HasDerivAt (fun x : ℝ => x * Real.log (zU mz)) (1 * Real.log (zU mz)) x :=
       (hasDerivAt_id x).mul_const _
     convert c.sub ((a.sub b).div_const 2) using 1; ring
-  have hneg : ∀ x : ℝ, -1 / 2 < x → x ≠ 1 → Real.log zU - (Real.log (x + 1) - Real.log (x - 1)) / 2 < 0 := by
+  have hneg : ∀ x : ℝ, -1 / 2 < x → x ≠ 1 → Real.log (zU mz) - (Real.log (x + 1) - Real.log (x - 1)) / 2 < 0 := by
     intro x hx h1
     have hx1 : 0 < x + 1 := by linarith
     have hx2 : 0 < |x - 1| := abs_pos.mpr (sub_ne_zero.mpr h1)
-    have key : zU ^ 2 * |x - 1| < x + 1 := by
-      have hz2 : zU ^ 2 ≤ 1 / 16 := by nlinarith
+    have key : (zU mz) ^ 2 * |x - 1| < x + 1 := by
+      have hz2 : (zU mz) ^ 2 ≤ 1 / 16 := by nlinarith
       rcases le_total x 1 with h | h
       · rw [abs_of_nonpos (by linarith)]
         nlinarith [mul_le_mul_of_nonneg_right hz2 (show (0 : ℝ) ≤ -(x - 1) by linarith)]

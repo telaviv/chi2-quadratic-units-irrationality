@@ -21,9 +21,9 @@ noncomputable def aAnch (h i : ℕ) : ℚ[X] := ∏ l ∈ range i, (X - C (xiPol
 noncomputable def bAnch (h j : ℕ) : ℚ[X] := ∏ l ∈ range j, (X - C (xiPole h (h - l)))
 
 /-- `A`-part of `G_{ij} = Λ̃_X(a_i b_j) = 2^{K+1} Λ_X((a_i b_j)(t/2))`. -/
-noncomputable def GA (h i j : ℕ) : Q5 := 2 ^ (h + 2) * Afun h ((aAnch h i * bAnch h j).comp (C (1 / 2) * X))
+noncomputable def GA (h i j : ℕ) : Q5 := 2 ^ (h + 2) * Afun 2 h ((aAnch h i * bAnch h j).comp (C (1 / 2) * X))
 
 /-- `B`-part of `G_{ij}`. -/
-noncomputable def GB (h i j : ℕ) : Q5 := 2 ^ (h + 2) * Bfun h ((aAnch h i * bAnch h j).comp (C (1 / 2) * X))
+noncomputable def GB (h i j : ℕ) : Q5 := 2 ^ (h + 2) * Bfun 2 h ((aAnch h i * bAnch h j).comp (C (1 / 2) * X))
 
 end Chi2U
