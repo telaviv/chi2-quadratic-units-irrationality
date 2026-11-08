@@ -8,6 +8,13 @@
 \usepackage{hyperref}
 
 % ---------------------------------------------------------------------------
+% Revision of 2026-11-07: the main theorem is now Theorem V (chi_2(sqrt(m^2+1) - m), m >= 2, m not in
+% {3,5,7,9,15}); Theorem U (m = 2, the golden-ratio form) is Corollary 1.2. Source of the new material:
+% schanuel/four_exp/strong4/pilot_V/PROOF_V.md (after its gate referee REFEREE_V and change log). The U-only version
+% is kept in old_U_only/.
+% ---------------------------------------------------------------------------
+
+% ---------------------------------------------------------------------------
 % Theorem environments
 % ---------------------------------------------------------------------------
 \newtheorem{theorem}{Theorem}[section]
@@ -34,6 +41,8 @@
 \newcommand{\cF}{\mathcal{F}}
 \newcommand{\cM}{\mathcal{M}}
 \newcommand{\cP}{\mathcal{P}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cO}{\mathcal{O}}
 \newcommand{\fp}{\mathfrak{p}}
 \newcommand{\fl}{\mathfrak{l}}
 \newcommand{\fP}{\mathfrak{P}}
@@ -47,36 +56,46 @@
 \newcommand{\cross}{\operatorname{cross}}
 \newcommand{\Vand}{\operatorname{Vand}}
 \newcommand{\artanh}{\operatorname{artanh}}
+\newcommand{\ccell}{c_{\mathrm{cell}}}
 \newcommand{\lean}[1]{{\def\_{\textunderscore\allowbreak}\texttt{#1}}}
 
 \begin{document}
 
-\title{\texorpdfstring{$\pi^2-18\log^2\varphi$ is irrational}{pi^2 - 18 log^2 phi is irrational}}
+% Title: the owner's final choice (2026-11-07). Theorem V is the headline (the title's m >= 16 is a clean subrange of
+% {m >= 2} minus {3,5,7,9,15}); the golden-ratio statement is the headline corollary. The title states what is proved,
+% not a novelty claim: the tail m >= 4 346 237 is due to DHK 2022 (stronger conclusion).
+\title[$\chi_2(\sqrt{m^2+1}-m)$ is irrational for every $m\ge16$]{\texorpdfstring{$\chi_2\bigl(\sqrt{m^2+1}-m\bigr)$
+is irrational for every $m\ge16$}{chi\_2(sqrt(m\textasciicircum 2+1) - m) is irrational for every m >= 16}}
 
 \author{Shawn Krisman}
 
 \subjclass[2020]{Primary 11J72; Secondary 33B30, 11R27, 31A15, 41A21, 68V20}
-\keywords{golden ratio, Legendre chi function, dilogarithm, irrationality, Hankel determinants, units of quadratic
+\keywords{golden ratio, Legendre chi function, dilogarithm, irrationality, Hankel determinants, units of real quadratic
 fields, logarithmic potential theory, formal verification, Lean}
 
 \date{\today}
 
 \begin{abstract}
-Let $\varphi=(1+\sqrt5)/2$. We prove that $\pi^2-18\log^2\varphi$ is irrational. Equivalently, the value
-$\chi_2(\sqrt5-2)=\pi^2/24-\frac34\log^2\varphi$ of Legendre's chi function is irrational. The proof transposes our
-proof that $\chi_2(1/3)$ is irrational to the point $z=\sqrt5-2$, a unit of norm $-1$ in $\QQ(\sqrt5)$. We take
-poles at the even integers $\pm2j$, $|j|\le h/2$, and atoms at the odd positive integers. A reflection $t\mapsto-t$,
-combined with the Galois conjugation $z\mapsto-1/z$, shows that the Hankel determinants are values of polynomials
-$\Delta_h(X)\in\QQ[X]$, although their entries lie in $\QQ(\sqrt5)$; so the conjugate place, where the defining series
-diverges, costs nothing. Because $z$ is a unit, there are no special primes. The odd primes cost at most $4/3$ per
-$h^2$, through a bordered Lagrange Gram identity and a class count. The prime $2$ costs nothing at the scale $h^2$, because
-$1-z^2=4z$. The size is bounded by a discrete log-gas argument against a dual certificate checked in interval
-arithmetic, which gives at most $-1.3592$ per $h^2$; nonvanishing comes from a reduction modulo a prime $\ell=(h+1)/3$. The
-margin is $-0.02588\ldots$ per $h^2$. The theorem is formalised in Lean~4 with Mathlib, using only Lean's three standard axioms; the
-formal proof of the analytic bound follows a different route from the one written here. We also prove a two-point
-statement at units of a family of biquadratic fields: for $n\in\{730,740,750,760,800,1000\}$, either
-$\chi_2(z)+\chi_2(w)\notin\QQ$ or $\chi_2(z)-\chi_2(w)\notin\sqrt{n^2-16}\,\QQ$, where $z>w$ are the two roots in $(0,1)$ of
-$X^4+nX^3+2X^2-nX+1$. This second result is computer-assisted and not formalised.
+We prove that the value $\chi_2(\sqrt{m^2+1}-m)$ of Legendre's chi function is irrational for every integer $m\ge2$
+except $m=3,5,7,9,15$, that is, for $m=2,4,6,8$, $10\le m\le14$ and every $m\ge16$. For $m=2$ this says that
+$\pi^2-18\log^2\varphi$ is irrational, where $\varphi$ is the golden ratio, since
+$\chi_2(\sqrt5-2)=\pi^2/24-(3/4)\log^2\varphi$. The stronger statement
+$\chi_2(\sqrt{m^2+1}-m)\notin\QQ(\sqrt{m^2+1})$ is already due to David, Hirata-Kohno and Kawashima (2022) for every
+$m\ge4\,346\,237$, through their linear independence criterion; the new range is $2\le m\le4\,346\,236$, $m\notin\{3,5,7,9,15\}$, where we know
+of no earlier result. The point $z_m=\sqrt{m^2+1}-m$ is a unit of norm $-1$ in $\QQ(\sqrt{m^2+1})$. Other cases are
+$\chi_2(\sqrt{17}-4)$, $\chi_2(\sqrt{37}-6)$, $\chi_2(\sqrt{65}-8)\notin\QQ$; for $m\ge3$ these values have no
+Landen-type closed form (we show this at the level of symbols). We take poles at the
+even integers $\pm2j$, $|j|\le h/2$, and atoms at the odd positive integers. A reflection $t\mapsto-t$, combined with the
+Galois conjugation $z\mapsto-1/z$, shows that the Hankel determinants are values of polynomials with rational
+coefficients, so the conjugate place, where the series diverges, costs nothing. The odd primes not dividing $m$ cost at
+most $4/3$ per $h^2$; the odd primes dividing $m$ and the prime $2$ cost explicit amounts that depend on $m$. The size is
+bounded by a discrete log-gas argument against a dual certificate checked in interval arithmetic at $m=2$, and a shift
+lemma carries this bound to every $m$. Nonvanishing comes from a reduction modulo a prime $\ell=(h+1)/3$. The theorem,
+for every $m$, is formalised in Lean~4 with Mathlib, using only Lean's three standard axioms.
+We also prove a two-point statement at units of a family of biquadratic fields: for
+$n\in\{730,740,750,760,800,1000\}$, either $\chi_2(z)+\chi_2(w)\notin\QQ$ or $\chi_2(z)-\chi_2(w)\notin\sqrt{n^2-16}\,\QQ$,
+where $z>w$ are the two roots in $(0,1)$ of $X^4+nX^3+2X^2-nX+1$. This second result is computer-assisted and not
+formalised.
 \end{abstract}
 
 \maketitle
@@ -87,13 +106,29 @@ $X^4+nX^3+2X^2-nX+1$. This second result is computer-assisted and not formalised
 \section{Introduction}\label{sec:intro}
 % ===========================================================================
 
-Let $\varphi=(1+\sqrt5)/2$ be the golden ratio, and for $|q|\le1$ let
+For $|q|\le1$ let
 \[
   \chi_2(q)=\sum_{n=0}^{\infty}\frac{q^{2n+1}}{(2n+1)^2}=\tfrac12\bigl(\Li_2(q)-\Li_2(-q)\bigr)
 \]
-be Legendre's chi function \cite[\S1.8]{Lewin1981}.
+be Legendre's chi function \cite[\S1.8]{Lewin1981}. For an integer $m\ge1$ put
+\[
+  z_m:=\sqrt{m^2+1}-m\in(0,1).
+\]
+Then $z_m^2+2mz_m-1=0$, so $z_m$ is a unit of norm $-1$ in the real quadratic field $\QQ(\sqrt{m^2+1})$, with
+Galois conjugate $-1/z_m$. Put $\cE:=\{3,5,7,9,15\}$.
 
-\begin{theorem}[Theorem U]\label{thm:main}
+\begin{theorem}[Theorem V]\label{thm:V}
+For every integer $m\ge2$ with $m\notin\cE$, the number $\chi_2(\sqrt{m^2+1}-m)$ is irrational.
+\end{theorem}
+
+For $m\ge4\,346\,237$ the stronger statement $\chi_2(z_m)\notin\QQ(\sqrt{m^2+1})$ is due to David, Hirata-Kohno and
+Kawashima \cite[Thm.~1]{DHK2022b} (Section~\ref{sec:lit}). What Theorem~\ref{thm:V} adds is the range
+$2\le m\le4\,346\,236$ with $m\notin\cE$, where we know of no earlier result. The proof is computer-assisted: it uses
+one dual certificate checked in interval arithmetic (at $m=2$) and a table of
+margins for the odd $m\le65$, also computed in interval arithmetic. The case $m=2$ is the golden-ratio statement. Let
+$\varphi=(1+\sqrt5)/2$.
+
+\begin{corollary}[Theorem U]\label{thm:U}
 The number
 \[
   \pi^2-18\log^2\varphi=5.70143763069985955388\ldots
@@ -103,7 +138,7 @@ is irrational. Equivalently, the number
   \chi_2(\sqrt5-2)=\frac{\pi^2}{24}-\frac34\log^2\varphi=0.23755990127916081474\ldots
 \]
 is irrational.
-\end{theorem}
+\end{corollary}
 
 The two forms are equivalent by the identity
 \begin{equation}\label{eq:closedform}
@@ -112,16 +147,33 @@ The two forms are equivalent by the identity
 which follows from Landen's identity
 $\chi_2\bigl(\tfrac{1-x}{1+x}\bigr)+\chi_2(x)=\tfrac{\pi^2}{8}+\tfrac12\log x\,\log\tfrac{1+x}{1-x}$
 \cite[App.~A.2.1, (24)]{Lewin1981} at $x=\sqrt5-2=\varphi^{-3}$, for which $(1-x)/(1+x)=\varphi^{-1}$, together with the
-classical value $\chi_2(\varphi^{-1})=\pi^2/12-\frac34\log^2\varphi$. The formalisation proves \eqref{eq:closedform}
-from these identities (Section~\ref{sec:lean}).
+classical value $\chi_2(\varphi^{-1})=\pi^2/12-\frac34\log^2\varphi$. Theorem~\ref{thm:V}, Corollary~\ref{thm:U} and the identity
+\eqref{eq:closedform} are formalised in Lean (Section~\ref{sec:lean}).
+
+Theorem~\ref{thm:V} covers every even $m\ge2$ and every odd $m\ge11$ except $15$. For example,
+\[
+  \chi_2(\sqrt{17}-4)\notin\QQ,\qquad \chi_2(\sqrt{37}-6)\notin\QQ,\qquad \chi_2(\sqrt{65}-8)\notin\QQ .
+\]
+For $m\ge3$ these values are of a different kind from $\chi_2(\sqrt5-2)$: they have no expression through $\pi^2$ and
+products of logarithms by dilogarithm identities that preserve the symbol (Proposition~\ref{prop:symbol}). Only $m=1$ and
+$m=2$ have a Landen closed form. The method does not reach $m=1$, where
+$\chi_2(\sqrt2-1)=\pi^2/16-\frac14\log^2(1+\sqrt2)$, nor $m\in\cE$ (Section~\ref{sec:margins}).
 
 \subsection{Context}\label{sec:context}
-% Related work from schanuel/four_exp/strong4/pilot_U/novelty/NOVELTY.md (finished version, Sections 2--5, read
-% 2026-11-07 by the whole-chain referee; its Section 3 "open search" is complete and adds no relevant prior result).
-We have not found Theorem~\ref{thm:main}, or the irrationality of any number $\pi^2+c\log^2\varphi$ with
-$c\in\QQ\setminus\{0\}$, in the literature, and as far as we can see it does not follow from known results. By the
-analytic class number formula, $L(1,\chi_5)=2\log\varphi/\sqrt5$ for the quadratic character $\chi_5$ modulo $5$, so the
-theorem can also be written as $6\zeta(2)-\frac{45}{2}L(1,\chi_5)^2\notin\QQ$.
+% Related work for m = 2 from schanuel/four_exp/strong4/pilot_U/novelty/NOVELTY.md (finished version, Sections 2--5, read
+% 2026-11-07 by the whole-chain referee of the U-only version). For general m: pilot_V/PROOF_V.md Section 10 and
+% pilot_V/referee/REFEREE_V.md Sections 5 and 7.
+\emph{General $m$.} For $m\ge4\,346\,237$, Theorem~1 of David, Hirata-Kohno and Kawashima \cite{DHK2022b} gives
+$\chi_2(z_m)\notin\QQ(\sqrt{m^2+1})$, which is stronger than Theorem~\ref{thm:V}; this is our evaluation of their
+criterion (Section~\ref{sec:lit}). So the infinite part of Theorem~\ref{thm:V} is not new by itself. We have found no
+result that covers any $m$ with $2\le m\le4\,346\,236$. For $m\ge3$ that search was short: our own notes, two web
+searches, and a reading of the criteria listed in Section~\ref{sec:lit}; it did not cover MathSciNet, and no expert has
+been consulted. Our method also covers the range of \cite{DHK2022b} independently, with the weaker conclusion.
+
+\emph{The case $m=2$.} We have not found Corollary~\ref{thm:U}, or the irrationality of any number
+$\pi^2+c\log^2\varphi$ with $c\in\QQ\setminus\{0\}$, in the literature, and as far as we can see it does not follow
+from known results. By the analytic class number formula, $L(1,\chi_5)=2\log\varphi/\sqrt5$ for the quadratic character
+$\chi_5$ modulo $5$, so the corollary can also be written as $6\zeta(2)-\frac{45}{2}L(1,\chi_5)^2\notin\QQ$.
 \begin{itemize}
 \item \emph{The golden-ratio dilogarithm values are different numbers.} The classical evaluations
   \[
@@ -131,7 +183,7 @@ theorem can also be written as $6\zeta(2)-\frac{45}{2}L(1,\chi_5)^2\notin\QQ$.
     \end{aligned}
   \]
   (Landen; see \cite{Lewin1981,Lewin1982}) all lie in $\QQ\pi^2+\QQ\log^2\varphi$. Normalised to the form
-  $\pi^2+c\log^2\varphi$ they have $c=-15$, $-10$, $-\frac{15}{2}$ and $+10$, while Theorem~\ref{thm:main} has $c=-18$.
+  $\pi^2+c\log^2\varphi$ they have $c=-15$, $-10$, $-\frac{15}{2}$ and $+10$, while Corollary~\ref{thm:U} has $c=-18$.
   Since $\log\varphi$ is transcendental, $\pi^2+c\log^2\varphi$ can be algebraic for at most one $c\in\overline\QQ$; this
   does not say which. The irrationality of one member of the family says nothing about another, and as far as we know
   the irrationality of each of the four classical values is open.
@@ -163,89 +215,101 @@ theorem can also be written as $6\zeta(2)-\frac{45}{2}L(1,\chi_5)^2\notin\QQ$.
   accompanied by a refereed paper. It has the same shape, $\pi^2+c\log^2$ of a number, with $c=-6$ and the number $2$
   instead of a unit. Over $\QQ(\sqrt5)$ we have found nothing comparable.
 \end{itemize}
-Our searches for prior work, in four passes, covered the web, arXiv (through its API), zbMATH Open, OpenAlex, Crossref,
-Semantic Scholar (only partly, because of rate limits), the Hexagon repository, the \texttt{openai/math} manuscript list
-and recent Lean repositories (the last pass on 7 November 2026). They did not cover MathSciNet or Google Scholar, and no
-expert has been consulted. The searches were carried out by AI systems.
+For $m=2$ our searches for prior work, in four passes, covered the web, arXiv (through its API), zbMATH Open, OpenAlex,
+Crossref, Semantic Scholar (only partly, because of rate limits), the Hexagon repository, the \texttt{openai/math}
+manuscript list and recent Lean repositories (the last pass on 7 November 2026). They did not cover MathSciNet or Google
+Scholar, and no expert has been consulted. All searches, for $m=2$ and for general $m$, were carried out by AI systems.
 
 \subsection{The method}\label{sec:method}
-Put
+Fix $m\ge1$ and put
 \[
-  z:=\sqrt5-2=\varphi^{-3},\qquad y:=z^2,\qquad T:=\chi_2(z)=\sum_{t\text{ odd}\ge1}\frac{z^t}{t^2}.
+  z:=z_m=\sqrt{m^2+1}-m,\qquad y:=z^2,\qquad T:=\chi_2(z)=\sum_{t\text{ odd}\ge1}\frac{z^t}{t^2}.
 \]
-Then $z^2+4z-1=0$, so $1-y=4z$, and the Galois conjugate of $z$ is $-1/z$: $z$ is a unit of norm $-1$ in
-$\KK:=\QQ(\sqrt5)$. The proof transposes the proof of \cite{Chi2Paper} for $\chi_2(1/q)$ to this point. For even $h$ we
-take the $K:=h+1$ poles $x_m:=2(m-h/2)$, i.e.\ the even integers in $[-h,h]$, put $D(t):=\prod_m(t-x_m)$, and consider
-the functional
+Then $z^2+2mz-1=0$, so $1-y=2mz$, and the Galois conjugate of $z$ is $-1/z$. For $m=2$ this is $z=\sqrt5-2$ and $1-y=4z$.
+The proof transposes the proof of \cite{Chi2Paper} for $\chi_2(1/q)$ to these points. For even $h$ we take the $K:=h+1$
+poles $x_k:=2(k-h/2)$, i.e.\ the even integers in $[-h,h]$, put $D(t):=\prod_k(t-x_k)$, and consider the functional
 \[
   \Lambda(g):=\sum_{t\text{ odd}\ge1}z^t\Bigl(\frac{g}{D}\Bigr)'(t)\qquad(g\in\QQ[t]).
 \]
-Partial fractions give $\Lambda=A+T\,B$ with $\KK$-valued functionals $A,B$, so the Hankel determinant
-$\det(\Lambda(t^{i+j}))_{i,j<h}$ is the value at $X=T$ of $\Delta_h(X):=\det(A(t^{i+j})+XB(t^{i+j}))_{i,j<h}$, a
-polynomial of degree at most $h$.
+Partial fractions give $\Lambda=A+T\,B$ with $\KK$-valued functionals $A,B$, where $\KK:=\QQ(\sqrt{m^2+1})$, so the Hankel
+determinant $\det(\Lambda(t^{i+j}))_{i,j<h}$ is the value at $X=T$ of $\Delta_h(X):=\det(A(t^{i+j})+XB(t^{i+j}))_{i,j<h}$,
+a polynomial of degree at most $h$.
 
-What differs from \cite{Chi2Paper} is the \emph{reflection} (Lemma~\ref{lem:R}). The pole set is symmetric under $t\mapsto-t$, $D(-t)=-D(t)$,
-and the conjugation $\sigma\colon z\mapsto-1/z$ maps the partial sums of $\chi_2$ at the poles $x$ to those at $-x$.
-Together these give $\sigma(\Lambda_X(t^m))=(-1)^m\Lambda_X(t^m)$, which forces $\Delta_h\in\QQ[X]$ although its entries
-lie in $\KK$. So we never pay for the conjugate place, where $|\sigma z|=\varphi^3>1$ and the defining series diverges.
-The three inputs are then as in \cite{Chi2Paper}.
+What differs from \cite{Chi2Paper} is the \emph{reflection} (Lemma~\ref{lem:R}). The pole set is symmetric under
+$t\mapsto-t$, $D(-t)=-D(t)$, and the conjugation $\sigma\colon z\mapsto-1/z$ maps the partial sums of $\chi_2$ at the poles
+$x$ to those at $-x$. Together these give $\sigma(\Lambda_X(t^a))=(-1)^a\Lambda_X(t^a)$, which forces $\Delta_h\in\QQ[X]$
+although its entries lie in $\KK$. So we never pay for the conjugate place, where $|\sigma z|=1/z>1$ and the defining
+series diverges. The three inputs are then as in \cite{Chi2Paper}.
 \begin{enumerate}
-\item \emph{Denominators} (Sections~\ref{sec:odd}--\ref{sec:two}). Because $z$ is a unit, the moments of $\Lambda$ only
-  have the denominators $(1-y)^{b+1}=(4z)^{b+1}$, so there are no special primes, and no gain prime either. Every odd
-  prime, including $5$, satisfies the same bounds. Primes $p<K/3$ obey a plateau bound $2h\lev(p)+v_p(h!)$, which we
-  prove through a bordered version of the Lagrange Gram identity (Lemmas~\ref{lem:bordered} and~\ref{lem:nine}), and
-  primes $K/3\le p<K$ obey a class count $3(K-p)$ (Lemmas~\ref{lem:eight} and~\ref{lem:classcount}). The prime number
-  theorem sums these to $\frac23+\frac23=\frac43$ per $h^2$ (Theorem~\ref{thm:A}). The prime $2$ costs only
-  $O(h\log h)$ (Lemma~\ref{lem:ten}), because $v_2(1-y)=2$.
+\item \emph{Denominators} (Sections~\ref{sec:odd}--\ref{sec:two}). The moments of $\Lambda$ have the denominators
+  $(1-y)^{b+1}=(2mz)^{b+1}$. At odd primes $p\nmid m$ the elements $z$, $y$, $1-y$ are units, and the bounds do not
+  depend on $m$. Primes $p<K/3$ obey a plateau bound $2h\lev(p)+v_p(h!)$, which we prove through a bordered version of the
+  Lagrange Gram identity (Lemmas~\ref{lem:bordered} and~\ref{lem:nine}), and primes $K/3\le p<K$ obey a class count
+  $3(K-p)$ (Lemmas~\ref{lem:eight} and~\ref{lem:classcount}). The prime number theorem sums these to
+  $\frac23+\frac23=\frac43$ per $h^2$ (Theorem~\ref{thm:A}). An odd prime $p$ with $e:=v_p(m)\ge1$ costs at most
+  $c_p(e):=\bigl(\frac e4+\frac1{4(p-1)}\bigr)\log p$ per $h^2$ (Lemma~\ref{lem:S}). The prime $2$ costs at most
+  $c_2(\nu):=|\nu-2|\frac{\log2}4$ per $h^2$, where $\nu:=1+v_2(m)$ is the $2$-adic valuation of $1-y$
+  (Lemma~\ref{lem:tennu}); for $m=2$, $\nu=2$ and the cost is only $O(h\log h)$ (Lemma~\ref{lem:ten}).
 \item \emph{Size} (Section~\ref{sec:analytic}). A discrete log-gas argument bounds $h^{-2}\log|\Delta_h(T)|$ by the value
-  $\Phi$ of any dual certificate for a constrained equilibrium problem with external field
-  $x\log z-\frac12\int_{x-1}^{x+1}\log|s|\,ds$ (Theorem~\ref{thm:B}). An explicit certificate, checked in interval
-  arithmetic, gives $\Phi\le-1.3592161$ (Theorem~\ref{thm:cert}).
-\item \emph{Nonvanishing} (Section~\ref{sec:nonvan}). For $h=3\ell-1$ with $\ell\ge7$ prime, the Gram matrix of
-  $\Lambda$ in the Lagrange basis is block diagonal modulo a prime of $\KK$ above $\ell$, with $3\times3$ blocks in
-  closed form, so $\Delta_h(a/b)\ne0$ whenever $\ell^2\nmid b$ (Lemma~\ref{lem:P}). Unlike in \cite{Chi2Paper}, every
-  prime $\ell\ge7$ works.
+  $\Phi_z$ of any dual certificate for a constrained equilibrium problem with external field
+  $x\log z-\frac12\int_{x-1}^{x+1}\log|s|\,ds$ (Theorem~\ref{thm:B}). An explicit certificate at $z=\sqrt5-2$, checked
+  in interval arithmetic, gives $\Phi\le\Phi_U:=-1.3592161834586374$ (Theorem~\ref{thm:cert}). A shift lemma
+  (Lemma~\ref{lem:shift}) moves it to $z_m$ and gives $\Phi\le\Phi_U-\frac12L(m)$ with
+  $L(m):=\log\bigl((m+\sqrt{m^2+1})/(2+\sqrt5)\bigr)$ (Corollary~\ref{cor:shift}).
+\item \emph{Nonvanishing} (Section~\ref{sec:nonvan}). For $h=3\ell-1$ with $\ell\ge7$ prime and $\ell\nmid m$, the Gram
+  matrix of $\Lambda$ in the Lagrange basis is block diagonal modulo a prime of $\KK$ above $\ell$, with $3\times3$ blocks
+  in closed form, so $\Delta_h(a/b)\ne0$ whenever $\ell^2\nmid b$ (Lemma~\ref{lem:P}).
 \end{enumerate}
-Table~\ref{tab:budget} collects the contributions.
+The proof of Theorem~\ref{thm:V} therefore shows
+\begin{equation}\label{eq:budget}
+  \limsup_{h}\frac1{h^2}\log|F_h(T)|\le M(m):=\Phi_U-\tfrac12L(m)+\tfrac43+c_2(\nu)+\sum_{p^e\parallel m,\ p\text{ odd}}c_p(e)
+\end{equation}
+along a suitable infinite set of $h$, for primitive $F_h\in\ZZ[X]$ of degree $\le h$ with $F_h(T)=\Delta_h(T)\cdot
+(\text{integer})$, and $M(m)<0$ exactly when $m\ge2$ and $m\notin\cE$ (Section~\ref{sec:margins}).
+Table~\ref{tab:budget} shows the budget for $m=2$ and $m=4$.
 
 \begin{table}[ht]
-\centering
-\begin{tabular}{@{}llr@{}}
+\centering\small
+\begin{tabular}{@{}llrr@{}}
 \toprule
-contribution (per $h^2$, $\limsup$) & source & value\\
+contribution (per $h^2$, $\limsup$) & source & $m=2$ & $m=4$\\
 \midrule
-odd primes, including $5$ & Thm.~\ref{thm:A} & $4/3=1.3333333$\\
-$p=2$ & Lemma~\ref{lem:ten} & $0$\\
-special primes & ($z$ is a unit) & none\\
+odd primes $p\nmid m$ & Thm.~\ref{thm:A} & $1.333333$ & $1.333333$\\
+$p=2$ & Lemmas~\ref{lem:ten}, \ref{lem:tennu} & $0$ & $0.173287$\\
+odd primes $p\mid m$ & Lemma~\ref{lem:S} & none & none\\
 \midrule
-arithmetic & & $1.3333333$\\
-analytic $\Phi$ & Thms.~\ref{thm:B}, \ref{thm:cert} & $\le-1.3592161$\\
+arithmetic & & $1.333333$ & $1.506620$\\
+analytic $\Phi$ & Cor.~\ref{cor:shift} & $\le-1.359216$ & $\le-1.684755$\\
 \midrule
-margin & & $\le-0.025882$\\
+margin $M(m)$ & & $\le-0.025882$ & $\le-0.178135$\\
 \bottomrule
 \end{tabular}
-\caption{The exponential budget. The analytic value is the upper endpoint $-1.3592161834586374$ of the certified Arb
-ball, rounded up; the margin is $-0.0258828501\ldots$, rounded up.}\label{tab:budget}
+\caption{The exponential budget for $m=2$ (Corollary~\ref{thm:U}) and $m=4$ ($\chi_2(\sqrt{17}-4)$). For $m=2$ the
+analytic value is the upper endpoint $-1.3592161834586374$ of the certified Arb ball, rounded up, and the margin is
+$-0.0258828501\ldots$, rounded up. Other values of $m$ are in Table~\ref{tab:margins}.}\label{tab:budget}
 \end{table}
 
-The margin is about $1.9\%$ of the arithmetic part. It is smaller than in \cite{Chi2Paper} for $q=3$ in relative terms,
-but no constant in the budget is estimated: each is a proved upper bound.
+For $m=2$ the margin is about $1.9\%$ of the arithmetic part. It is smaller than in \cite{Chi2Paper} for $q=3$ in
+relative terms, but no constant in the budget is estimated: each is a proved upper bound. The margins vary with $m$; among
+$m\notin\cE$ the smallest in absolute value are $m=11$ ($-0.0179$), $m=21$ ($-0.0204$) and $m=2$ ($-0.0259$).
 
 \subsection{The formalisation}
-Theorem~\ref{thm:main} and the identity \eqref{eq:closedform} are formalised in Lean~4 \cite{LeanFour} with Mathlib
-\cite{Mathlib} and checked by the Lean kernel. The headline theorems are \lean{Chi2U.chi2\_sqrt5\_sub\_two\_irrational}
+Theorem~\ref{thm:V}, Corollary~\ref{thm:U} and the identity \eqref{eq:closedform} are formalised in Lean~4
+\cite{LeanFour} with Mathlib \cite{Mathlib} and checked by the Lean kernel. The headline theorems are
+\lean{Chi2U.V.theoremV} (Theorem~\ref{thm:V}), \lean{Chi2U.chi2\_sqrt5\_sub\_two\_irrational}
 ($\chi_2(\sqrt5-2)\notin\QQ$), \lean{Chi2U.golden\_irrational'} ($\pi^2-18\log^2\varphi\notin\QQ$) and
 \lean{Chi2U.chi2\_sqrt5\_sub\_two\_eq} (the identity \eqref{eq:closedform}). They depend only on Lean's three standard
 axioms (\lean{propext}, \lean{Classical.choice}, \lean{Quot.sound}); there is no \lean{sorry} and no
 \lean{native\_decide}. The formal proof of the analytic bound follows the lattice-energy route of \cite{Chi2Paper}, not
 the route of Section~\ref{sec:analytic}, and uses its own, coarser certificate; Section~\ref{sec:lean} describes both
-differences.
+differences. For general $m$ the formal proof transports this certificate by the shift lemma; the exception set is
+the same $\cE$.
 
 \subsection{Two points}
 Section~\ref{sec:M1} transposes the proof once more, to units of the biquadratic fields $\QQ(z)$ where $z$ is a root of
 $X^4+nX^3+2X^2-nX+1$. There the reflection removes the two conjugates $-1/z$ and $-1/w$, where the series diverge,
-and the remaining conjugate $w$ is a second convergent place, which enters through a norm. The result is a disjunction, proved separately for six values of $n$,
-with interval-arithmetic certificates. The smallest instance is the following.
+and the remaining conjugate $w$ is a second convergent place, which enters through a norm. The result is a disjunction,
+proved separately for six values of $n$, with interval-arithmetic certificates. The smallest instance is the following.
 
 \begin{theorem}[M1 at $n=730$]\label{thm:M1-730}
 Let $z>w$ be the two roots in $(0,1)$ of $X^4+730X^3+2X^2-730X+1$. Then at least one of the following holds:
@@ -260,33 +324,47 @@ Let $z>w$ be the two roots in $(0,1)$ of $X^4+730X^3+2X^2-730X+1$. Then at least
 The first number is $\chi_2(z)+\chi_2(w)$, by Landen's identity. Theorem~\ref{thm:M1-730} is not formalised.
 
 \subsection{Organisation and notation}
+An earlier version of this paper treated only $m=2$. Section~\ref{sec:construction}, Sections~\ref{sec:atom}--\ref{sec:oddsum},
+Sections~\ref{sec:equil}--\ref{sec:cert} and Section~\ref{sec:nonvan} are that version's arguments with $z=z_m$: they use
+only $\sigma(z)=-1/z$ and that $z$, $y$, $1-y$ are units at the primes concerned, and they hold verbatim for every $m$
+except where the text says otherwise. New are Lemma~S (Section~\ref{sec:special}), Lemma~$10_\nu$
+(Section~\ref{sec:two}), the shift lemma (Section~\ref{sec:shift}), the hypothesis $\ell\nmid m$ in Lemma~P$'$, and the
+margins (Section~\ref{sec:margins}).
+
 Section~\ref{sec:construction} sets up the functional, proves the pole expansion and the reflection, and states the
 criterion. Sections~\ref{sec:odd} and~\ref{sec:two} bound the denominators, Section~\ref{sec:analytic} bounds the size,
-Section~\ref{sec:nonvan} proves nonvanishing, and Section~\ref{sec:proof} assembles the proof. Section~\ref{sec:M1}
-treats two points, Section~\ref{sec:lean} describes the formalisation, and Section~\ref{sec:comp} lists the computations.
+Section~\ref{sec:nonvan} proves nonvanishing, and Section~\ref{sec:proof} assembles the proof and computes the margins.
+Section~\ref{sec:closed} discusses closed forms and compares Theorem~\ref{thm:V} with known criteria.
+Section~\ref{sec:M1} treats two points, Section~\ref{sec:lean} describes the formalisation, and Section~\ref{sec:comp}
+lists the computations and the numerical evidence.
 
 Throughout, $p$ and $\ell$ denote primes, $v_p$ is the $p$-adic valuation, $\lfloor\cdot\rfloor$ is the floor,
 $(x)_+=\max(x,0)$, and $\ind{P}$ is $1$ if $P$ holds and $0$ otherwise. For a function $G$ on $\ZZ_{\ge0}$,
 $\Delta G(s)=G(s+1)-G(s)$ is the forward difference. We write $\theta(x)=\sum_{p\le x}\log p$ and
-$\psi(x)=\sum_{p^e\le x}\log p$, and $s_2(b)$ for the binary digit sum of $b$, so $v_2(b!)=b-s_2(b)$.
+$\psi(x)=\sum_{p^e\le x}\log p$, and $s_2(b)$ for the binary digit sum of $b$, so $v_2(b!)=b-s_2(b)$. The letter $m$
+always denotes the parameter of Theorem~\ref{thm:V}; poles are indexed by $k$.
 
 % ===========================================================================
 \section{The construction}\label{sec:construction}
 % ===========================================================================
 
 \subsection{Data}\label{sec:data}
-Let $\KK=\QQ(\sqrt5)$, embedded in $\RR$ with $\sqrt5>0$, and let $\sigma$ be its nontrivial automorphism. With
-$z=\sqrt5-2$ and $y=z^2$ we have
+Fix an integer $m\ge1$, put $d_m:=m^2+1$ (not a square), let $\KK=\QQ(\sqrt{d_m})$, embedded in $\RR$ with $\sqrt{d_m}>0$,
+and let $\sigma$ be its nontrivial automorphism. With $z=z_m=\sqrt{d_m}-m$ and $y=z^2$ we have
 \[
-  z^2+4z-1=0,\qquad 1-y=4z,\qquad \sigma(z)=-1/z .
+  z^2+2mz-1=0,\qquad 1-y=2mz,\qquad \sigma(z)=-1/z .
 \]
-So $z$, $y$ and $1-y$ are units at every odd prime, including $5$, and $1-y$ has $2$-adic valuation $2$.
+So $z$ is a unit of $\cO_\KK$. At every odd prime $p\nmid m$ the elements $z$, $y$ and $1-y$ are units; this includes the
+primes dividing $d_m$. At an odd prime $p\mid m$, $v_p(1-y)=v_p(m)$. At every prime of $\KK$ above $2$, normalised by
+$v(2)=1$, $v(1-y)=\nu:=1+v_2(m)$. The prime $2$ is ramified in $\KK$ for odd $m$, inert for $m\equiv2\bmod4$ and split
+for $4\mid m$: write $d_m=f^2d_0$ with $d_0$ squarefree; $f$ is odd, so $d_0\equiv d_m\bmod8$, and $d_m\equiv2,5,1\bmod8$
+in the three cases. For $m=2$: $\KK=\QQ(\sqrt5)$, $z=\varphi^{-3}$, $1-y=4z$, $\nu=2$.
 
-Fix an even $h\ge2$ and put $J:=h/2$ and $K:=h+1$. The poles are $x_m:=2(m-J)$ for $0\le m<K$, i.e.\ the even integers
+Fix an even $h\ge2$ and put $J:=h/2$ and $K:=h+1$. The poles are $x_k:=2(k-J)$ for $0\le k<K$, i.e.\ the even integers
 $\pm2j$, $|j|\le J$, and
 \begin{gather*}
-  D(t):=\prod_{m<K}(t-x_m),\\
-  D'(x_m)=\prod_{l\ne m}2(m-l)=(-1)^{K-1-m}2^{K-1}m!\,(K-1-m)! .
+  D(t):=\prod_{k<K}(t-x_k),\\
+  D'(x_k)=\prod_{l\ne k}2(k-l)=(-1)^{K-1-k}2^{K-1}k!\,(K-1-k)! .
 \end{gather*}
 For a rational function $f$ regular at the odd positive integers and of polynomial growth put
 \[
@@ -307,11 +385,11 @@ For every even integer $x$, $\cM\bigl(1/(t-x)\bigr)=-z^x\bigl(T-P(x)\bigr)$. For
 \begin{equation}\label{eq:mahler}
   \cM(F)=z\sum_{b\ge0}\Delta^bG(0)\,\frac{y^b}{(1-y)^{b+1}},\qquad G(s):=F'(2s+1),
 \end{equation}
-a finite sum. Consequently, writing $g/D=R_g+\sum_mg(x_m)/(D'(x_m)(t-x_m))$ with $R_g\in\QQ[t]$,
+a finite sum. Consequently, writing $g/D=R_g+\sum_kg(x_k)/(D'(x_k)(t-x_k))$ with $R_g\in\QQ[t]$,
 \begin{gather*}
   \Lambda(g)=A(g)+T\,B(g),\\
-  A(g):=\cM(R_g)+\sum_m\frac{g(x_m)}{D'(x_m)}z^{x_m}P(x_m),\qquad
-  B(g):=-\sum_m\frac{g(x_m)}{D'(x_m)}z^{x_m},
+  A(g):=\cM(R_g)+\sum_k\frac{g(x_k)}{D'(x_k)}z^{x_k}P(x_k),\qquad
+  B(g):=-\sum_k\frac{g(x_k)}{D'(x_k)}z^{x_k},
 \end{gather*}
 with $A,B\colon\QQ[t]\to\KK$ linear.
 \end{lemma}
@@ -323,7 +401,7 @@ expand $G(s)=\sum_b\Delta^bG(0)\binom sb$, and use $\sum_{s\ge0}\binom sby^s=y^b
 absolutely since $0<z<1$.
 \end{proof}
 
-For an indeterminate $X$ put $\Lambda_X:=A+X\,B$, $E_m:=\Lambda_X(t^m)\in\KK[X]$ and
+For an indeterminate $X$ put $\Lambda_X:=A+X\,B$, $E_a:=\Lambda_X(t^a)\in\KK[X]$ and
 \begin{gather*}
   \Delta_h(X):=\det\bigl(E_{i+j}\bigr)_{0\le i,j<h}\in\KK[X],\qquad\deg\Delta_h\le h,\\
   \Delta_h(T)=\det\bigl(\Lambda(t^{i+j})\bigr)_{i,j<h}.
@@ -332,8 +410,8 @@ We use the same notation for every finite family: if $a_0,\dots,a_{h-1}$ and $b_
 coefficient matrices $C_a,C_b$, then $\det(\Lambda_X(a_ib_j))=\det C_a\det C_b\,\Delta_h(X)$.
 
 \subsection{The reflection}
-Extend $A$ and $B$ to rational functions $f=R+\sum_mc_m/(t-x_m)$ ($R\in\QQ[t]$, $c_m\in\QQ$) by
-$A(f):=\cM(R)+\sum_mc_mz^{x_m}P(x_m)$ and $B(f):=-\sum_mc_mz^{x_m}$, so that $\cM(f)=A(f)+TB(f)$, and put
+Extend $A$ and $B$ to rational functions $f=R+\sum_kc_k/(t-x_k)$ ($R\in\QQ[t]$, $c_k\in\QQ$) by
+$A(f):=\cM(R)+\sum_kc_kz^{x_k}P(x_k)$ and $B(f):=-\sum_kc_kz^{x_k}$, so that $\cM(f)=A(f)+TB(f)$, and put
 $\tilde f(t):=f(-t)$.
 
 \begin{lemma}[Lemma~R, reflection]\label{lem:R}
@@ -341,41 +419,42 @@ For every such $f$, $\sigma(A(f))+\sigma(B(f))X=-\bigl(A(\tilde f)+B(\tilde f)X\
 \end{lemma}
 
 \begin{proof}
-We have $\tilde f=\tilde R+\sum_m(-c_m)/(t-(-x_m))$, and the pole set is symmetric. \emph{The $X$-part.} Since $x_m$ is
-even, $\sigma(z^{x_m})=(-1/z)^{x_m}=z^{-x_m}$, so $\sigma(B(f))=-\sum_mc_mz^{-x_m}=-B(\tilde f)$. \emph{The pole part
+We have $\tilde f=\tilde R+\sum_k(-c_k)/(t-(-x_k))$, and the pole set is symmetric. \emph{The $X$-part.} Since $x_k$ is
+even, $\sigma(z^{x_k})=(-1/z)^{x_k}=z^{-x_k}$, so $\sigma(B(f))=-\sum_kc_kz^{-x_k}=-B(\tilde f)$. \emph{The pole part
 of $A$.} For $x<0$, $\sigma(P(x))=\sum_{0<n<|x|}(-1)^nz^{-n}/n^2=-\sum_{-|x|<n'<0}z^{n'}/n'^2=P(-x)$ (odd $n$, $n'=-n$),
-and likewise for $x>0$. Hence $\sigma\bigl(\sum_mc_mz^{x_m}P(x_m)\bigr)=\sum_mc_mz^{-x_m}P(-x_m)$, which is minus the pole
+and likewise for $x>0$. Hence $\sigma\bigl(\sum_kc_kz^{x_k}P(x_k)\bigr)=\sum_kc_kz^{-x_k}P(-x_k)$, which is minus the pole
 part of $A(\tilde f)$. \emph{The polynomial part.} For a polynomial $R$, $\cM(R)=M_R(z)$ with
 $M_R(q):=\sum_{t\text{ odd}\ge1}R'(t)q^t$, a rational function of $q$ with rational coefficients and poles only at
 $q=\pm1$; so $\sigma(\cM(R))=M_R(-1/z)$. Since $R'$ is a polynomial, the reciprocity of rational generating functions
 gives $\sum_{t\text{ odd}\ge1}R'(t)q^t=-\sum_{t\text{ odd}\le-1}R'(t)q^t$ as rational functions, the right side being
-expanded at $q=\infty$: for $R'(t)=t^k$ apply $(q\,d/dq)^k$ to $\sum_{t\text{ odd}\ge1}q^t=q/(1-q^2)=-\sum_{t\text{ odd}\le-1}q^t$. At $q=-1/z$ the
+expanded at $q=\infty$: for $R'(t)=t^a$ apply $(q\,d/dq)^a$ to $\sum_{t\text{ odd}\ge1}q^t=q/(1-q^2)=-\sum_{t\text{ odd}\le-1}q^t$. At $q=-1/z$ the
 right side is $-\sum_{u\text{ odd}\ge1}R'(-u)(-z)^{u}=\sum_{u\text{ odd}\ge1}R'(-u)z^u=-M_{\tilde R}(z)$, because
 $\tilde R'(u)=-R'(-u)$. So $\sigma(\cM(R))=-\cM(\tilde R)$.
 \end{proof}
 
 \begin{corollary}[Corollary~R]\label{cor:R}
-$\sigma(E_m)=(-1)^mE_m$ coefficientwise, and $\Delta_h(X)\in\QQ[X]$.
+$\sigma(E_a)=(-1)^aE_a$ coefficientwise, and $\Delta_h(X)\in\QQ[X]$.
 \end{corollary}
 
 \begin{proof}
-For $f=t^m/D$ we have $D(-t)=(-1)^KD(t)=-D(t)$ ($K$ is odd), so $\tilde f=(-1)^{m+1}f$, and Lemma~\ref{lem:R} gives
-$\sigma(E_m)=(-1)^mE_m$. Thus $E_m\in\QQ[X]$ for even $m$ and $E_m\in\sqrt5\,\QQ[X]$ for odd $m$. The matrix
-$\tilde E_{ij}:=E_{i+j}\sqrt5^{\,\ind{i\text{ odd}}-\ind{j\text{ odd}}}$ has entries in $\QQ[X]$, and
-$\tilde E=\operatorname{diag}(\sqrt5^{\,\ind{i\text{ odd}}})\,(E_{i+j})\,\operatorname{diag}(\sqrt5^{-\ind{j\text{ odd}}})$,
+For $f=t^a/D$ we have $D(-t)=(-1)^KD(t)=-D(t)$ ($K$ is odd), so $\tilde f=(-1)^{a+1}f$, and Lemma~\ref{lem:R} gives
+$\sigma(E_a)=(-1)^aE_a$. Thus $E_a\in\QQ[X]$ for even $a$ and $E_a\in\sqrt{d_m}\,\QQ[X]$ for odd $a$. The matrix
+$\tilde E_{ij}:=E_{i+j}\sqrt{d_m}^{\,\ind{i\text{ odd}}-\ind{j\text{ odd}}}$ has entries in $\QQ[X]$, and
+$\tilde E=\operatorname{diag}(\sqrt{d_m}^{\,\ind{i\text{ odd}}})\,(E_{i+j})\,\operatorname{diag}(\sqrt{d_m}^{\,-\ind{j\text{ odd}}})$,
 so $\det\tilde E=\Delta_h$.
 \end{proof}
 
+Lemma~\ref{lem:R} and Corollary~\ref{cor:R} use only $\sigma(z)=-1/z$; whether $d_m$ is squarefree plays no role.
+
 \subsection{Valuations and the criterion}
-For a prime $p$ and a prime $\fp\mid p$ of $\KK$ let $v_\fp$ be normalised by $v_\fp(p)=1$ (so $v(\sqrt5)=\frac12$ at
-$p=5$), extended to $\KK[X]$ as the Gauss valuation (the minimum over the coefficients). For $p\ne2,5$ we write $v_p$;
-since $2$ is inert and $5$ ramified in $\KK$ there is one prime above each $p\in\{2,5\}$, and on $\QQ[X]$ every $v_\fp$
-restricts to $v_p$. For $\Delta_h\not\equiv0$ put
+For a prime $p$ and a prime $\fp\mid p$ of $\KK$ let $v_\fp$ be normalised by $v_\fp(p)=1$ (so $v_\fp$ takes values in
+$\frac12\ZZ$ at ramified primes), extended to $\KK[X]$ as the Gauss valuation (the minimum over the coefficients). On
+$\QQ[X]$ every $v_\fp$ restricts to $v_p$. For $\Delta_h\not\equiv0$ put
 \begin{gather*}
   n_p:=-v_p(\Delta_h),\qquad F_h:=\Delta_h\prod_pp^{n_p}\in\ZZ[X]\ \text{(primitive)},\\
   \log|F_h(T)|=\log|\Delta_h(T)|+\sum_pn_p\log p .
 \end{gather*}
-Upper bounds for $n_p$ may be computed from the $\KK$-valued entries at $\fp\mid p$, since $\Delta_h\in\QQ[X]$.
+Upper bounds for $n_p$ may be computed from the $\KK$-valued entries at any one $\fp\mid p$, since $\Delta_h\in\QQ[X]$.
 
 \begin{proposition}[Lemma~E]\label{prop:criterion}
 Let $\xi\in\RR$ and let $\mathcal H$ be an infinite set of positive integers. Suppose that for $h\in\mathcal H$ there are
@@ -394,54 +473,56 @@ This is the criterion of \cite[Prop.~3.1]{Chi2Paper}, with the nonvanishing set 
 \section{Denominators I: the odd primes}\label{sec:odd}
 % ===========================================================================
 
-Throughout this section $p$ is an odd prime and $v=v_\fp$ for a prime $\fp\mid p$ of $\KK$. Since $D$ is monic with
-integer coefficients, $R_g\in\ZZ[t]$ for $g\in\ZZ[t]$, and by \eqref{eq:mahler}, with $y$ and $1-y=4z$ units at $\fp$,
+In Sections~\ref{sec:atom}--\ref{sec:oddsum}, $p$ is an odd prime with $p\nmid m$, and $v=v_\fp$ for a prime $\fp\mid p$ of
+$\KK$. Odd primes dividing $m$ are treated in Section~\ref{sec:special}. Since $D$ is monic with integer coefficients,
+$R_g\in\ZZ[t]$ for $g\in\ZZ[t]$, and by \eqref{eq:mahler}, with $y$ and $1-y=2mz$ units at $\fp$,
 \begin{equation}\label{eq:step3}
   v\bigl(\cM(F)\bigr)\ge\min_{t\text{ odd}\ge1}v_p\bigl(F'(t)\bigr)\qquad(F\in\ZZ_{(p)}[t]),
 \end{equation}
 because $\Delta^bG(0)$ is an integer combination of values $F'(t)$ at odd $t$. For odd $t$ we have
-$t-x_m=(t+2J)-2m$, so for a level $p^e$ the indices $m$ with $p^e\mid t-x_m$ form one residue class $m_0(t)$ modulo
+$t-x_k=(t+2J)-2k$, so for a level $p^e$ the indices $k$ with $p^e\mid t-x_k$ form one residue class $k_0(t)$ modulo
 $p^e$ among the $K$ consecutive integers $0,\dots,K-1$. Put
 \[
   \lev(p):=\#\{e\ge1:p^e\le h\}.
 \]
 
-\subsection{The atom expansion and the class count}
-Let $V_{m,i}:=x_m^i$ ($m<K$, $i<h$), $\cP_{ij}:=\cM(R_{t^{i+j}})$ and $\gamma_m(X):=-z^{x_m}(X-P(x_m))/D'(x_m)$. By
+\subsection{The atom expansion and the class count}\label{sec:atom}
+Let $V_{k,i}:=x_k^i$ ($k<K$, $i<h$), $\cP_{ij}:=\cM(R_{t^{i+j}})$ and $\gamma_k(X):=-z^{x_k}(X-P(x_k))/D'(x_k)$. By
 Lemma~\ref{lem:pole}, $(E_{i+j})=\cP+V^{\mathsf T}\operatorname{diag}(\gamma)V$.
 
 \begin{lemma}[Lemma~7$'$, atom expansion]\label{lem:atom}
 \[
-  \Delta_h(X)=\sum_{|I|=|I'|=|S|}\pm\det\cP_{I^cI'^c}\,\det V_{S,I}\,\det V_{S,I'}\prod_{m\in S}\gamma_m(X),
+  \Delta_h(X)=\sum_{|I|=|I'|=|S|}\pm\det\cP_{I^cI'^c}\,\det V_{S,I}\,\det V_{S,I'}\prod_{k\in S}\gamma_k(X),
 \]
 over $I,I'\subseteq\{0,\dots,h-1\}$ and $S\subseteq\{0,\dots,K-1\}$. Moreover $\det V_{S,I}\in\Vand(x_S)\ZZ$, and
-$\prod_{m\in S}|D'(x_m)|=\Vand(x_S)^2\cross(S)$ with $\cross(S):=\prod_{m\in S,\,l\notin S}|x_m-x_l|$.
+$\prod_{k\in S}|D'(x_k)|=\Vand(x_S)^2\cross(S)$ with $\cross(S):=\prod_{k\in S,\,l\notin S}|x_k-x_l|$.
 \end{lemma}
 
 \begin{proof}
 Expand $\det(\cP+M)$ by the complementary minors of $\cP$ and $M=V^{\mathsf T}\operatorname{diag}(\gamma)V$, and each minor
 $\det M_{II'}$ by the Cauchy--Binet formula. A generalised Vandermonde determinant is $\Vand(x_S)$ times a Schur
-polynomial with integer coefficients. The last identity splits $\prod_{l\ne m}|x_m-x_l|$ into $l\in S$ and $l\notin S$.
+polynomial with integer coefficients. The last identity splits $\prod_{l\ne k}|x_k-x_l|$ into $l\in S$ and $l\notin S$.
 \end{proof}
 
-For an odd level $d$ put $w_d(m):=2\ind{|x_m|>d}$, let $C_c:=\{m<K:m\equiv c\bmod d\}$, $n_c:=|C_c|$, and
+Lemma~\ref{lem:atom} is algebra and holds at every prime. For an odd level $d$ put $w_d(k):=2\ind{|x_k|>d}$, let
+$C_c:=\{k<K:k\equiv c\bmod d\}$, $n_c:=|C_c|$, and
 \[
-  A_K(d):=\sum_{c\bmod d}\ \max_{S_c\subseteq C_c}\Bigl[|S_c|(n_c-|S_c|)+\sum_{m\in S_c}w_d(m)\Bigr].
+  A_K(d):=\sum_{c\bmod d}\ \max_{S_c\subseteq C_c}\Bigl[|S_c|(n_c-|S_c|)+\sum_{k\in S_c}w_d(k)\Bigr].
 \]
 
 \begin{lemma}[Lemma~8$'$, per-level bound]\label{lem:eight}
-For every odd prime $p$, $n_p\le\sum_{e\ge1,\,p^e<K}A_K(p^e)$.
+For every odd prime $p\nmid m$, $n_p\le\sum_{e\ge1,\,p^e<K}A_K(p^e)$.
 \end{lemma}
 
 \begin{proof}
 $\cP$ is $\fp$-integral by \eqref{eq:step3}. In the term of Lemma~\ref{lem:atom} indexed by $(I,I',S)$, the factors
 $\det V_{S,I}\det V_{S,I'}$ cancel $\Vand(x_S)^2$, so by Lemma~\ref{lem:atom} the term has valuation at least
-$-v_p(\cross(S))+\sum_{m\in S}v(X-P(x_m))$, using that $z^{x_m}$ is a unit. Here
+$v(\det\cP_{I^cI'^c})-v_p(\cross(S))+\sum_{k\in S}v(X-P(x_k))$, using that $z^{x_k}$ is a unit. Here
 $v_p(\cross(S))=\sum_{e\ge1}\#\{(k,l):k\in S,\ l\notin S,\ p^e\mid k-l\}$ since $x_k-x_l=2(k-l)$, and
 $v(X-P(x_k))\ge-2\max_{n\text{ odd},|n|<|x_k|}v_p(n)\ge-2\sum_{e\ge1}\ind{p^e<|x_k|}$. At level $d=p^e$ the pairs
 counted are those inside residue classes, $\sum_c|S\cap C_c|(n_c-|S\cap C_c|)$, and $\ind{p^e<|x_k|}=\frac12w_d(k)$.
 Bounding the maximum over $S$ level by level and class by class gives the claim. Levels $p^e\ge K$ contribute nothing:
-the classes are singletons and $|x_m|\le h<p^e$.
+the classes are singletons and $|x_k|\le h<p^e$.
 \end{proof}
 
 \begin{lemma}[Lemma~8A$'$, class count]\label{lem:classcount}
@@ -449,8 +530,8 @@ For odd $d$ with $K/3\le d<K$ we have $A_K(d)=3(K-d)$, and $A_K(d)=0$ for $d\ge 
 \end{lemma}
 
 \begin{proof}
-For $d\ge K$ all classes are singletons and all weights vanish. Let $K/3\le d<K$. Then $w_d(m)=0$ if and only if
-$|m-J|\le(d-1)/2$, a block of $d$ consecutive indices inside $[0,K)$; so every class contains exactly one atom of weight
+For $d\ge K$ all classes are singletons and all weights vanish. Let $K/3\le d<K$. Then $w_d(k)=0$ if and only if
+$|k-J|\le(d-1)/2$, a block of $d$ consecutive indices inside $[0,K)$; so every class contains exactly one atom of weight
 $0$, and the others have weight $2$. A class with $n$ atoms contributes $V(n):=\max_t[t(n-t)+2\min(t,n-1)]$ (take the
 weight-$0$ atom last), and $V(1)=0$, $V(2)=3$, $V(3)=6$. Since $3d\ge K$, classes have at most three atoms. If
 $K/3\le d\le K/2$ there are $K-2d$ classes of size $3$ and $3d-K$ of size $2$, with total $6(K-2d)+3(3d-K)=3(K-d)$. If
@@ -479,38 +560,38 @@ $\prod_iD'(x_i)=(-1)^{K(K-1)/2}(\det W)^2$, so $(\det C)^2=(-1)^{K(K-1)/2}\prod_
 \end{proof}
 
 \begin{lemma}[Lemma~9$'$, plateau bound]\label{lem:nine}
-For every odd prime $p$, $n_p\le2h\lev(p)+v_p(h!)$.
+For every odd prime $p\nmid m$, $n_p\le2h\lev(p)+v_p(h!)$.
 \end{lemma}
 
 \begin{proof}
-Put $N_e(i):=\#\{m<K:m\ne i,\ p^e\mid m-i\}$ and $N(i):=\sum_eN_e(i)=v_p(D'(x_i))$. Note that $N_e(i)\ge1$ needs
+Put $N_e(i):=\#\{k<K:k\ne i,\ p^e\mid k-i\}$ and $N(i):=\sum_eN_e(i)=v_p(D'(x_i))$. Note that $N_e(i)\ge1$ needs
 $p^e\le K-1=h$. We first prove the \emph{row claim}
 \begin{equation}\label{eq:rowclaim}
   v\bigl(G^f_{ij}\bigr)\ge N(i)-2\lev(p)\qquad(i,j<K).
 \end{equation}
-Fix an odd $t$ and a level $d=p^e$, and let $m_0=m_0(t)$. The class of $i$ modulo $d$ has $N_e(i)+1$ elements in
-$[0,K)$, and classes modulo $d$ in $[0,K)$ differ in size by at most one, so the class $m_0$ has at least $N_e(i)$
+Fix an odd $t$ and a level $d=p^e$, and let $k_0=k_0(t)$. The class of $i$ modulo $d$ has $N_e(i)+1$ elements in
+$[0,K)$, and classes modulo $d$ in $[0,K)$ differ in size by at most one, so the class $k_0$ has at least $N_e(i)$
 elements.
 
-\emph{Off-diagonal entries} ($i\ne j$). Here $f_if_j/D=F:=\prod_{m\ne i,j}(t-x_m)$, so $G^f_{ij}=\cM(F)$. Each term of
-$F'(t)$ omits one factor. At level $d$ the factors divisible by $d$ are those with $m\equiv m_0$, $m\ne i,j$; after the
-omission at least $N_e(i)-2$ remain, whether $m_0\equiv i$ or not. Summing over levels, every term has $v_p\ge
+\emph{Off-diagonal entries} ($i\ne j$). Here $f_if_j/D=F:=\prod_{k\ne i,j}(t-x_k)$, so $G^f_{ij}=\cM(F)$. Each term of
+$F'(t)$ omits one factor. At level $d$ the factors divisible by $d$ are those with $k\equiv k_0$, $k\ne i,j$; after the
+omission at least $N_e(i)-2$ remain, whether $k_0\equiv i$ or not. Summing over levels, every term has $v_p\ge
 \sum_e(N_e(i)-2\ind{N_e(i)\ge1})\ge N(i)-2\lev(p)$, and \eqref{eq:step3} gives \eqref{eq:rowclaim}.
 
-\emph{Diagonal entries.} Put $g:=\prod_{m\ne i}(t-x_m)$. Then $f_i^2/D=g/(t-x_i)=Q+g(x_i)/(t-x_i)$ with
+\emph{Diagonal entries.} Put $g:=\prod_{k\ne i}(t-x_k)$. Then $f_i^2/D=g/(t-x_i)=Q+g(x_i)/(t-x_i)$ with
 $Q:=(g(t)-g(x_i))/(t-x_i)$ and $g(x_i)=D'(x_i)$. By Lemma~\ref{lem:pole} the pole part contributes
 $-D'(x_i)z^{x_i}(X-P(x_i))$, of valuation at least $N(i)-2\#\{e:p^e<|x_i|\}\ge N(i)-2\lev(p)$, since $|x_i|\le h$. For
-$Q$, list the roots $x_m$, $m\ne i$, of $g$ as $\alpha_1,\dots,\alpha_h$ in order of decreasing $v_p(m-i)$; telescoping
+$Q$, list the roots $x_k$, $k\ne i$, of $g$ as $\alpha_1,\dots,\alpha_h$ in order of decreasing $v_p(k-i)$; telescoping
 gives
 \[
   Q(t)=\sum_{r=1}^{h}\prod_{s<r}(x_i-\alpha_s)\prod_{s>r}(t-\alpha_s),
 \]
-and for every level $e$ the $\alpha_s=x_m$ with $p^e\mid m-i$ form an initial segment of length $N_e(i)$ (note
-$x_i-x_m=2(i-m)$). Fix a term $r$ of $Q'(t)$, which omits one more factor of the second product, and a level $d$. If
-$r>N_e(i)$, the first product has $N_e(i)$ factors divisible by $d$. If $r\le N_e(i)$ and $m_0\equiv i$, it has $r-1$,
+and for every level $e$ the $\alpha_s=x_k$ with $p^e\mid k-i$ form an initial segment of length $N_e(i)$ (note
+$x_i-x_k=2(i-k)$). Fix a term $r$ of $Q'(t)$, which omits one more factor of the second product, and a level $d$. If
+$r>N_e(i)$, the first product has $N_e(i)$ factors divisible by $d$. If $r\le N_e(i)$ and $k_0\equiv i$, it has $r-1$,
 and the remaining $N_e(i)-r$ class members sit at positions $s>r$, at most one of them omitted: in total at least
-$N_e(i)-2$. If $r\le N_e(i)$ and $m_0\not\equiv i$, the whole class $m_0$ (at least $N_e(i)$ members, all with
-$v_p(m-i)<e$) sits at positions $s>N_e(i)\ge r$: in total at least $N_e(i)-1$. So \eqref{eq:rowclaim} holds for $Q$
+$N_e(i)-2$. If $r\le N_e(i)$ and $k_0\not\equiv i$, the whole class $k_0$ (at least $N_e(i)$ members, all with
+$v_p(k-i)<e$) sits at positions $s>N_e(i)\ge r$: in total at least $N_e(i)-1$. So \eqref{eq:rowclaim} holds for $Q$
 too, by \eqref{eq:step3}.
 
 \emph{The minors.} $\one^{\mathsf T}\adj(G^f)\one=\sum_{a,b}\pm M_{ba}$, where $M_{ba}$ is the minor with row $b$ and
@@ -520,16 +601,18 @@ $v(\Delta_h)\ge-2h\lev(p)-\max_bN(b)$. Finally $N(b)=v_p(b!\,(h-b)!)\le v_p(h!)$
 \end{proof}
 
 \begin{remark}
-On the exact profiles computed for $h=16,\dots,256$ the bound of Lemma~\ref{lem:nine} is never violated, and it is
-attained at most single-level plateau primes; for example at $h=128$ the primes $13,17,19,23,31,37,41,43$ have
+At $m=2$, on the exact profiles computed for $h=16,\dots,256$, the bound of Lemma~\ref{lem:nine} is never violated, and
+it is attained at most single-level plateau primes; for example at $h=128$ the primes $13,17,19,23,31,37,41,43$ have
 $n_p=256+v_p(128!)$ exactly. The row claim \eqref{eq:rowclaim} was checked entrywise at $h=16,24,32,40$ and $p\le13$, with
-minimum slack $0$.
+minimum slack $0$. For other $m$, Lemmas~\ref{lem:eight} and~\ref{lem:nine} were checked at every odd $p\nmid m$ on exact
+profiles for $m=3,4,5,6,9,15$ and $h\le48$, and in $47$ further pairs $(m,h)$ by an independent implementation; there
+was no violation.
 \end{remark}
 
-\subsection{The sum over the odd primes}
+\subsection{The sum over the odd primes not dividing \texorpdfstring{$m$}{m}}\label{sec:oddsum}
 
 \begin{theorem}[Theorem~A$'$]\label{thm:A}
-For every $\eps>0$ and all large even $h$, $\sum_{p\text{ odd}}n_p\log p\le(\frac43+\eps)h^2$.
+For every $\eps>0$ and all large even $h$, $\sum_{p\text{ odd},\,p\nmid m}n_p\log p\le(\frac43+\eps)h^2$.
 \end{theorem}
 
 \begin{proof}
@@ -544,32 +627,81 @@ summation, $\sum_{K/3\le p<K}3(K-p)\log p=3h^2\int_{1/3}^1(1-x)\,dx+o(h^2)=\frac
 $n_p\le0$ by Lemma~\ref{lem:eight}.
 \end{proof}
 
-The finite sums of these bounds, divided by $h^2$, are $1.3380$, $1.3350$ and $1.3337$ at $h=1442$, $20836$ and
-$875032$. The prime $5$ needs no separate treatment: $z$ and $1-y=4z$ are units at $\fp=(\sqrt5)$, so every step above
-holds there with $v(5)=1$.
+The finite sums of these bounds over all odd primes, divided by $h^2$, are $1.3380$, $1.3350$ and $1.3337$ at $h=1442$,
+$20836$ and $875032$. The primes dividing $d_m$ (for $m=2$, the prime $5$) need no separate treatment: $z$ and $1-y=2mz$
+are units there, so every step above holds with $v(p)=1$.
+
+\subsection{Odd primes dividing \texorpdfstring{$m$}{m}: Lemma S}\label{sec:special}
+At an odd prime $p\mid m$ the matrix $\cP$ is no longer $\fp$-integral, since $v_p(1-y)=v_p(m)>0$. The bound of
+Lemma~\ref{lem:eight} survives with an extra term.
+
+\begin{lemma}[Lemma~S]\label{lem:S}
+Let $p$ be an odd prime with $e:=v_p(m)\ge1$. Then for every even $h$,
+\[
+  n_p\le\sum_{l\ge1,\,p^l<K}A_K(p^l)+e\,\frac{(h-2)^2}4 .
+\]
+Consequently $\limsup_{h\to\infty}n_p/h^2\le\frac e4+\frac1{4(p-1)}$, i.e.\ the prime $p$ costs at most
+$c_p(e)=\bigl(\frac e4+\frac1{4(p-1)}\bigr)\log p$ per $h^2$.
+\end{lemma}
+
+\begin{proof}
+Lemma~\ref{lem:atom} still holds. In the proof of Lemma~\ref{lem:eight} every factor other than $\det\cP_{I^cI'^c}$ is
+treated as before: $V$ is integral, $z^{x_k}$ is a unit, $P(x)$ has denominators $n^2$ with $n$ odd, and the class count
+does not involve $\cP$. This gives $v(\text{term})\ge v(\det\cP_{I^cI'^c})-\sum_lA_K(p^l)$. For the polynomial part,
+$\cP_{ij}=\cM(R_{t^{i+j}})$, where $R_{t^{i+j}}\in\ZZ[t]$ is the quotient of $t^{i+j}$ by $D$ (monic of degree $K$). So
+$\cP_{ij}=0$ for $i+j\le K$, since then $R$ is constant and $\cM$ of a constant is $0$. For $r:=i+j-K\ge1$, the Mahler
+form \eqref{eq:mahler} with $G(s)=R'(2s+1)\in\ZZ[s]$ of degree $r-1$, and $\Delta^bG(0)\in b!\,\ZZ$, gives
+\[
+  v(\cP_{ij})\ge\min_{0\le b\le r-1}\bigl(v_p(b!)-e(b+1)\bigr)\ge-e\,r .
+\]
+So $v(\cP_{ij})\ge-e(i+j-K)_+$. For any bijection $\tau\colon I^c\to I'^c$,
+$(i+\tau(i)-K)_+\le(i-K/2)_++(\tau(i)-K/2)_+$, hence
+\[
+  v(\det\cP_{I^cI'^c})\ge-2e\sum_{i<h}(i-K/2)_+=-e(h/2-1)^2=-e\,\frac{(h-2)^2}4
+\]
+($h$ even, $K=h+1$). Adding the two bounds gives the first claim. For the limit, a class with $n_c\le K/d+1$ atoms
+contributes at most $\max_s[s(n_c-s)+2s]\le(K/d+3)^2/4$ to $A_K(d)$, so $A_K(d)\le d(K/d+3)^2/4=K^2/(4d)+O(K)$, and
+$\sum_{l\ge1}p^{-l}=1/(p-1)$; there are $O(\log K)$ levels.
+\end{proof}
+
+\emph{Checks.} On exact profiles there was no violation. For $p=3$, $e=1$ (at $m=3$, $6$ and $15$, where $n_3$ was the
+same): $n_3=101,202,355,752$ at $h=16,24,32,48$, against the bounds $117,249,441,971$. For $m=9$ ($e=2$):
+$n_3=150,579$ at $h=16,32$, against $166,666$. At $m=6$, $h=48$, the generic part of $n_3$ (the value $279$ at $m=2$)
+plus $e(h-2)^2/4=529$ gives $808\ge752$, so the term $e(h-2)^2/4$ is close to sharp, while the plateau term of
+Lemma~\ref{lem:eight} ($442$) overshoots the generic $279$. These data suggest that the true cost of a special prime is
+about $\frac e4\log p$ per $h^2$, and that the extra $\frac1{4(p-1)}\log p$ comes from using Lemma~\ref{lem:eight}
+instead of Lemma~\ref{lem:nine} at $p$; we have not proved this (see Remark~\ref{rem:closeE}).
 
 % ===========================================================================
 \section{Denominators II: the prime 2}\label{sec:two}
 % ===========================================================================
 
-Let $v$ be the $2$-adic valuation of $\KK$; $2$ is inert, $v(2)=1$, $v(z)=0$ and $v(1-y)=2$.
+Let $\fP$ be a prime of $\KK$ above $2$ and $v:=v_\fP$, normalised by $v(2)=1$. Then $v(z)=0$ and
+$v(1-y)=\nu=1+v_2(m)$ (Section~\ref{sec:data}). For $m=2$, $2$ is inert and $\nu=2$.
 
 \emph{Rescaling.} Put $\tau:=t/2$. The atoms become $\tau=s+\frac12$ ($s\ge0$), the poles $\xi_k:=k-J\in\ZZ$, and
 $D(t)=2^K\tilde D(\tau)$ with $\tilde D(\tau):=\prod_{k<K}(\tau-\xi_k)$. With $\tilde\cM(F):=\sum_{s\ge0}z^{2s+1}F'(s+\frac12)$
-and $\tilde\Lambda(g):=\tilde\cM(g/\tilde D)$ we get $\Lambda(t^m)=2^{m-K-1}\tilde\Lambda(\tau^m)$, hence
+and $\tilde\Lambda(g):=\tilde\cM(g/\tilde D)$ we get $\Lambda(t^a)=2^{a-K-1}\tilde\Lambda(\tau^a)$, hence
 $\Delta_h=2^{-3h}\tilde\Delta_h$ with $\tilde\Delta_h:=\det(\tilde\Lambda_X(\tau^{i+j}))$, since
 $\sum_{i<h}2i-h(K+1)=-3h$.
 
 \emph{Anchored basis.} Put $a_i:=\prod_{l<i}(\tau-\xi_l)$ and $b_j:=\prod_{l<j}(\tau-\xi_{K-1-l})$. Both families are
 monic of degrees $i$ and $j$, so $\det(G_{ij})=\tilde\Delta_h$ for $G_{ij}:=\tilde\Lambda_X(a_ib_j)$.
 
-\begin{lemma}[Lemma~10$'$]\label{lem:ten}
+\subsection{The entries}
+
+\begin{lemma}[Lemma~$10_\nu$]\label{lem:tennu}
 Let $i,j<h$.
 \begin{enumerate}
-\item[(L)] If $\pi:=i+j-K\ge1$, then $v(G_{ij})\ge-\pi-\lfloor\log_2\pi\rfloor-2$. If $\pi=0$, then $G_{ij}=0$.
-\item[(U)] If $N_0:=K-1-i-j\ge1$, then $v(G_{ij})\ge N_0-\lfloor\log_2N_0\rfloor$. If $N_0=0$, then $v(G_{ij})=2$.
+\item[(L)] If $\pi:=i+j-K\ge1$, then $v(G_{ij})\ge1-\pi-\nu+\min_{0\le b\le\pi-1}\bigl((2-\nu)b-s_2(b)\bigr)$. If
+  $\pi=0$, then $G_{ij}=0$.
+\item[(U)] If $N_0:=K-1-i-j\ge1$, then
+  \begin{multline*}
+    v(G_{ij})\ge\min\Bigl\{2+(\nu-1)N_0+s_2(N_0),\\
+    2-N_0+s_2(N_0)+\min_{0\le r\le N_0-1}\bigl(2r-s_2(r)+\nu(N_0-1-r)\bigr)\Bigr\}.
+  \end{multline*}
+  If $N_0=0$, then $v(G_{ij})=2$.
 \end{enumerate}
-Consequently $n_2\le h\lfloor\log_2h\rfloor+3h$.
 \end{lemma}
 
 \begin{proof}
@@ -577,9 +709,9 @@ Consequently $n_2\le h\lfloor\log_2h\rfloor+3h$.
 $a_ib_j/\tilde D=F:=\prod_{l=K-j}^{i-1}(\tau-\xi_l)=2^{-\pi}H(2\tau)$ with $H(U):=\prod_l(U-2\xi_l)\in\ZZ[U]$. So
 $F'(s+\frac12)=2^{1-\pi}H'(2s+1)$, and by \eqref{eq:mahler} (with $s$ in place of $(t-1)/2$),
 $\tilde\cM(F)=z\sum_{b<\pi}\Delta^bG(0)y^b/(1-y)^{b+1}$, $G(s)=2^{1-\pi}H'(2s+1)$. The Newton coefficients of
-$s\mapsto(2s+1)^k$ are $\Delta^b[(2s+1)^k](0)=\sum_{j\ge b}\binom kj2^j\,b!\,S(j,b)$, of valuation $\ge b+v_2(b!)$, while
-$y^b/(1-y)^{b+1}$ has valuation $-2(b+1)$. Hence
-$v(G_{ij})\ge1-\pi+\min_{b<\pi}(-2-s_2(b))\ge-\pi-\lfloor\log_2\pi\rfloor-2$. There is no $X$-part. If $\pi=0$ then
+$s\mapsto(2s+1)^a$ are $\Delta^b[(2s+1)^a](0)=\sum_{j'\ge b}\binom a{j'}2^{j'}\,b!\,S(j',b)$, of valuation
+$\ge b+v_2(b!)=2b-s_2(b)$, while $y^b/(1-y)^{b+1}$ has valuation $-\nu(b+1)$. Hence
+$v(G_{ij})\ge1-\pi+\min_{b<\pi}\bigl(2b-s_2(b)-\nu(b+1)\bigr)$, which is the claim. There is no $X$-part. If $\pi=0$ then
 $F=1$ and $\tilde\cM(1)=0$.
 
 (U) Now the ranges leave a gap of $N_0+1$ indices, and with $\zeta_l:=\xi_i+l$,
@@ -593,75 +725,140 @@ $s_0:=2\xi_i+1$,
 \[
   G_{ij}=-\frac4{N_0!}\Bigl[z^{2\xi_i}(y-1)^{N_0}\bigl(X-S(\xi_i)\bigr)+z^{-1}\sum_l(-1)^{N_0-l}\binom{N_0}l\sum_{r<l}y^{l-r}g(r)\Bigr].
 \]
-The first part has valuation $2N_0$, since $y-1=-4z$. In the second, write $y^{l-r}=y\sum_e\binom{l-r-1}e\eta^e$ with
-$\eta:=y-1$ ($v(\eta)=2$) and $g(r)=\sum_m\gamma_m\binom rm$; expanding
-$g(r)=s_0^{-2}\sum_k(-1)^k(k+1)(2/s_0)^kr^k$ (convergent in $\ZZ_2$) and using $\Delta^mr^k(0)=m!\,S(k,m)$ gives
-$v_2(\gamma_m)\ge m+v_2(m!)=2m-s_2(m)$. The identities $\sum_{r<l}\binom rm\binom{l-1-r}e=\binom l{m+e+1}$ and
-$\sum_l(-1)^{N_0-l}\binom{N_0}l\binom lM=\ind{M=N_0}$ collapse the second part to $z^{-1}y\sum_{m+e=N_0-1}\gamma_m\eta^e$,
-of valuation $\ge2N_0-3-\lfloor\log_2N_0\rfloor$. With $v_2(N_0!)=N_0-s_2(N_0)$ this gives
-$v(G_{ij})\ge N_0-1+s_2(N_0)-\lfloor\log_2N_0\rfloor\ge N_0-\lfloor\log_2N_0\rfloor$; the $X$-part has valuation
-$N_0+2+s_2(N_0)$. If $N_0=0$ then $G_{ij}=-4z^{2\xi_i}(X-S(\xi_i))$, of valuation exactly $2$.
-
-\emph{Assignment.} In all cases $v(G_{ij})\ge K-i-j-\lfloor\log_2h\rfloor-2$, since $\pi,N_0\le h$. By the Leibniz
-expansion, $v(\tilde\Delta_h)\ge\sum_{i<h}(K-i-\sigma(i))-h(\lfloor\log_2h\rfloor+2)=-h\lfloor\log_2h\rfloor$ for every
-permutation $\sigma$, and $n_2=-v(\Delta_h)=3h-v(\tilde\Delta_h)$.
+The first part of the bracket has valuation $\nu N_0$. In the second, write $y^{l-r}=y\sum_{e'}\binom{l-r-1}{e'}\eta^{e'}$
+with $\eta:=y-1$ ($v(\eta)=\nu$) and $g(r)=\sum_a\gamma_a\binom ra$; expanding
+$g(r)=s_0^{-2}\sum_c(-1)^c(c+1)(2/s_0)^cr^c$ (convergent in $\ZZ_2$) and using $\Delta^ar^c(0)=a!\,S(c,a)$ gives
+$v_2(\gamma_a)\ge a+v_2(a!)=2a-s_2(a)$. The identities $\sum_{r<l}\binom ra\binom{l-1-r}{e'}=\binom l{a+e'+1}$ and
+$\sum_l(-1)^{N_0-l}\binom{N_0}l\binom lM=\ind{M=N_0}$ collapse the second part to $z^{-1}y\sum_{a+e'=N_0-1}\gamma_a\eta^{e'}$,
+of valuation $\ge\min_{0\le a\le N_0-1}(2a-s_2(a)+\nu(N_0-1-a))$. With $v_2(N_0!)=N_0-s_2(N_0)$ and $v(4)=2$ this gives
+(U). If $N_0=0$ then $G_{ij}=-4z^{2\xi_i}(X-S(\xi_i))$, of valuation exactly $2$.
 \end{proof}
 
-The mechanism is $v_2(1-y)=2$: both triangles (L) and (U) then have slope $1$ in $i+j$, and the permutation sum of the
-bound is constant. In \cite{Chi2Paper} the corresponding quantity is $v_2(1-q^{-2})=3$, which costs $\frac14\log2$ per
-$h^2$. Section~\ref{sec:M1} shows what happens when it is $1$. The exact values $n_2=54,96,142,240,350,576,830$ at
-$h=16,24,32,48,64,96,128$ lie below the bound of Lemma~\ref{lem:ten} ($112,168,256,384,576,864,1280$), and
-$n_2/(h\log_2h)$ rises from $0.84$ to $0.94$ for $h\le256$.
+Nothing in this proof uses a particular value of $\nu$; for $\nu=2$ it is the computation of the earlier version.
 
-% ===========================================================================
-\section{The size of \texorpdfstring{$\Delta_h(T)$}{Delta_h(T)}: Theorem B\texorpdfstring{$'$}{'}}\label{sec:analytic}
-% ===========================================================================
+\subsection{The content}
 
-\subsection{The equilibrium problem and weak duality}
-Put
+\begin{proposition}\label{prop:ntwo}
+For every even $h\ge2$:
 \[
-  \Psi(x):=\tfrac12\int_{x-1}^{x+1}\log|s|\,ds,\qquad v(x):=x\log z-\Psi(x).
+  n_2\le\begin{cases}(\nu-1)\dfrac{(h-2)^2}4-\dfrac{h^2}4+h\lfloor\log_2h\rfloor+5h-1,&\nu\ge2,\\[8pt]
+  \dfrac{(h-2)^2}4+3h,&\nu=1.\end{cases}
 \]
-$\Psi$ is even, increasing on $[0,\infty)$, and $\Psi(0)=-1$. The function $v$ is continuous, and
-$v'(x)=\log z-\frac12\log|(x+1)/(x-1)|$ for $x\ne\pm1$. For $x>0$, $x\ne1$, the logarithm is positive, so
-$v'<\log z<0$; for $-1<x\le0$, $v'(x)=\log z+\artanh|x|<0$ if and only if $|x|<\tanh(\log(1/z))=0.8945\ldots$. Hence
+Hence $\limsup_hn_2/h^2\le|\nu-2|/4$, and the prime $2$ costs at most $c_2(\nu)=|\nu-2|\frac{\log2}4$ per $h^2$.
+\end{proposition}
+
+\begin{proof}
+\emph{$\nu\ge2$.} In (L), $(2-\nu)b\ge(2-\nu)(\pi-1)$ and $s_2(b)\le\lfloor\log_2\pi\rfloor+1$, so
+$v(G_{ij})\ge-(\nu-1)\pi-2-\lfloor\log_2\pi\rfloor$. In (U), $2r-s_2(r)+\nu(N_0-1-r)\ge2(N_0-1)-s_2(r)$, so
+$v(G_{ij})\ge N_0-1+s_2(N_0)-\lfloor\log_2N_0\rfloor\ge N_0-\lfloor\log_2N_0\rfloor$; the first term of the minimum in (U)
+is larger. Hence $v(G_{ij})\ge\hat g(i+j)-\lfloor\log_2h\rfloor-2$ for all $i,j$, with the piecewise linear function
+\[
+  \hat g(s):=K-1-s\quad(s\le K),\qquad \hat g(s):=-1-(\nu-1)(s-K)\quad(s\ge K),
+\]
+which is concave since its slopes $-1$ and $-(\nu-1)$ decrease (at $s=K$ the entry vanishes, and at $s=K-1$ its
+valuation is $2\ge0$). For a permutation $\sigma$ of $\{0,\dots,h-1\}$ the vector $(i+\sigma(i))_i$ is majorised by
+$(2i)_i$: the $k$ largest entries of $i+\sigma(i)$ sum to at most twice the $k$ largest $i$, and the totals are equal. By
+Karamata's inequality, $\sum_i\hat g(i+\sigma(i))\ge\sum_i\hat g(2i)=\frac{h^2}4+1-(\nu-1)\frac{(h-2)^2}4$. By the
+Leibniz expansion, $v(\tilde\Delta_h)\ge\frac{h^2}4+1-(\nu-1)\frac{(h-2)^2}4-h(\lfloor\log_2h\rfloor+2)$, and
+$n_2=-v(\Delta_h)=3h-v(\tilde\Delta_h)$.
+
+\emph{$\nu=1$.} (L) gives $v(G_{ij})\ge-\pi$, since $\min_b(b-s_2(b))=0$. In (U) the first term is $2+s_2(N_0)$ and the
+second is $1+s_2(N_0)+\min_r(r-s_2(r))=1+s_2(N_0)\ge2$. So $v(G_{ij})\ge\hat g_1(i+j)$ with the concave
+$\hat g_1(s):=-(s-K)_+$, and $\sum_i\hat g_1(2i)=-(1+3+\dots+(h-3))=-(h/2-1)^2$. Conclude as before.
+\end{proof}
+
+At $\nu=3$ (for example $m=4$) the bound reads $n_2\le h^2/4+h\lfloor\log_2h\rfloor+3h+1$. On exact profiles at $m=4$,
+$n_2=23,94,201,349,523,737,1277$ at $h=8,16,24,32,40,48,64$, against the bounds $65,177,313,513,721,961,1601$; the
+share $n_2\log2/h^2$ is $0.249$ at $h=8$ and $0.216$ at $h=64$, and $0.2046$, $0.2002$ at $h=96$, $128$, falling towards
+the proved limit $0.1733$. At $m=8$ ($\nu=4$), $n_2=2205$ at $h=64$ against the bound $2562$. Every entry bound (L), (U)
+was checked on the exact Gram matrices for $m=1,3,4,6,8,12,16$ and $h\le64$ (both embeddings where $2$ splits), with no
+violation and with equality attained. In \cite{Chi2Paper} the corresponding quantity is $v_2(1-q^{-2})=3$, which costs
+$\frac14\log2$ per $h^2$, in agreement with $c_2(3)$.
+
+\subsection{The case \texorpdfstring{$\nu=2$}{nu = 2}}
+At $\nu=2$ Proposition~\ref{prop:ntwo} gives $n_2\le h\lfloor\log_2h\rfloor+4h$. The direct assignment gives a slightly
+better bound; for $m=2$ this is the bound used in the earlier version.
+
+\begin{lemma}[Lemma~10$'$]\label{lem:ten}
+Let $\nu=2$ (that is, $m\equiv2\bmod4$) and $i,j<h$.
+\begin{enumerate}
+\item[(L)] If $\pi\ge1$, then $v(G_{ij})\ge-\pi-\lfloor\log_2\pi\rfloor-2$. If $\pi=0$, then $G_{ij}=0$.
+\item[(U)] If $N_0\ge1$, then $v(G_{ij})\ge N_0-\lfloor\log_2N_0\rfloor$. If $N_0=0$, then $v(G_{ij})=2$.
+\end{enumerate}
+Consequently $n_2\le h\lfloor\log_2h\rfloor+3h$.
+\end{lemma}
+
+\begin{proof}
+(L) and (U) are Lemma~\ref{lem:tennu} at $\nu=2$: in (L), $1-\pi-2+\min_{b<\pi}(-s_2(b))\ge-\pi-\lfloor\log_2\pi\rfloor-2$;
+in (U), the second term is $N_0-1+s_2(N_0)-\lfloor\log_2N_0\rfloor$ and the first, $N_0+2+s_2(N_0)$, is larger.
+\emph{Assignment.} In all cases $v(G_{ij})\ge K-i-j-\lfloor\log_2h\rfloor-2$, since $\pi,N_0\le h$. By the Leibniz
+expansion, $v(\tilde\Delta_h)\ge\sum_{i<h}(K-i-\sigma(i))-h(\lfloor\log_2h\rfloor+2)=-h\lfloor\log_2h\rfloor$ for every
+permutation $\sigma$, and $n_2=3h-v(\tilde\Delta_h)$.
+\end{proof}
+
+The mechanism is $\nu=2$: both triangles (L) and (U) then have slope $1$ in $i+j$, and the permutation sum of the
+bound is constant. Section~\ref{sec:M1} shows what happens when $\nu=1$ in a biquadratic setting. At $m=2$ the exact values
+$n_2=54,96,142,240,350,576,830$ at $h=16,24,32,48,64,96,128$ lie below the bound of Lemma~\ref{lem:ten}
+($112,168,256,384,576,864,1280$), and $n_2/(h\log_2h)$ rises from $0.84$ to $0.94$ for $h\le256$.
+
+% ===========================================================================
+\section{The size of \texorpdfstring{$\Delta_h(T)$}{Delta\textunderscore h(T)}: Theorem B\texorpdfstring{$'$}{'}}\label{sec:analytic}
+% ===========================================================================
+
+\subsection{The equilibrium problem and weak duality}\label{sec:equil}
+For $0<z<1$ put
+\[
+  \Psi(x):=\tfrac12\int_{x-1}^{x+1}\log|s|\,ds,\qquad v_z(x):=x\log z-\Psi(x).
+\]
+$\Psi$ is even, increasing on $[0,\infty)$, and $\Psi(0)=-1$. The function $v_z$ is continuous, and
+$v_z'(x)=\log z-\frac12\log|(x+1)/(x-1)|$ for $x\ne\pm1$. For $x>0$, $x\ne1$, the logarithm is positive, so
+$v_z'<\log z<0$; for $-1<x\le0$, $v_z'(x)=\log z+\artanh|x|<0$ if and only if $|x|<\tanh(\log(1/z))$. For
+$0<z\le\sqrt5-2$ we have $\tanh(\log(1/z))\ge\tanh(\log(2+\sqrt5))=0.8945\ldots$. Hence
 \begin{equation}\label{eq:vmono}
-  v\text{ is strictly decreasing on }(-0.894,\infty)\supset[-1/h,\infty)\qquad(h\ge2).
+  v_z\text{ is strictly decreasing on }(-0.894,\infty)\supset[-1/h,\infty)
 \end{equation}
-For a finite positive measure $\rho$ with compact support put $U^\rho(x):=\int\log|x-s|\,d\rho(s)$ and
-$E(\rho):=\iint\log|x-s|\,d\rho(x)\,d\rho(s)$.
+for every $h\ge2$ and $0<z\le\sqrt5-2$.
+This covers every $z_m$ with $m\ge2$, since $z_m$ decreases in $m$. For a finite positive measure $\rho$ with compact
+support put $U^\rho(x):=\int\log|x-s|\,d\rho(s)$ and $E(\rho):=\iint\log|x-s|\,d\rho(x)\,d\rho(s)$.
 
 Call $\mu$ \emph{admissible} if it is a density with $0\le\mu\le1$, mass $1$ and $\operatorname{supp}\mu\subset[0,2]$.
 For admissible $\mu$ and $\lambda\in\RR$ put
 \[
-  F_\mu:=2U^\mu+v,\qquad \Phi(\mu,\lambda):=-E(\mu)+\lambda+\int_0^\infty(F_\mu-\lambda)_+\,dx .
+  F_\mu:=2U^\mu+v_z,\qquad \Phi_z(\mu,\lambda):=-E(\mu)+\lambda+\int_0^\infty(F_\mu-\lambda)_+\,dx .
 \]
 If $\rho$ is a density with $0\le\rho\le1$, mass $1$ and compact support, then $E(\rho-\mu)\le0$
 \cite[Lemma~I.1.8]{SaffTotik}, i.e.\ $E(\rho)\le2\int U^\mu\,d\rho-E(\mu)$, so
 \begin{equation}\label{eq:weakdual}
-  E(\rho)+\int v\,d\rho\le-E(\mu)+\lambda+\int(F_\mu-\lambda)\,d\rho .
+  E(\rho)+\int v_z\,d\rho\le-E(\mu)+\lambda+\int(F_\mu-\lambda)\,d\rho .
 \end{equation}
-The supremum of the left side over such $\rho$ supported in $[0,\infty)$ is the constrained equilibrium constant $C$;
-by \eqref{eq:weakdual}, $C\le\Phi(\mu,\lambda)$.
+The supremum of the left side over such $\rho$ supported in $[0,\infty)$ is the constrained equilibrium constant $C_z$;
+by \eqref{eq:weakdual}, $C_z\le\Phi_z(\mu,\lambda)$.
 
 \subsection{The theorem}
 
 \begin{theorem}[Theorem~B$'$]\label{thm:B}
-Let $\mu$ be admissible and $\lambda\ge-2.96317$, and suppose that $F_\mu-\lambda\le-1.13-0.94(x-4)$ on $[4,\infty)$.
+Let $0<z\le\sqrt5-2$ and $T=\chi_2(z)$. Let $\mu$ be admissible, $\lambda\in\RR$ and $\ccell\ge0$, and suppose that
+\begin{enumerate}
+\item[(i)] $F_\mu-\lambda\le-1.13-0.94(x-4)$ on $[4,\infty)$, and
+\item[(ii)] $F_\mu-\lambda\le\ccell$ on $[-1/100,0]$.
+\end{enumerate}
 Then for every even $h\ge100$,
 \[
-  \log|\Delta_h(T)|\le h^2\,\Phi(\mu,\lambda)+E_{\mathrm{an}}(h),
+  \log|\Delta_h(T)|\le h^2\,\Phi_z(\mu,\lambda)+E_{\mathrm{an}}(h),
 \]
 where $c_1(h):=\log(2h)+1+\log(2+\log(2h+1))$ and
-\[
-  E_{\mathrm{an}}(h):=2h\log(4h)+h\log4+(2h+1)\log3+h\,c_1(h)+7.742h-h\log h+1 .
-\]
-In particular $\limsup_{h\to\infty}h^{-2}\log|\Delta_h(T)|\le\Phi(\mu,\lambda)$.
+\begin{multline*}
+  E_{\mathrm{an}}(h):=2h\log(4h)+h\log4+(2h+1)\log3\\
+  +h\,c_1(h)+(\ccell+2.362)h-h\log h+1 .
+\end{multline*}
+In particular $\limsup_{h\to\infty}h^{-2}\log|\Delta_h(T)|\le\Phi_z(\mu,\lambda)$.
 \end{theorem}
 
-The proof follows the proof of Theorem~B in \cite{Chi2Paper} in the first two steps and then departs from it: the poles
-now lie on both sides of the atoms, which is handled by an exact Jensen-type bound (step~4), and the discretisation
-spreads the particles into cells (step~5) instead of using a lattice energy inequality.
+For $m=2$ the certified pair of Section~\ref{sec:cert} has $\ccell=5.38$, which gives the constant $7.742$ of the earlier
+version. The proof follows the proof of Theorem~B in \cite{Chi2Paper} in the first two steps and then departs from it: the
+poles now lie on both sides of the atoms, which is handled by an exact Jensen-type bound (step~4), and the discretisation
+spreads the particles into cells (step~5) instead of using a lattice energy inequality. Steps 1--4 do not involve $z$;
+step~5 uses only \eqref{eq:vmono}, and step~6 only the hypotheses (i) and (ii).
 
 \begin{proof}
 Write $\phi:=1/D$.
@@ -675,19 +872,19 @@ the sums truncated at $t\le t_{\max}$. Each node $t$ carries a \emph{value slot}
 node $t$, of $\pm\det E_S\,\det\mathbb M_{S,S'}\,\det E_{S'}$, where $E_S$ is the matrix of the rows in $S$ and
 $\mathbb M$ is block diagonal with blocks $M_t$. There are at most $4^h$ pairs $(S,S')$ per pattern.
 
-\emph{2. Slot weights.} $|\det\mathbb M_{S,S'}|\le\prod_t(z^tm_t)^{n_t}$ with $m_t:=\max(|\phi(t)|,|\phi'(t)|)$
-(for $n_t=2$ note $|\det M_t|=z^{2t}\phi(t)^2$). The $K$ numbers $t-x_m$ are distinct odd integers, so
-$|\phi'/\phi|(t)\le\sum_m1/|t-x_m|\le2\sum_{k=0}^h1/(2k+1)\le2+\log(2h+1)$, and $m_t\le|\phi(t)|(2+\log(2h+1))$.
+\emph{2. Slot weights.} $|\det\mathbb M_{S,S'}|\le\prod_t(z^t\omega_t)^{n_t}$ with $\omega_t:=\max(|\phi(t)|,|\phi'(t)|)$
+(for $n_t=2$ note $|\det M_t|=z^{2t}\phi(t)^2$). The $K$ numbers $t-x_k$ are distinct odd integers, so
+$|\phi'/\phi|(t)\le\sum_k1/|t-x_k|\le2\sum_{c=0}^h1/(2c+1)\le2+\log(2h+1)$, and $\omega_t\le|\phi(t)|(2+\log(2h+1))$.
 
 \emph{3. Vandermonde determinants with derivative rows.} $|\det E_S|\le(4h)^h\prod_{t<t'}|t-t'|^{n_tn_{t'}}$. Indeed,
 replace the derivative-only slots $s_1,\dots,s_r$ of $S$ by value rows at free variables; the result is a confluent
 Vandermonde determinant $\pm\prod_{a<b}(a-b)^{n_an_b}$, and $\det E_S$ is obtained by applying
-$\partial_{s_1}\cdots\partial_{s_r}$ and evaluating at the nodes. By induction, after $k$ derivatives the expression is a sum of
-at most $(h-1)^k$ terms, each a product of $k$ exponents (each $\le2$) times $\prod(a-b)^{e'_{ab}}$ with
-$0\le e'_{ab}\le n_an_b$. At the nodes $|a-b|\ge2>1$, so each term is at most $2^k\prod|a-b|^{n_an_b}$, and
+$\partial_{s_1}\cdots\partial_{s_r}$ and evaluating at the nodes. By induction, after $c$ derivatives the expression is a sum
+of at most $(h-1)^c$ terms, each a product of $c$ exponents (each $\le2$) times $\prod(a-b)^{e'_{ab}}$ with
+$0\le e'_{ab}\le n_an_b$. At the nodes $|a-b|\ge2>1$, so each term is at most $2^c\prod|a-b|^{n_an_b}$, and
 $(2(h-1))^r\le(4h)^h$.
 
-\emph{4. The pole product.} For odd $t$ the numbers $t-x_m$ are the odd integers in $[t-h,t+h]$. For every odd $u$,
+\emph{4. The pole product.} For odd $t$ the numbers $t-x_k$ are the odd integers in $[t-h,t+h]$. For every odd $u$,
 $\log|u|\ge\frac12\int_{u-1}^{u+1}\log|s|\,ds$, by concavity of $\log$ on $(0,\infty)$ and on $(-\infty,0)$ (the
 singular endpoint is integrable). The intervals $[u-1,u+1]$ tile $[t-h-1,t+h+1]$, so with $x:=t/h$ and $s=u/h$,
 \begin{align*}
@@ -697,14 +894,14 @@ singular endpoint is integrable). The intervals $[u-1,u+1]$ tile $[t-h-1,t+h+1]$
 Each bracketed integral is over an interval of length $1/h$, hence at least $\int_{-1/(2h)}^{1/(2h)}\log|s|\,ds=-(\log(2h)+1)/h$.
 So $\log|D(t)|\ge(h+1)\log h+h\Psi(x)-\log(2h)-1$ and, with step~2,
 \begin{equation}\label{eq:nodeweight}
-  t\log z+\log m_t\le h\,v(t/h)-(h+1)\log h+c_1(h).
+  t\log z+\log\omega_t\le h\,v_z(t/h)-(h+1)\log h+c_1(h).
 \end{equation}
 By steps 1--4, the pattern $n$ contributes at most $4^h(4h)^{2h}e^{D(n)}$ with
-$D(n):=\sum_{t\ne t'}n_tn_{t'}\log|t-t'|+\sum_tn_t\bigl(h\,v(t/h)-(h+1)\log h+c_1(h)\bigr)$.
+$D(n):=\sum_{t\ne t'}n_tn_{t'}\log|t-t'|+\sum_tn_t\bigl(h\,v_z(t/h)-(h+1)\log h+c_1(h)\bigr)$.
 
 \emph{5. Discrete to continuum.} Spread the $n_t$ slots of node $t$ uniformly over $I_t:=[(t-2)/h,t/h]$: the density
 $\rho_n:=\sum_t\frac{n_t}2\one_{I_t}$ satisfies $0\le\rho_n\le1$, has mass $1$, and is supported in $[-1/h,\infty)$. By
-\eqref{eq:vmono}, $v(t/h)\le v$ on $I_t$, so $\sum_tn_th\,v(t/h)\le h^2\int v\,d\rho_n$. For $t\ne t'$ with
+\eqref{eq:vmono}, $v_z(t/h)\le v_z$ on $I_t$, so $\sum_tn_th\,v_z(t/h)\le h^2\int v_z\,d\rho_n$. For $t\ne t'$ with
 $|t-t'|=2d$, writing $x=(t-2+2a)/h$, $a\in[0,1]$,
 \begin{gather*}
   h^2\iint_{I_t\times I_{t'}}\log|x-s|\,d\rho_n\,d\rho_n=n_tn_{t'}\bigl(\log|t-t'|-\log h-\operatorname{gap}(d)\bigr),\\
@@ -718,42 +915,43 @@ $n_t^2(\log2-\log h-\frac32)$. Summing, and using $n_{t'}\le2$ and $\sum_tn_t^2\
 ($4\cdot0.1137\,\zeta(2)\le0.748$ and $2(\frac32-\log2)\le1.614$). The terms in $\log h$ combine to
 $h^2\log h-h(h+1)\log h=-h\log h$, so
 \[
-  D(n)\le h^2J(\rho_n)-h\log h+h\,c_1(h)+2.362h,\qquad J(\rho):=E(\rho)+\int v\,d\rho .
+  D(n)\le h^2J(\rho_n)-h\log h+h\,c_1(h)+2.362h,\qquad J(\rho):=E(\rho)+\int v_z\,d\rho .
 \]
 
 \emph{6. Dual, the cell below $0$, and far nodes.} By \eqref{eq:weakdual},
 $h^2J(\rho_n)\le h^2(-E(\mu)+\lambda)+h^2\int(F_\mu-\lambda)\,d\rho_n$. On $[0,4]$ the integral is at most
-$\int_0^4(F_\mu-\lambda)_+dx$, since $\rho_n\le1$. On $[-1/h,0]$, which only the cell $I_1$ meets, we have
-$U^\mu(x)\le\log(2+1/h)$ (as $\operatorname{supp}\mu\subset[0,2]$) and $v(x)\le|\log z|/h-\Psi(0)=1+1.4437/h$; hence
-$F_\mu\le2.4108$ and $F_\mu-\lambda\le2.4108+2.96317\le5.374<5.38$ for $h\ge100$, and the contribution to $h^2J$ is at
-most $5.38h$. On $[4,\infty)$, by hypothesis, a slot at a node $t\ge4h+3$ contributes at most $-a_t$ with
-$a_t:=h(1.13+0.94((t-2)/h-4))\ge1.13h$; the node $4h+1$, whose cell straddles $4$, has $F_\mu-\lambda<0$ on its part
-beyond $4$. So for every pattern
+$\int_0^4(F_\mu-\lambda)_+dx$, since $\rho_n\le1$. On $[-1/h,0]\subset[-1/100,0]$, which only the cell $I_1$ meets, (ii)
+gives $F_\mu-\lambda\le\ccell$, so the contribution to $h^2J$ is at most $\ccell h$. On $[4,\infty)$, by (i), a slot at a
+node $t\ge4h+3$ contributes at most $-a_t$ with $a_t:=h(1.13+0.94((t-2)/h-4))\ge1.13h$; the node $4h+1$, whose cell
+straddles $4$, has $F_\mu-\lambda<0$ on its part beyond $4$. So for every pattern
 \[
-  h^2J(\rho_n)\le h^2\Phi(\mu,\lambda)+5.38h-\sum_{t\ge4h+3}n_ta_t .
+  h^2J(\rho_n)\le h^2\Phi_z(\mu,\lambda)+\ccell h-\sum_{t\ge4h+3}n_ta_t .
 \]
 The $2h+1$ odd nodes $t\le4h+1$ carry at most $3^{2h+1}$ patterns, and the nodes beyond contribute at most
 $\prod_{t\ge4h+3}(1+e^{-a_t}+e^{-2a_t})\le\exp\bigl(2e^{-1.13h}/(1-e^{-1.88})\bigr)\le e$. Collecting,
 \begin{multline*}
   \log|\det H^{(t_{\max})}|\le h\log4+2h\log(4h)+(2h+1)\log3\\
-  +h^2\Phi(\mu,\lambda)+5.38h-h\log h+h\,c_1(h)+2.362h+1,
+  +h^2\Phi_z(\mu,\lambda)+\ccell h-h\log h+h\,c_1(h)+2.362h+1,
 \end{multline*}
 uniformly in $t_{\max}$. As $t_{\max}\to\infty$ the truncated matrices converge entrywise to $(\Lambda(t^{i+j}))$, and
 the determinant is continuous.
 \end{proof}
 
 \begin{remark}
-For every even $h\ge2$ the same bound holds with $7.742$ replaced by $9.592$: for any $h$, the bound
-$U^\mu(x)\le\int_1^2\log(s+1)\,ds=0.9095\ldots$ for $x\in[-1/h,0]$ (because $\mu\le1$ and $\operatorname{supp}\mu\subset[0,2]$)
-gives $F_\mu-\lambda\le7.23$ on $[-1/h,0]$. Only the $O(h)$ term changes.
+On $[-1/h,0]$ we have $U^\mu(x)\le\log(2+1/h)$ (as $\operatorname{supp}\mu\subset[0,2]$) and $v_z(x)\le|\log z|/h-\Psi(0)
+=1+|\log z|/h$; so (ii) holds with $\ccell=2\log(2.01)+1+|\log z|/100-\lambda$ whenever this is $\ge0$. For any $h\ge2$
+one may instead use $U^\mu(x)\le\int_1^2\log(s+1)\,ds=0.9095\ldots$ on $[-1/h,0]$ (because $\mu\le1$ and
+$\operatorname{supp}\mu\subset[0,2]$); at $m=2$ this gives $F_\mu-\lambda\le7.23$ there and the bound of
+Theorem~\ref{thm:B} for every even $h\ge2$ with $\ccell+2.362$ replaced by $9.592$. Only the $O(h)$ term changes.
 \end{remark}
 
-\subsection{The certificate}\label{sec:cert}
+\subsection{The certificate at \texorpdfstring{$\sqrt5-2$}{sqrt5 - 2}}\label{sec:cert}
 
 \begin{theorem}\label{thm:cert}
-There is an admissible pair $(\mu,\lambda)$ satisfying the hypotheses of Theorem~\ref{thm:B} with
+For $z=z_2=\sqrt5-2$ there is an admissible pair $(\mu_U,\lambda_U)$ satisfying the hypotheses of Theorem~\ref{thm:B}
+with $\ccell=5.38$ and
 \[
-  \Phi(\mu,\lambda)\le-1.3592161834586374 .
+  \Phi_{z_2}(\mu_U,\lambda_U)\le\Phi_U:=-1.3592161834586374 .
 \]
 \end{theorem}
 
@@ -788,44 +986,118 @@ $N$ & $r$ & $-E(\mu)$ & $\lambda$ & $\int(F_\mu-\lambda)_+\le$ & certified $\Phi
 1600 & 32 & 1.21902464 & $-2.96316943$ & 0.384929 & $-1.35921618345864$\\
 \bottomrule
 \end{tabular}
-\caption{Dual certificates for Theorem~\ref{thm:B} (decimal values rounded; $\lambda$ is a rational number). For
-$N=1600$ the certified Arb ball is $[-1.35921618345864\pm2.6\cdot10^{-15}]$, with upper endpoint
+\caption{Dual certificates for Theorem~\ref{thm:B} at $z=\sqrt5-2$ (decimal values rounded; $\lambda$ is a rational
+number). For $N=1600$ the certified Arb ball is $[-1.35921618345864\pm2.6\cdot10^{-15}]$, with upper endpoint
 $-1.3592161834586374$.}\label{tab:cert}
 \end{table}
 
-The side conditions of Theorem~\ref{thm:B} hold for the certified pair: $\lambda=-2.96316943\ldots\ge-2.96317$; at
-$x=4$, $2\log x+x\log z-\log(x-1)-\lambda=-1.137\ldots$, and the slope of this bound on $[4,\infty)$ is at most
-$2/x+\log z\le-0.94$.
+The side conditions of Theorem~\ref{thm:B} hold for the certified pair: at $x=4$,
+$2\log x+x\log z-\log(x-1)-\lambda=-1.137\ldots$, and the slope of this bound on $[4,\infty)$ is at most
+$2/x+\log z\le-0.94$; on $[-1/h,0]$, $h\ge100$, we have $U^\mu\le\log(2+1/h)$ and $v_z\le1+1.4437/h$, hence
+$F_\mu\le2.4108$ and $F_\mu-\lambda\le2.4108+2.96317\le5.374<5.38$.
 
-\begin{remark}[the equilibrium]\label{rem:equil}
-An active-set quadratic program (and two independent codes) give the primal value $C\approx-1.3594016$, with maximiser
-saturated ($\rho=1$) on $[0,0.5475]$, a free band up to $1.9525$, and $\lambda^*\approx-2.96317$; so the certificate is
-within about $1.9\cdot10^{-4}$ of the optimum. The finite-$h$ values $h^{-2}\log|\Delta_h(T)|$, computed in ball
-arithmetic, are $-1.4379$, $-1.4195$, $-1.4093$, $-1.4015$, $-1.3930$, $-1.3876$, $-1.3815$, $-1.3781$ at $h=16$, $32$,
-$48$, $64$, $96$, $128$, $192$, $256$. They increase towards the constant from below; fits of the form $a+b\log h/h\,(+c/h)$
-give limits between $-1.373$ and $-1.364$, below $C$, so these data do not indicate that Theorem~\ref{thm:B} is sharp.
-This costs nothing, since only the upper bound is used.
+\begin{remark}[the equilibrium at $m=2$]\label{rem:equil}
+An active-set quadratic program (and two independent codes) give the primal value $C_{z_2}\approx-1.3594016$, with
+maximiser saturated ($\rho=1$) on $[0,0.5475]$, a free band up to $1.9525$, and $\lambda^*\approx-2.96317$; so the
+certificate is within about $1.9\cdot10^{-4}$ of the optimum. The finite-$h$ values $h^{-2}\log|\Delta_h(T)|$, computed in
+ball arithmetic, are $-1.4379$, $-1.4195$, $-1.4093$, $-1.4015$, $-1.3930$, $-1.3876$, $-1.3815$, $-1.3781$ at $h=16$,
+$32$, $48$, $64$, $96$, $128$, $192$, $256$. They increase towards the constant from below; fits of the form
+$a+b\log h/h\,(+c/h)$ give limits between $-1.373$ and $-1.364$, below $C_{z_2}$, so these data do not indicate that
+Theorem~\ref{thm:B} is sharp. This costs nothing, since only the upper bound is used.
 \end{remark}
+
+\subsection{The shift lemma}\label{sec:shift}
+A smaller $z$ only helps, and by a computable amount.
+
+\begin{lemma}[shift lemma]\label{lem:shift}
+Let $0<z'\le z\le\sqrt5-2$ and $L:=\log(z/z')\ge0$. For every admissible $\mu$ and every $\lambda\in\RR$,
+\[
+  \Phi_{z'}(\mu,\lambda-L)\le\Phi_z(\mu,\lambda)-\tfrac L2 .
+\]
+If $(\mu,\lambda)$ satisfies (i) of Theorem~\ref{thm:B} at $z$, then $(\mu,\lambda-L)$ satisfies (i) at $z'$; if
+$(\mu,\lambda)$ satisfies (ii) at $z$ with $\ccell$, then $(\mu,\lambda-L)$ satisfies (ii) at $z'$ with
+$\ccell+1.01L$.
+\end{lemma}
+
+\begin{proof}
+Write $F_\mu$ and $F'_\mu$ for the functions at $z$ and $z'$. Since $v_{z'}(x)=v_z(x)-Lx$, we have $F'_\mu=F_\mu-Lx$ and
+\[
+  F'_\mu-(\lambda-L)=(F_\mu-\lambda)-L(x-1).
+\]
+With $a:=F_\mu(x)-\lambda$: on $[0,1]$, $(a+L(1-x))_+\le a_++L(1-x)$; on $[1,\infty)$, $(a-L(x-1))_+\le a_+$. Integrating,
+$\int_0^\infty(F'_\mu-\lambda+L)_+\,dx\le\int_0^\infty(F_\mu-\lambda)_+\,dx+\frac L2$, so
+$\Phi_{z'}(\mu,\lambda-L)\le-E(\mu)+\lambda-L+\int(F_\mu-\lambda)_++\frac L2=\Phi_z(\mu,\lambda)-\frac L2$. On $[4,\infty)$
+the shift $-L(x-1)$ only lowers $F-\lambda$; on $[-1/100,0]$ it raises it by at most $L(1+1/100)$.
+\end{proof}
+
+\begin{corollary}\label{cor:shift}
+For every $m\ge2$, the pair $(\mu_U,\lambda_U-L(m))$ satisfies the hypotheses of Theorem~\ref{thm:B} at $z=z_m$ with
+$\ccell=5.38+1.01L(m)$, and
+\[
+  \Phi_{z_m}\bigl(\mu_U,\lambda_U-L(m)\bigr)\le\Phi_U-\tfrac12L(m),\qquad L(m):=\log\frac{m+\sqrt{m^2+1}}{2+\sqrt5}.
+\]
+In particular $\limsup_hh^{-2}\log|\Delta_h(\chi_2(z_m))|\le\Phi_U-\frac12L(m)$.
+\end{corollary}
+
+\begin{proof}
+$1/z_m=m+\sqrt{m^2+1}$, so $L(m)=\log(z_2/z_m)\ge0$. Apply Lemma~\ref{lem:shift} to Theorem~\ref{thm:cert}.
+\end{proof}
+
+For $m=4$, $L(4)=0.651077\ldots$ and the bound is $\Phi_{z_4}\le-1.684755$. The proof of Theorem~\ref{thm:V} uses only
+Corollary~\ref{cor:shift}, i.e.\ Theorem~\ref{thm:cert} and the shift lemma.
+
+\subsection{Direct certificates at \texorpdfstring{$m=4$}{m = 4} and \texorpdfstring{$m=8$}{m = 8}}\label{sec:certV}
+The program of Section~\ref{sec:cert}, with only $z$ changed, gives direct certificates at $z_4=\sqrt{17}-4$ and
+$z_8=\sqrt{65}-8$ (Table~\ref{tab:certV}). They improve the analytic bound at these points but are not needed for
+Theorem~\ref{thm:V}, because the margins from Corollary~\ref{cor:shift} are already negative there
+(Table~\ref{tab:margins}).
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}rrcccc@{}}
+\toprule
+$m$ & $N$ & $-E(\mu)$ & $\lambda$ & $\int(F_\mu-\lambda)_+\le$ & certified $\Phi$\\
+\midrule
+4 & 200 & 1.36321476 & $-3.71770185$ & 0.63797 & $-1.71651998814$\\
+4 & 800 & 1.36321826 & $-3.71810316$ & 0.63714 & $-1.71774955485$\\
+4 & 1600 & 1.36321769 & $-3.71817249$ & 0.636999 & $-1.7179552750082241$\\
+8 & 1600 & 1.43562390 & $-4.44201260$ & 0.934075 & $-2.0723141156759906$\\
+\bottomrule
+\end{tabular}
+\caption{Direct certificates at $m=4$ and $m=8$ (upper endpoints of Arb balls). Not used in the proof of
+Theorem~\ref{thm:V}.}\label{tab:certV}
+\end{table}
+
+Their side conditions hold: at $x=4$, $F_\mu-\lambda\le-2.987$ ($m=4$) and $-4.990$ ($m=8$), with slopes at most $-1.595$
+and $-2.276$; on the cell, $F_\mu-\lambda\le6.14$ ($m=4$, $h\ge100$). An independent projected-gradient computation of
+the primal problem gives $C_{z_4}\ge-1.7181612$ and $C_{z_8}\ge-2.0725380$, so the certificates are within about
+$2.1\cdot10^{-4}$ and $2.3\cdot10^{-4}$ of the optimum.
 
 % ===========================================================================
 \section{Nonvanishing: Lemma P\texorpdfstring{$'$}{'}}\label{sec:nonvan}
 % ===========================================================================
 
 \subsection{Setting}
-Let $\ell\ge7$ be prime, $h:=3\ell-1$ (even) and $K=3\ell$. The classes modulo $\ell$ are $C_\gamma=\{\gamma,\gamma+\ell,
-\gamma+2\ell\}$, $\gamma<\ell$, all of size $3$. Since $|m-i|<3\ell<\ell^2$ there is a single level, and
-$N(i)=v_\ell(D'(x_i))=2$ for every $i$. Let $\fl$ be a prime of $\KK$ above $\ell$, $v:=v_\fl$, and $\zeta:=z^\ell\bmod\fl$;
-then $\zeta=z$ if $\ell$ splits ($\ell\equiv\pm1\bmod5$) and $\zeta=\sigma(z)=-1/z$ if $\ell$ is inert. Since $\ell\nmid10$,
-the elements $z$, $y$, $1-y=4z$ and $1-\zeta^{\pm2}$ are $\fl$-units.
+Let $\ell\ge7$ be a prime with $\ell\nmid m$, $h:=3\ell-1$ (even) and $K=3\ell$. The classes modulo $\ell$ are
+$C_\gamma=\{\gamma,\gamma+\ell,\gamma+2\ell\}$, $\gamma<\ell$, all of size $3$. Since $|k-i|<3\ell<\ell^2$ there is a single
+level, and $N(i)=v_\ell(D'(x_i))=2$ for every $i$. Let $\fl$ be a prime of $\cO_\KK$ above $\ell$, $v:=v_\fl$, and
+$\zeta:=z^\ell\bmod\fl$. If $\ell$ splits or ramifies in $\KK$, the residue field is $\mathbb F_\ell$ and $\zeta=z$; if
+$\ell$ is inert, $\zeta=\sigma(z)=-1/z$. Since $\ell\nmid2m$, the elements $z$, $y$, $1-y=2mz$, $1-z^{-2}=-2m/z$ and
+$1-\zeta^{\pm2}$ are $\fl$-units. (For ramified $\ell$, $\ell\mid d_m$, so $z\equiv-m$, $z^2\equiv-1$ and
+$1-z^{\pm2}\equiv2$.) For $m=2$: $\ell$ splits if $\ell\equiv\pm1\bmod5$ and is inert otherwise.
+
+When $d_m$ is not squarefree, primes dividing the index $[\cO_\KK:\ZZ[\sqrt{d_m}]]$ (for example $\ell=13$ at $m=70$,
+$d_{70}=4901=13^2\cdot29$) need no special care: every step below works with the prime $\fl$ of $\cO_\KK$ and valuations
+in $\cO_\KK$, never with $\ZZ[\sqrt{d_m}]$.
 
 \emph{Positions.} $x_{\gamma+r\ell}=x_\gamma+2r\ell$ with $x_\gamma=2\gamma-3\ell+1\in[-3\ell+1,-\ell-1]$: in each class the
 pole with $r=0$ is large and negative ($|x|>\ell$), the pole with $r=1$ is small ($|x|<\ell$), and the pole with $r=2$ is
-large and positive. For odd $t$ we have $\ell\mid t-x_m$ exactly for $m$ in one class $C_{\gamma(t)}$, and the odd $t\ge1$
+large and positive. For odd $t$ we have $\ell\mid t-x_k$ exactly for $k$ in one class $C_{\gamma(t)}$, and the odd $t\ge1$
 with $\gamma(t)=\gamma$ form the progression $t=x_\gamma+\ell Y$, $Y\in\{3,5,7,\dots\}$. Put $t_\gamma:=x_\gamma+3\ell$.
 
 \begin{lemma}[Lemma~P$'$]\label{lem:P}
-Let $c_k:=[X^k]\Delta_h$. Then $v_\ell(c_0)=-2K$ and $v_\ell(c_k)\ge-2K+2k$ for all $k$. Hence $\Delta_h(a/b)\ne0$ for every
-$a/b\in\QQ$ with $v_\ell(b)\le1$.
+Let $\ell\ge7$ be prime with $\ell\nmid m$, $h=3\ell-1$, and $c_j:=[X^j]\Delta_h$. Then $v_\ell(c_0)=-2K$ and
+$v_\ell(c_j)\ge-2K+2j$ for all $j$. Hence $\Delta_h(a/b)\ne0$ for every $a/b\in\QQ$ with $v_\ell(b)\le1$.
 \end{lemma}
 
 \begin{proof}
@@ -835,26 +1107,26 @@ $u_\ell:=\ell^{2K}/\prod_iD'(x_i)$ an $\ell$-unit.
 \emph{2. The $X$-part.} $B(f_if_j)=0$ for $i\ne j$, because $f_if_j/D$ is a polynomial, and $B(f_i^2)=-D'(x_i)z^{x_i}$, of
 valuation exactly $2$. So $G^f(X)=G^f(0)+X\operatorname{diag}(d_i)$ with $v(d_i)=2$.
 
-\emph{3. Integrality and block diagonality.} By the row claim \eqref{eq:rowclaim} with $N(i)-2\lev(\ell)=0$, $G^f(0)$ is
-$\fl$-integral. On each progression, $\cM$ restricted to $\gamma$ is
-$z^{t_\gamma}\sum_k z^{2\ell k}F'(t_\gamma+2\ell k)=z^{t_\gamma}\sum_b\Delta^bG_\gamma(0)z^{2\ell b}/(1-z^{2\ell})^{b+1}$,
-$G_\gamma(k):=F'(t_\gamma+2\ell k)$, with $1-z^{2\ell}\equiv1-\zeta^2$ a unit; so \eqref{eq:step3} holds progression by
-progression. Off the diagonal, $F=\prod_{m\ne i,j}(t-x_m)$ has on the progression $\gamma$ exactly
+\emph{3. Integrality and block diagonality.} By the row claim \eqref{eq:rowclaim} with $N(i)-2\lev(\ell)=0$ (valid since
+$\ell\nmid m$), $G^f(0)$ is $\fl$-integral. On each progression, $\cM$ restricted to $\gamma$ is
+$z^{t_\gamma}\sum_c z^{2\ell c}F'(t_\gamma+2\ell c)=z^{t_\gamma}\sum_b\Delta^bG_\gamma(0)z^{2\ell b}/(1-z^{2\ell})^{b+1}$,
+$G_\gamma(c):=F'(t_\gamma+2\ell c)$, with $1-z^{2\ell}\equiv1-\zeta^2$ a unit; so \eqref{eq:step3} holds progression by
+progression. Off the diagonal, $F=\prod_{k\ne i,j}(t-x_k)$ has on the progression $\gamma$ exactly
 $3-\ind{\gamma=c(i)}-\ind{\gamma=c(j)}$ factors divisible by $\ell$ ($c(i)$ is the class of $i$), and $F'$ keeps all but
 one; so a unit is possible only if $c(i)=c(j)=\gamma$. On the diagonal, the polynomial part on a progression
 $\gamma\ne c(i)$ has valuation at least $3-1=2$: the class $\gamma$ has three members, all after the initial segment of
 the telescoping order, and the derivative loses at most one. Hence $G^f(0)\bmod\fl$ is block diagonal over the
 classes, each block receiving only its own progression and its own pole terms.
 
-\emph{4. The blocks.} Fix $\gamma$ with members $m_r=\gamma+r\ell$, put $W(t):=\prod_{m\notin C_\gamma}(t-x_m)$ and
-$U_\gamma:=\prod_{m\notin C_\gamma}(x_\gamma-x_m)$, so $W(t)\equiv U_\gamma\bmod\ell$ on the progression. Off the diagonal
-($r\ne s$, $q$ the third index) $F=W(t)(t-x_{m_q})$ and $F'\equiv W\equiv U_\gamma$. For the diagonal polynomial part,
-$Q=W\cdot(t+x_{m_r}-x_{m_a}-x_{m_b})+p(x_{m_r})\,W[x_{m_r},t]$ with $\{a,b\}$ the other indices, $p(t)=(t-x_{m_a})(t-x_{m_b})$ and
-$p(x_{m_r})\equiv0\bmod\ell^2$; so $Q'\equiv U_\gamma$ too. In the progression sum, $\Delta^0G_\gamma(0)\equiv U_\gamma$ and
+\emph{4. The blocks.} Fix $\gamma$ with members $k_r=\gamma+r\ell$, put $W(t):=\prod_{k\notin C_\gamma}(t-x_k)$ and
+$U_\gamma:=\prod_{k\notin C_\gamma}(x_\gamma-x_k)$, so $W(t)\equiv U_\gamma\bmod\ell$ on the progression. Off the diagonal
+($r\ne s$, $q$ the third index) $F=W(t)(t-x_{k_q})$ and $F'\equiv W\equiv U_\gamma$. For the diagonal polynomial part,
+$Q=W\cdot(t+x_{k_r}-x_{k_a}-x_{k_b})+p(x_{k_r})\,W[x_{k_r},t]$ with $\{a,b\}$ the other indices, $p(t)=(t-x_{k_a})(t-x_{k_b})$ and
+$p(x_{k_r})\equiv0\bmod\ell^2$; so $Q'\equiv U_\gamma$ too. In the progression sum, $\Delta^0G_\gamma(0)\equiv U_\gamma$ and
 $\Delta^bG_\gamma(0)\equiv0$ for $b\ge1$, so it is $\equiv U_\gamma z^{t_\gamma}/(1-z^{2\ell})\equiv U_\gamma z^{x_\gamma}\zeta^3/(1-\zeta^2)$.
-The pole terms at $X=0$ are $D'(x)z^xP(x)$ with $\ell^2P(x_{m_r})\equiv\zeta,0,-\zeta^{-1}$ for $r=0,1,2$ (the only odd
-multiples of $\ell$ below $|x|\le3\ell-1$ in absolute value are $\pm\ell$), $D'(x_{m_r})/\ell^2\equiv U_\gamma\cdot(8,-4,8)_r$,
-and $z^{x_{m_r}}\equiv z^{x_\gamma}\zeta^{2r}$. Hence
+The pole terms at $X=0$ are $D'(x)z^xP(x)$ with $\ell^2P(x_{k_r})\equiv\zeta,0,-\zeta^{-1}$ for $r=0,1,2$ (the only odd
+multiples of $\ell$ below $|x|\le3\ell-1$ in absolute value are $\pm\ell$), $D'(x_{k_r})/\ell^2\equiv U_\gamma\cdot(8,-4,8)_r$,
+and $z^{x_{k_r}}\equiv z^{x_\gamma}\zeta^{2r}$. Hence
 \begin{gather*}
   G^f(0)|_{C_\gamma}\equiv e_\gamma M,\qquad e_\gamma:=U_\gamma z^{x_\gamma},\\
   M:=c\,\one\one^{\mathsf T}+\operatorname{diag}(8\zeta,0,-8\zeta^3),\qquad c:=\frac{\zeta^3}{1-\zeta^2}.
@@ -867,50 +1139,228 @@ reduction,
   \one^{\mathsf T}\adj\Bigl(\bigoplus_\gamma e_\gamma M\Bigr)\one=(\det M)^{\ell-1}\,\one^{\mathsf T}\adj(M)\one\,
   \Bigl(\prod_\gamma e_\gamma^3\Bigr)\sum_\gamma e_\gamma^{-1}.
 \]
-Modulo $\ell$, $U_\gamma\equiv\prod_{m\not\equiv\gamma}2(\gamma-m)\equiv2^{3(\ell-1)}((\ell-1)!)^3\equiv-1$ for every $\gamma$
+Modulo $\ell$, $U_\gamma\equiv\prod_{k\not\equiv\gamma}2(\gamma-k)\equiv2^{3(\ell-1)}((\ell-1)!)^3\equiv-1$ for every $\gamma$
 (Fermat, Wilson). So $\sum_\gamma e_\gamma^{-1}\equiv-z^{3\ell-1}\sum_{\gamma<\ell}z^{-2\gamma}=-z^{3\ell-1}(1-z^{-2\ell})/(1-z^{-2})$, and
-$1-z^{-2\ell}\equiv1-\zeta^{-2}$ and $1-z^{-2}=-4/z$ are units. Hence $\one^{\mathsf T}\adj(G^f(0))\one$ is an $\fl$-unit, and
+$1-z^{-2\ell}\equiv1-\zeta^{-2}$ and $1-z^{-2}=-2m/z$ are units. Hence $\one^{\mathsf T}\adj(G^f(0))\one$ is an $\fl$-unit, and
 $v_\ell(c_0)=-2K$ by step~1.
 
-\emph{6. The gap.} $[X^k]\one^{\mathsf T}\adj(G^f(X))\one$ is a sum of products containing $k$ factors $d_i$, so it has
-valuation $\ge2k$. If $v_\ell(b)\le1$, the $k$-th term of $\Delta_h(a/b)$ has valuation $\ge-2K+2k-k>-2K$ for $k\ge1$.
+\emph{6. The gap.} $[X^j]\one^{\mathsf T}\adj(G^f(X))\one$ is a sum of products containing $j$ factors $d_i$, so it has
+valuation $\ge2j$. If $v_\ell(b)\le1$, the $j$-th term of $\Delta_h(a/b)$ has valuation $\ge-2K+2j-j>-2K$ for $j\ge1$.
 \end{proof}
 
-Every prime $\ell\ge7$ works, split or inert. In \cite{Chi2Paper} the partial sums reach past $3\ell$ and the block
-constants are fixed rationals that must avoid $\ell$, so finitely many primes are excluded; here only $n=\pm\ell$ enters.
-Steps~4--5 were checked entrywise modulo $\ell$ for $\ell=7,11,\dots,41$ (split and inert), and the conclusion on the exact
-$\Delta_h$ for $\ell=7,\dots,29$.
+The only place where $m$ enters is the list of units in the setting, and they are units exactly when $\ell\nmid2m$. So
+every prime $\ell\ge7$ with $\ell\nmid m$ works, whether it splits, is inert or ramifies. In \cite{Chi2Paper} the partial
+sums reach past $3\ell$ and the block constants are fixed rationals that must avoid $\ell$, so finitely many primes are
+excluded; here only $n=\pm\ell$ enters. At $m=2$, steps~4--5 were checked entrywise modulo $\ell$ for $\ell=7,11,\dots,41$
+(split and inert), and the conclusion on the exact $\Delta_h$ for $\ell=7,\dots,29$. For other $m$ the conclusion
+($v_\ell(c_0)=-2K$ and the gap) was checked on the exact $\Delta_h$ at $m=4$ ($\ell=7,11,13,17,19$; $\ell=17$ ramified),
+$m=6$ ($\ell=7,11,13$), and, by an independent implementation, at $m=3,7,9,11,12,13,18,21$ (17 cases, among them three
+ramified $\ell$: $\ell=17$ at $m=13$, $\ell=13$ at $m=21$, and $\ell=13$ at $m=18$, where $d_{18}=325=5^2\cdot13$). As a
+control, at $m=7$, $\ell=7$ (so $\ell\mid m$) the conclusion fails: $v_\ell(c_0)+2K=-67$.
 
 % ===========================================================================
-\section{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
+\section{Proof of Theorem~\ref{thm:V}}\label{sec:proof}
 % ===========================================================================
 
-Suppose that $T=a/b$ with $a\in\ZZ$, $b\ge1$. Let $\mathcal H:=\{3\ell-1:\ell\ge37\text{ prime},\ \ell^2\nmid b\}$, an
-infinite set of even integers $h\ge110$. For $h\in\mathcal H$, Lemma~\ref{lem:P} gives $\Delta_h\not\equiv0$ and
+\subsection{The proof}
+Fix $m\ge2$ with $m\notin\cE$, let $\nu=1+v_2(m)$, and suppose that $T=\chi_2(z_m)=a/b$ with $a\in\ZZ$, $b\ge1$. Let
+\[
+  \mathcal H:=\{3\ell-1:\ \ell\ge37\text{ prime},\ \ell\nmid m,\ \ell^2\nmid b\},
+\]
+an infinite set of even integers $h\ge110$. For $h\in\mathcal H$, Lemma~\ref{lem:P} gives $\Delta_h\not\equiv0$ and
 $F_h(a/b)\ne0$, where $F_h\in\ZZ[X]$ is the primitive polynomial of Section~\ref{sec:construction}, of degree $\le h$. We
 have $\log|F_h(T)|=\log|\Delta_h(T)|+\sum_pn_p\log p$, and along $\mathcal H$:
 \begin{itemize}
-\item odd primes: $\limsup h^{-2}\sum_{p\text{ odd}}n_p\log p\le\frac43$ (Theorem~\ref{thm:A});
-\item $p=2$: $n_2=O(h\log h)$ (Lemma~\ref{lem:ten});
-\item size: $\limsup h^{-2}\log|\Delta_h(T)|\le-1.3592161834586374$ (Theorems~\ref{thm:B} and~\ref{thm:cert}).
+\item odd primes $p\nmid m$: $\limsup h^{-2}\sum n_p\log p\le\frac43$ (Theorem~\ref{thm:A});
+\item odd primes $p\mid m$, $e=v_p(m)$: $\limsup h^{-2}n_p\log p\le c_p(e)$ (Lemma~\ref{lem:S});
+\item $p=2$: $\limsup h^{-2}n_2\log2\le c_2(\nu)$ (Proposition~\ref{prop:ntwo});
+\item size: $\limsup h^{-2}\log|\Delta_h(T)|\le\Phi_U-\frac12L(m)$ (Corollary~\ref{cor:shift}).
 \end{itemize}
-So $\limsup_{h\in\mathcal H}h^{-2}\log|F_h(T)|\le-0.0258828\ldots<0$, contradicting Proposition~\ref{prop:criterion}.
-Hence $T=\chi_2(\sqrt5-2)$ is irrational, and so is $24T=\pi^2-18\log^2\varphi$ by \eqref{eq:closedform}. \qed
+So $\limsup_{h\in\mathcal H}h^{-2}\log|F_h(T)|\le M(m)$, with $M(m)$ as in \eqref{eq:budget}, and $M(m)<0$ by
+Proposition~\ref{prop:margins} below. This contradicts Proposition~\ref{prop:criterion}. \qed
 
-\begin{remark}[effectivity]\label{rem:effective}
+\emph{Proof of Corollary~\ref{thm:U}.} At $m=2$, $\nu=2$, there are no odd primes dividing $m$, $L(2)=0$, and
+$n_2=O(h\log h)$ by Lemma~\ref{lem:ten}. So $M(2)=\Phi_U+\frac43=-0.0258828\ldots<0$, and
+$T=\chi_2(\sqrt5-2)$ is irrational; so is $24T=\pi^2-18\log^2\varphi$ by \eqref{eq:closedform}. \qed
+
+\subsection{The margins}\label{sec:margins}
+Table~\ref{tab:margins} lists $M(m)$ for some $m$. Every entry is an upper bound computed in Arb.
+
+\begin{table}[ht]
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}rrrlrrr@{}}
+\toprule
+$m$ & $\nu$ & $c_2(\nu)$ & odd $p\mid m$: $\sum c_p(e)$ & arithmetic & $\Phi_U-\frac12L(m)$ & $M(m)$\\
+\midrule
+2 & 2 & 0 & --- & 1.333333 & $-1.359216$ & $-0.025883$\\
+4 & 3 & 0.173287 & --- & 1.506620 & $-1.684755$ & $-0.178135$\\
+6 & 2 & 0 & $3$: 0.411980 & 1.745313 & $-1.883288$ & $-0.137975$\\
+8 & 4 & 0.346574 & --- & 1.679907 & $-2.025634$ & $-0.345727$\\
+10 & 2 & 0 & $5$: 0.502949 & 1.836283 & $-2.136509$ & $-0.300227$\\
+11 & 1 & 0.173287 & $11$: 0.659421 & 2.166041 & $-2.183949$ & $-0.017908$\\
+12 & 3 & 0.173287 & $3$: 0.411980 & 1.918600 & $-2.227291$ & $-0.308691$\\
+13 & 1 & 0.173287 & $13$: 0.694674 & 2.201294 & $-2.267184$ & $-0.065890$\\
+16 & 5 & 0.519860 & --- & 1.853194 & $-2.370753$ & $-0.517560$\\
+21 & 1 & 0.173287 & $3,7$: 0.979537 & 2.486157 & $-2.506516$ & $-0.020359$\\
+\midrule
+3 & 1 & 0.173287 & $3$: 0.411980 & & & $+0.3720$\\
+5 & 1 & 0.173287 & $5$: 0.502949 & & & $+0.2160$\\
+7 & 1 & 0.173287 & $7$: 0.567557 & & & $+0.1147$\\
+9 & 1 & 0.173287 & $3$ ($e=2$): 0.686633 & & & $+0.1091$\\
+15 & 1 & 0.173287 & $3,5$: 0.914929 & & & $+0.0830$\\
+\bottomrule
+\end{tabular}
+\caption{Limit margins $M(m)$ per $h^2$ (upper bounds; the analytic column uses only Corollary~\ref{cor:shift}). The
+rows below the line are the exceptional set $\cE$, where the bound is positive. The direct certificates of
+Table~\ref{tab:certV} improve the rows $m=4$ and $m=8$ to $M(4)\le-0.211335$ and $M(8)\le-0.392407$.}\label{tab:margins}
+\end{table}
+
+\begin{proposition}\label{prop:margins}
+$M(m)<0$ for every integer $m\ge2$ with $m\notin\cE$, and $M(m)>0$ for $m\in\cE\cup\{1\}$.
+\end{proposition}
+
+\begin{proof}
+Write $m=2^aq$ with $q$ odd. Since $m+\sqrt{m^2+1}>2m$, $L(m)>\log(2m)-\log(2+\sqrt5)$. For odd $p$,
+$1/(4(p-1))\le1/8$, so $\sum_{p^e\parallel q}c_p(e)\le\frac14\log q+\sum_{p\mid q}\frac{\log p}{4(p-1)}\le\frac38\log q$.
+
+If $a\ge1$, then $\nu=a+1\ge2$ and $c_2(\nu)=(a-1)\frac{\log2}4$, so
+\begin{align*}
+  M(m)&<\Bigl[\Phi_U+\tfrac43+\tfrac12\log(2+\sqrt5)-\tfrac34\log2\Bigr]-\tfrac a4\log2-\tfrac18\log q\\
+  &=0.176075\ldots-0.173287\ldots\,a-\tfrac18\log q .
+\end{align*}
+This is negative unless $a=1$ and $q=1$, i.e.\ $m=2$, where $M(2)=-0.025883$ exactly as computed above.
+
+If $a=0$, then $\nu=1$ and $c_2(1)=\frac{\log2}4$, so
+\begin{align*}
+  M(m)&<\Bigl[\Phi_U+\tfrac43+\tfrac12\log(2+\sqrt5)-\tfrac14\log2\Bigr]-\tfrac14\log q+\sum_{p\mid q}\frac{\log p}{4(p-1)}\\
+  &\le0.522648\ldots-\tfrac18\log q,
+\end{align*}
+which is negative for $q>e^{8\cdot0.522648\ldots}=65.443\ldots$. For the odd $m\le65$ we evaluate $M(m)$ in Arb, with the
+exact $L(m)$; for $3\le m\le65$ it is negative except for $m\in\cE$, where the enclosures are positive, between
+$+0.083$ ($m=15$) and $+0.372$ ($m=3$) (Table~\ref{tab:margins}). For $m=1$ the independent interval computation
+mentioned below gives $M(1)\approx+0.4285$.
+\end{proof}
+
+So every $m>65$ is covered by the closed form, the odd $m\le65$ by the table, and the set of $m\ge2$ for which the
+method as written concludes is exactly $\{m\ge2\}\setminus\cE$. An independent computation in mpmath interval arithmetic
+(shift lemma only, no shared code) found $M(m)\ge0$ exactly for $m\in\{1,3,5,7,9,15\}$ among $1\le m\le3000$, and agreed
+with the table to all printed digits for $m\le60$. The tightest margins, $m=11$ and $m=21$, depend on the digits of
+$\Phi_U$ only at the level $10^{-2}$.
+
+\emph{The excluded values.} For $m\in\cE$ the method does not conclude, although the exact finite-$h$ scores there are
+negative at $h\le48$ (Table~\ref{tab:evidenceV}). They rise with $h$ (for $m=3$: $-0.1326$, $-0.0734$, $-0.0340$ at
+$h=32,48,64$) and are not evidence for these $m$. For $m=1$ the margin is positive and so are the finite-$h$ scores:
+$+0.0595$, $+0.2144$, $+0.2524$, $+0.2876$ at $h=16,32,48,64$. So $\chi_2(\sqrt2-1)=\pi^2/16-\frac14\log^2(1+\sqrt2)$ is out
+of reach of this method.
+
+\begin{remark}[towards $\cE$]\label{rem:closeE}
+The following is not proved. The data after Lemma~\ref{lem:S} suggest that the term $\frac1{4(p-1)}\log p$ in $c_p(e)$
+can be removed by a plateau bound of the quality of Lemma~\ref{lem:nine} at special primes. That would bring $m=9$ and
+$m=15$ into Theorem~\ref{thm:V}. For $\nu=1$ the exact $2$-adic shares (for example $0.112$ at $h=64$, against the
+limit bound $0.173$) suggest that $c_2(1)<\frac14\log2$; with direct certificates this might reach $m=7$. The values
+$m=3$ and $m=5$ look out of reach of this machine.
+\end{remark}
+
+\subsection{Effectivity}
+
+\begin{remark}[effectivity at $m=2$]\label{rem:effective}
 Every bound above is explicit at finite $h$ except the prime number theorem in Theorem~\ref{thm:A}. At a single $h$ one
 can instead evaluate the proved finite-$h$ bound
 \[
   \log|F_h(T)|\le h^2\Phi+E_{\mathrm{an}}(h)+B_{\mathrm{odd}}(h)+h(\lfloor\log_2h\rfloor+3)\log2,
 \]
 where $B_{\mathrm{odd}}(h)=\sum_{3\le p<K/3}(2h\lev(p)+v_p(h!))\log p+\sum_{K/3\le p<K}\min(2h+v_p(h!),3(K-p))\log p$ is an
-exact finite sum. In exact arithmetic this bound is negative at every even $h$ with $2432\le h\le40000$, and at every
-sampled $h$ up to $8.75\cdot10^5$, with $|\text{bound}|/h^2$ increasing towards $0.0259$. A proof that it stays negative
-for all larger $h$ would need explicit error terms in the prime number theorem, which we have not carried out. As an
-effective consequence, if $T=a/b$ with $\log b\le800$, a single $h=3\ell-1\le36000$ with $\ell\nmid b$ gives a
-contradiction. The exact scores $h^{-2}\log|F_h(T)|$ are much better than this bound, for example $-0.066$ at $h=192$
-(Table~\ref{tab:evidence}).
+exact finite sum. At $m=2$, in exact arithmetic, this bound is negative at every even $h$ with $2432\le h\le40000$, and at
+every sampled $h$ up to $8.75\cdot10^5$, with $|\text{bound}|/h^2$ increasing towards $0.0259$. A proof that it stays
+negative for all larger $h$ would need explicit error terms in the prime number theorem, which we have not carried out.
+As an effective consequence, if $\chi_2(\sqrt5-2)=a/b$ with $\log b\le800$, a single $h=3\ell-1\le36000$ with $\ell\nmid b$
+gives a contradiction. The exact scores $h^{-2}\log|F_h(T)|$ are much better than this bound, for example $-0.066$ at
+$h=192$ (Table~\ref{tab:evidence}).
 \end{remark}
+
+\begin{remark}[effectivity at $m=4$]
+The same finite-$h$ bound at $m=4$, with the direct certificate of Table~\ref{tab:certV}, Proposition~\ref{prop:ntwo} at $\nu=3$
+and Lemmas~\ref{lem:eight}, \ref{lem:classcount}, \ref{lem:nine}, is negative at every even $h$ with $178\le h\le40000$
+and at every sampled $h$ up to $6\cdot10^5$; the last nonnegative value is at $h=176$. For example it is $-0.0749h^2$ at
+$h=242$ and $-0.1648h^2$ at $h=1004$. So if $\chi_2(\sqrt{17}-4)=a/b$, a single $h=3\ell-1$ with $\ell\nmid b$ and
+$h\ge242$, of size about $5\log b+300$, gives a contradiction. This uses the direct certificate, which the proof of
+Theorem~\ref{thm:V} does not need.
+\end{remark}
+
+% ===========================================================================
+\section{Closed forms and known results}\label{sec:closed}
+% ===========================================================================
+
+\subsection{Closed forms}
+Put $w_m:=(1-z_m)/(1+z_m)$, so that Landen's identity reads
+\begin{equation}\label{eq:landenm}
+  \chi_2(z_m)+\chi_2(w_m)=\frac{\pi^2}8-\frac12\log z_m\,\log w_m .
+\end{equation}
+For $m=1$, $z_1=w_1=\sqrt2-1$, and \eqref{eq:landenm} gives $\chi_2(\sqrt2-1)=\pi^2/16-\frac14\log^2(1+\sqrt2)$. For
+$m=2$, $w_2=\varphi^{-1}$, and \eqref{eq:landenm} with the value of $\chi_2(\varphi^{-1})$ gives \eqref{eq:closedform}.
+
+\begin{proposition}\label{prop:symbol}
+Let $m\ge1$. Then $w_m=(\sqrt{m^2+1}-1)/m$, $\sigma(w_m)=-1/w_m$ and $mw_m^2+2w_m-m=0$; so $w_m$ is an algebraic integer
+if and only if $m\mid2$. For $m\ge3$, $z_m$ and $w_m$ are multiplicatively independent, and $z_m\wedge w_m\ne0$ in
+$\Lambda^2(\KK^\times)\otimes\QQ$.
+\end{proposition}
+
+\begin{proof}
+The formula for $w_m$ and its quadratic equation are direct computations; the product of the roots is $-1$, so
+$\sigma(w_m)=-1/w_m$, and the monic equation $X^2+(2/m)X-1$ has integer coefficients iff $m\mid2$. For $m\ge3$, $w_m$ is
+not integral, so $v_\fp(w_m)<0$ at some prime $\fp$, while $z_m$ is a unit. If $z_m^\alpha w_m^\beta=\pm1$, then
+$\beta v_\fp(w_m)=0$, so $\beta=0$, and then $\alpha=0$ since $0<z_m<1$. Hence $z_m$, $w_m$ are linearly independent in
+$\KK^\times\otimes\QQ$, and $z_m\wedge w_m\ne0$.
+\end{proof}
+
+From $\delta\Li_2(x)=-(1-x)\wedge x$ one gets $\delta\chi_2(z)=\pm\frac12\,w\wedge z$ modulo torsion, with
+$w=(1-z)/(1+z)$. The symbol of $\pi^2$ and of a product of two logarithms is $0$ in $\Lambda^2$. So for $m\ge3$ no
+dilogarithm identity that preserves the symbol expresses $\chi_2(z_m)$ through $\pi^2$ and products of logarithms; for
+$m=1,2$ the symbol vanishes, as Landen's evaluations require. This is a statement about symbols only: an unconditional
+statement that $\chi_2(z_m)$ is not of this form would need algebraic independence results that are not available.
+
+By \eqref{eq:landenm}, Theorem~\ref{thm:V} can equally be stated as
+$\chi_2(w_m)+\frac12\log z_m\log w_m\notin\frac{\pi^2}8+\QQ$. At $m=4$, Hakimoglu-Brown \cite[Cor.~14]{HakimogluBrown2026}
+(unrefereed) gives two identities for Rogers' dilogarithm $L$ over $\QQ(\sqrt{17})$, in the bases $a=(\sqrt{17}-3)/4$
+and $b=\sqrt{17}-4$. Their sum isolates $4\Li_2(b)-\Li_2(b^2)=4\chi_2(b)$, and gives
+\begin{multline*}
+  12\chi_2(\sqrt{17}-4)=18L(a)-6L(a^2)+18L(2a)-3L(4a^2)-2\pi^2\\
+  -6\log b\log(1-b)+3\log b\log(1-b^2),
+\end{multline*}
+which we checked numerically to $10^{-120}$. It is a relation among non-elementary values ($a$ and $1-a$ are not units),
+not a closed form; Theorem~\ref{thm:V} at $m=4$ is equivalent to the irrationality of its right side.
+
+\subsection{Known criteria}\label{sec:lit}
+Table~\ref{tab:lit} compares Theorem~\ref{thm:V} with the general criteria of Section~\ref{sec:context}, evaluated at
+$z_m$ at the real place where $z_m$ is small. As there, $\chi_2(z)=z+\frac z4\Phi_2(\frac12,z^2)$, and the height of
+$z_m^{-2}$ at that place is $\log(1/z_m)$. The evaluations are ours; that of \cite[Thm.~1]{DHK2022b} through
+$\Phi_2(\frac12,z^2)$ was re-derived from the published statement by the AI referee of Theorem~\ref{thm:V}. None of them
+has been checked by the authors of the criteria.
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.31\textwidth}>{\raggedright\arraybackslash}p{0.33\textwidth}>{\raggedright\arraybackslash}p{0.28\textwidth}@{}}
+\toprule
+criterion & key quantity at $z_m$ & covers\\
+\midrule
+\cite[Thm.~1]{DHK2022b}, via $\Phi_2(\frac12,z^2)$ & $\log(1/z_m)-15.977968\ldots$ & $m\ge4\,346\,237$, with $\chi_2(z_m)\notin\KK$\\
+\cite[Thm.~1]{DHK2022b}, via $\Li_2(\pm z)$ & $\frac12\log(1/z_m)-15.78$ & $m\gtrsim e^{31.5}/2$\\
+\cite{DHK2020} & weaker than \cite{DHK2022b} & nothing more\\
+\cite[Thm.~2.2]{Kawashima2026} (unrefereed) & $\frac12\log(1/z_m)-26.84$ & $m\gtrsim e^{53.7}/2$\\
+Bombieri--Andr\'e via \cite{Orr2026} (unrefereed) & height $\frac12\log(1/z_m)$ against about $1450$ & $m\gtrsim e^{2900}$\\
+results at rational points & --- & none\\
+\bottomrule
+\end{tabular}
+\caption{General criteria at $z_m$ (our evaluations).}\label{tab:lit}
+\end{table}
+
+At $m=4$ the first quantity is $-13.88$. The criterion of \cite{DHK2022b} gives the linear independence of $1$,
+$\Phi_1(\frac12,z^2)$, $\Phi_2(\frac12,z^2)$ over $\KK$, hence $\chi_2(z_m)\notin\KK$, a stronger conclusion than ours in
+its range. So the infinite tail of Theorem~\ref{thm:V} is due to \cite{DHK2022b}, and what Theorem~\ref{thm:V} adds is
+the range $2\le m\le4\,346\,236$ with $m\notin\cE$, by one argument for all $m$. As far as our searches show, no result in
+the literature covers any $m$ in this range; for $m\ge3$ the searches were limited (Section~\ref{sec:context}), and a
+MathSciNet search and an expert query are still owed.
 
 % ===========================================================================
 \section{Two points}\label{sec:M1}
@@ -989,7 +1439,8 @@ valuation normalised by $v(p)=1$; there are no special odd primes, including the
 $n^2-16$. The bound is the same at every prime $\fp$ of $\cF$ above $p$.
 
 \emph{The prime $2$.} Here Lemma~\ref{lem:ten} fails: at $n=400$, $h=48$, the exact $2$-adic content is $388.5$, above
-$h\lfloor\log_2h\rfloor+3h=384$. It is replaced by the following weaker bound.
+$h\lfloor\log_2h\rfloor+3h=384$. It is replaced by the following weaker bound, which is the analogue over $\cK$ of the
+case $\nu=1$ of Proposition~\ref{prop:ntwo}.
 
 \begin{lemma}[Lemma~10$''$]\label{lem:tenpp}
 Let $n$ be even and $\fP$ a prime of $\cK$ above $2$, with $v=v_\fP$ normalised by $v(2)=1$. Then
@@ -998,7 +1449,7 @@ $-v(\Delta_h)\le(h-2)^2/4+3h$.
 
 \begin{proof}
 Since $n$ is even, $u/2$ is a root of $X^2+(n/2)X+1$, hence a unit; so
-$\nu:=v(1-y)=v(u)=1$, instead of $2$. Follow the proof of Lemma~\ref{lem:ten}, which up to the valuations does not
+$\nu:=v(1-y)=v(u)=1$, instead of $2$. Follow the proof of Lemma~\ref{lem:tennu}, which up to the valuations does not
 involve $z$. In (L), $y^b/(1-y)^{b+1}$ now has valuation $-(b+1)$, so
 $v(G_{ij})\ge1-\pi+\min_{b<\pi}(v_2(b!)-1)=-\pi$. In (U), with $v(\eta)=1$, the first part has valuation $2+s_2(N_0)$ and
 the second part valuation $\ge1+s_2(N_0)$, so $v(G_{ij})\ge2$ for $N_0\ge0$; the bound no longer grows with $N_0$. Hence
@@ -1067,17 +1518,17 @@ Let $n\ge6$ be even, and suppose that for each $q\in\{z,w\}$ there is a pair $(\
 ($\mu_q\ge0$, mass $1$, $\operatorname{supp}\mu_q\subset[0,X_e]$ with $X_e\ge4$; the cap $\mu_q\le1$ is not required)
 satisfying the tail condition~(c), with
 \[
-  m(n):=\tfrac12\bigl(\Phi_z(\mu_z,\lambda_z)+\Phi_w(\mu_w,\lambda_w)\bigr)+\tfrac43+\tfrac14\log2<0 .
+  M_1(n):=\tfrac12\bigl(\Phi_z(\mu_z,\lambda_z)+\Phi_w(\mu_w,\lambda_w)\bigr)+\tfrac43+\tfrac14\log2<0 .
 \]
 Then $\mathrm{M1}(n)$ holds.
 \end{lemma}
 
 \begin{proof}
-Suppose $\alpha\in\cF$ has $T_z=\alpha$ and $T_w=l(\alpha)$, and fix $b\ge1$ with $b\alpha\in\mathcal O_\cF$. Let
+Suppose $\alpha\in\cF$ has $T_z=\alpha$ and $T_w=l(\alpha)$, and fix $b\ge1$ with $b\alpha\in\cO_\cF$. Let
 $\mathcal H:=\{3\ell-1:\ell\ge7\text{ prime, unramified in }\cK,\ \ell\nmid b,\ 3\ell-1>\coth L_z\}$, an infinite set; note
 $\coth L_w<\coth L_z$. For $h\in\mathcal H$, Lemma~P$'$ over $\cF$ gives $\Delta_h(\alpha)\ne0$. For a prime $\fp$ of $\cF$
 put $n_\fp:=-v_\fp(\Delta_h)$, which may be a half-integer at ramified primes, and $n_p:=\max(0,\max_{\fp\mid p}\lceil
-n_\fp\rceil)$, $c_h:=\prod_pp^{n_p}$. Then $c_h\Delta_h\in\mathcal O_\cF[X]$, and by the odd-prime lemmas and
+n_\fp\rceil)$, $c_h:=\prod_pp^{n_p}$. Then $c_h\Delta_h\in\cO_\cF[X]$, and by the odd-prime lemmas and
 Lemma~\ref{lem:tenpp},
 \[
   \log c_h\le\sum_{3\le p<K}B_p\log p+\bigl((h-2)^2/4+3h\bigr)\log2+\theta(K)+\log2,
@@ -1088,7 +1539,7 @@ nonzero. Its two real embeddings are $b^hc_h\Delta_h(T_z)=b^hc_h\det(\Lambda_z(t
 $b^hc_h\,l(\Delta_h)(T_w)=b^hc_h\det(\Lambda_w(t^{i+j}))$, so
 $N_{\cF/\QQ}(\beta)=b^{2h}c_h^2\det(\Lambda_z(t^{i+j}))\det(\Lambda_w(t^{i+j}))$ is a nonzero integer. Taking logarithms,
 dividing by $2h^2$, and applying the analytic bound at both places,
-$0\le\frac43+\frac14\log2+\frac12(\Phi_z+\Phi_w)=m(n)<0$, a contradiction.
+$0\le\frac43+\frac14\log2+\frac12(\Phi_z+\Phi_w)=M_1(n)<0$, a contradiction.
 \end{proof}
 
 \subsection{The certificates}
@@ -1097,13 +1548,13 @@ with mass exactly $1$, a rational $\lambda_q$, a rigorous Arb upper bound for $\
 of the tail condition with $X_e\ge4$; the logarithm $L=\log(1/q)$ is an Arb ball computed from the quartic, so every bound
 encloses the value at the true $L$. Two independent evaluators were used, and where both certified the same $(n,q)$ the
 smaller bound is taken. Table~\ref{tab:M1cert} lists the results; $\frac43+\frac14\log2=1.50662012847331966\ldots$, and
-every $m(n)$ is computed in Arb from the printed balls and lies entirely below $0$.
+every $M_1(n)$ is computed in Arb from the printed balls and lies entirely below $0$.
 
 \begin{table}[ht]
 \centering
 \begin{tabular}{@{}rccr@{}}
 \toprule
-$n$ & $\Phi_z\le$ & $\Phi_w\le$ & $m(n)\le$\\
+$n$ & $\Phi_z\le$ & $\Phi_w\le$ & $M_1(n)\le$\\
 \midrule
 730 & $0.97551590832772$ & $-3.98960878950$ & $-0.000426312$\\
 740 & $0.98154355971108$ & $-3.99641267680$ & $-0.000814430$\\
@@ -1120,8 +1571,8 @@ $X_e=1300$ for $n\le760$, and $X_e\approx1202$ and $1503$ for $n=800$, $1000$; a
 The constant $\Phi_z$ is positive because $z\approx1-2/n$ gives the $z$-machine almost no decay; the $w$-place, with
 $w\approx1/n$, pays for it. The side constants are comfortable: at $n=730$, for example, $\beta=0.5719$,
 $\gamma=0.001971$, $M_0\le11.17$, $\kappa\le508.4$ at the $z$-place, and $\beta=16.41$, $\gamma=6.426$ at the $w$-place.
-A third evaluator, written independently of both, confirms $m(n)<0$ for all six $n$ and gives
-$m(730)\le-0.000452$. As a validation, the three codes applied at Theorem~\ref{thm:main}'s weight $\sqrt5-2$ give
+A third evaluator, written independently of both, confirms $M_1(n)<0$ for all six $n$ and gives
+$M_1(730)\le-0.000452$. As a validation, the three codes applied at the weight $\sqrt5-2$ of Corollary~\ref{thm:U} give
 $-1.35926599$, $-1.35939764$ and $-1.35939884$, consistent with Theorem~\ref{thm:cert} and the primal value
 $-1.3594016$ of Remark~\ref{rem:equil}.
 
@@ -1140,7 +1591,7 @@ We state the limits of Theorem~\ref{thm:M1} explicitly.
   $2$ has $v(1-y)=0$.
 \item For all even $n\ge730$ the statement is supported only numerically. A proof would need interval certificates in $n$
   (the dual bound is monotone in $L$, but this needs to be written) and an argument as $n\to\infty$; neither exists.
-\item The method cannot reach $n=720$: there the primal value of the equilibrium problem gives $m(720)\ge+0.00098$
+\item The method cannot reach $n=720$: there the primal value of the equilibrium problem gives $M_1(720)\ge+0.00098$
   (computed numerically, with a density admissible up to rounding of order $10^{-12}$), so no dual certificate can
   succeed. Numerically the threshold of the method lies in $(720,730)$.
 \item The theorem is not formalised in Lean. Its proof was checked by two AI referees and has not been read by a human.
@@ -1151,21 +1602,27 @@ We state the limits of Theorem~\ref{thm:M1} explicitly.
 % ===========================================================================
 
 \subsection{What is formalised}
-The Lean project \cite{PiTwoRepo} proves Theorem~\ref{thm:main} and the identity \eqref{eq:closedform} in Lean~4
-\cite{LeanFour} (version v4.35.0) with Mathlib \cite{Mathlib} (version v4.35.0 \cite{Mathlib4}). It has 62 modules
-under \lean{Chi2U\slash{}}, with about $16{,}700$ lines, of which about $7{,}800$ are ported verbatim from the
+The Lean project \cite{PiTwoRepo} proves Theorem~\ref{thm:V}, Corollary~\ref{thm:U} and the identity
+\eqref{eq:closedform} in Lean~4 \cite{LeanFour} (version v4.35.0) with Mathlib \cite{Mathlib} (version v4.35.0
+\cite{Mathlib4}). The machine is formalised once, with $m$ as a parameter. Theorem~U, its instance $m=2$, was proved
+first; Theorem~V adds the ingredients that depend on $m$: Lemma~\ref{lem:tennu}, Lemma~\ref{lem:S}, the shift lemma, the
+margins, and Lemma~\ref{lem:P} for every $m$. The project has 76 modules under \lean{Chi2U\slash{}}, with about
+$20{,}100$ lines, of which about $7{,}800$ are ported verbatim from the
 formalisation of \cite{Chi2Paper} \cite{Chi2Repo}: the prime number theorem, the interval arithmetic, the generic
 analytic files, the criterion and the definition of $\chi_2$. All declarations are in the namespace \lean{Chi2U}. The
-project is available at \url{https://github.com/telaviv/pi2-log2-golden-irrationality} \cite{PiTwoRepo}, together with this
-paper and the scripts of Section~\ref{sec:comp}. Theorem~\ref{thm:M1} is not formalised.
+project is available at \url{https://github.com/telaviv/pi2-log2-golden-irrationality} \cite{PiTwoRepo}, together with
+a copy of this paper and the scripts of Section~\ref{sec:comp}. Theorem~\ref{thm:M1} is not formalised.
 
 \subsection{The statement}
-The definitions that the reader has to check are in \lean{Defs.lean}, \lean{Statement.lean} and
-\lean{Golden\slash{}Corollary.lean}:
+The definitions that the reader has to check are in \lean{Defs.lean}, \lean{Statement.lean},
+\lean{V\slash{}Defs.lean} and \lean{Golden\slash{}Corollary.lean}:
 \begin{quote}\ttfamily\footnotesize
 noncomputable def chi2Term (z : $\mathbb{R}$) (n : $\mathbb{N}$) : $\mathbb{R}$ :=\\
 \hspace*{2em}z \^{} (2 * n + 1) / (2 * (n : $\mathbb{R}$) + 1) \^{} 2\\[2pt]
 noncomputable def chi2 (z : $\mathbb{R}$) : $\mathbb{R}$ := $\sum$' n : $\mathbb{N}$, chi2Term z n\\[2pt]
+def V.TheoremV : Prop := $\forall$ m : $\mathbb{N}$, 2 $\le$ m $\to$ m $\notin$ (\char123 3, 5, 7, 9, 15\char125{} : Finset $\mathbb{N}$) $\to$\\
+\hspace*{2em}Irrational (chi2 (Real.sqrt ((m : $\mathbb{R}$) \^{} 2 + 1) - m))\\[2pt]
+theorem V.theoremV : V.TheoremV\\[2pt]
 def TheoremU : Prop := Irrational (chi2 (Real.sqrt 5 - 2))\\[2pt]
 theorem chi2\_sqrt5\_sub\_two\_irrational : TheoremU\\
 theorem chi2\_sqrt5\_sub\_two\_eq :\\
@@ -1173,9 +1630,11 @@ theorem chi2\_sqrt5\_sub\_two\_eq :\\
 theorem golden\_irrational' :\\
 \hspace*{2em}Irrational (Real.pi \^{} 2 - 18 * Real.log goldenRatio \^{} 2)
 \end{quote}
-The first theorem is in \lean{Main.lean}, the second in \lean{Golden\slash{}ClosedForm.lean}, the third in
+\lean{V.TheoremV} and \lean{V.theoremV} are in \lean{V\slash{}Defs.lean} and \lean{V\slash{}Interface.lean}. Of the
+other three theorems, the first is in \lean{Main.lean}, the second in \lean{Golden\slash{}ClosedForm.lean}, the third in
 \lean{Golden\slash{}Corollary.lean}. The definition of $\chi_2$ is identical to that of \cite{Chi2Repo}, and
-\lean{Defs.lean} proves summability for $|z|\le1$, so \lean{chi2 (Real.sqrt 5 - 2)} is the genuine sum of the series.
+\lean{Defs.lean} proves summability for $|z|\le1$, so \lean{chi2 (Real.sqrt 5 - 2)} and, since
+$0<\sqrt{m^2+1}-m<1$, \lean{chi2 (Real.sqrt (m \^{} 2 + 1) - m)} are the genuine sums of the series.
 \lean{goldenRatio} is Mathlib's $(1+\sqrt5)/2$ and \lean{Irrational} is Mathlib's predicate $x\notin\QQ$. The identity
 \eqref{eq:closedform} is proved from Landen's identity for $\chi_2$, Euler's reflection formula and Landen's identity for
 $\Li_2$ (\lean{Golden\slash{}Landen.lean}, \lean{Golden\slash{}Dilog.lean}), so the golden-ratio form is not a separate
@@ -1183,6 +1642,8 @@ assumption.
 
 The command \lean{lake env lean Axioms.lean} prints
 \begin{quote}\ttfamily\small
+'Chi2U.V.theoremV' depends on axioms:\\
+\hspace*{2em}[propext, Classical.choice, Quot.sound]\\
 'Chi2U.chi2\_sqrt5\_sub\_two\_irrational' depends on axioms:\\
 \hspace*{2em}[propext, Classical.choice, Quot.sound]\\
 'Chi2U.golden\_irrational'' depends on axioms:\\
@@ -1193,7 +1654,9 @@ These are Lean's three standard axioms. The development contains no \lean{sorry}
 \lean{native\_decide}, no \lean{implemented\_by} and no \lean{@[extern]}, so no step relies on compiled code.
 
 \subsection{Correspondence with the paper}
-Table~\ref{tab:lean} lists the main formal counterparts. Paths are relative to \lean{Chi2U\slash{}}.
+Table~\ref{tab:lean} lists the main formal counterparts. Paths are relative to \lean{Chi2U\slash{}}. The machine files
+take the parameter $m$, called \lean{mz} there (\lean{Qd mz} $=$ \lean{QuadraticAlgebra} $\QQ$ $(m^2+1)$ $0$,
+\lean{zK mz}, \lean{Delta mz h}); the entries marked $m=2$ are used only for Corollary~\ref{thm:U}.
 
 \begin{table}[ht]
 \centering\small
@@ -1201,7 +1664,7 @@ Table~\ref{tab:lean} lists the main formal counterparts. Paths are relative to \
 \toprule
 paper & Lean declaration (file) \\
 \midrule
-$\KK$, $z$, $\sigma$ & \lean{Q5} $=$ \lean{QuadraticAlgebra} $\QQ$ $5$ $0$, \lean{zK}, \lean{sig}, \lean{emb} (\lean{Field})\\
+$\KK$, $z$, $\sigma$ & \lean{Qd}, \lean{zK}, \lean{sig}, \lean{emb} (\lean{Field}); $m=2$: \lean{Q5} $=$ \lean{Qd 2}\\
 Lemma~\ref{lem:pole}, \eqref{eq:mahler} & \lean{lemma1}, \lean{aeval\_chi2\_Delta} (\lean{PoleExpansion}); \lean{Lmom\_eq\_mahler} (\lean{Mahler})\\
 Lemma~\ref{lem:R}, Cor.~\ref{cor:R} & \lean{eval$_2$\_Delta}, \lean{aeval\_Delta}, \lean{Delta\_map} (\lean{LemmaR})\\
 Prop.~\ref{prop:criterion} & \lean{irrational\_of\_poly\_approx} (\lean{Criterion}); \lean{MachineBoundsU}, \lean{irrational\_of\_boundsU} (\lean{MainCond})\\
@@ -1209,11 +1672,15 @@ Lemma~\ref{lem:classcount} & \lean{AK\_eq} (\lean{Arith\slash{}ClassCount})\\
 Lemma~\ref{lem:bordered} & \lean{lemmaB} (\lean{Arith\slash{}LemmaB})\\
 Lemmas~\ref{lem:eight}, \ref{lem:nine} & \lean{lemma9} (\lean{Arith\slash{}OddPrimes}, \lean{Arith\slash{}Lemma9Levels}); \lean{Arith\slash{}Lemma8One}; \lean{padicNorm\_Delta\_odd} (\lean{Arith\slash{}OddExp})\\
 Thm.~\ref{thm:A} & \lean{theoremA} (\lean{Arith\slash{}PrimeSums}); \lean{denAll\_int}, \lean{log\_denAll\_le} (\lean{Arith\slash{}Assembly})\\
-Lemma~\ref{lem:ten} & \lean{lemma10\_L}, \lean{lemma10\_U}, \lean{padicNorm\_Delta\_two} (\lean{Arith\slash{}TwoAdic})\\
+Lemma~\ref{lem:ten} ($m=2$) & \lean{lemma10\_L}, \lean{lemma10\_U}, \lean{padicNorm\_Delta\_two} (\lean{Arith\slash{}TwoAdic})\\
+Lemma~\ref{lem:tennu} & \lean{lemma10nu\_proof} (\lean{V\slash{}Lemma10nu}, \lean{V\slash{}TwoAdicNu}); \lean{lemma10nu\_size} (\lean{V\slash{}Defs})\\
+Lemma~\ref{lem:S} & \lean{lemmaS\_proof} (\lean{V\slash{}LemmaS}, \lean{V\slash{}S*}); \lean{AK\_levels\_size\_proof} (\lean{V\slash{}AKSize})\\
 Thm.~\ref{thm:B} (other route) & \lean{log\_abs\_Dpoly\_ge}, \lean{DualCertU}, \lean{DualCertU.analytic} (\lean{Analytic\slash{}TheoremBU})\\
-Thm.~\ref{thm:cert} (coarser) & \lean{exists\_certU} (\lean{Cert\slash{}CertU}); data \lean{Cert\slash{}DataU}\\
-Lemma~\ref{lem:P} & \lean{lemmaP}, \lean{nonvan\_frequently} (\lean{NonVan\slash{}LemmaP})\\
-Section~\ref{sec:proof} & \lean{boundsU}, \lean{chi2\_sqrt5\_sub\_two\_irrational} (\lean{Main})\\
+Thm.~\ref{thm:cert} (coarser) & \lean{exists\_certU}, \lean{exists\_certU'} (\lean{Cert\slash{}CertU}); data \lean{Cert\slash{}DataU}\\
+Lemma~\ref{lem:shift} & \lean{shift\_lemma\_proof} (\lean{V\slash{}Shift})\\
+margins, Section~\ref{sec:margins} & \lean{margin\_V\_proof} (\lean{V\slash{}Margin})\\
+Lemma~\ref{lem:P} & \lean{lemmaP}, \lean{nonvan\_frequently} (\lean{NonVan\slash{}LemmaP}); \lean{lemmaP\_m\_proof} (\lean{V\slash{}NonVan})\\
+Section~\ref{sec:proof} & \lean{denV0\_int}, \lean{log\_denV\_le}, \lean{exists\_boundsV}, \lean{theoremV} (\lean{V\slash{}Interface}); $m=2$: \lean{boundsU}, \lean{chi2\_sqrt5\_sub\_two\_irrational} (\lean{Main})\\
 \eqref{eq:closedform} & \lean{chi2\_landen}, \lean{Li2\_reflection}, \lean{Li2\_landen} (\lean{Golden\slash{}Landen}); \lean{chi2\_sqrt5\_sub\_two\_eq} (\lean{Golden\slash{}ClosedForm})\\
 \bottomrule
 \end{tabular}
@@ -1244,10 +1711,29 @@ The formal proof establishes what the endgame needs, and in several places it ta
   without the near/far split of Section~\ref{sec:cert}. The certified value is
   $\Phi_\QQ=-54155169767979/40000000000000\approx-1.3538792$, coarser than Theorem~\ref{thm:cert} but enough: the
   assembly (\lean{boundsU}) uses $\beta=-27/20$, so the formal margin is $\frac43-\frac{27}{20}=-\frac1{60}$.
-\item \emph{Lemma 8$'$.} Only the single-level range $K/3\le p$ used by Theorem~\ref{thm:A} is formalised, by a crude
-  row bound on the Lagrange Gram matrix and Lemma~\ref{lem:bordered} instead of the atom expansion.
-\item \emph{Lemma P$'$.} Congruences are taken in the residue field $\ZZ_{(\ell)}[\varphi]/\fl$ with $\zeta:=z^\ell$ itself;
-  no identification of $\zeta$ by Frobenius is needed, only $1-\bar z^{2\ell}=(4\bar z)^\ell$. The progression sums are
+\item \emph{Lemma 8$'$.} For the generic primes only the single-level range $K/3\le p$ used by Theorem~\ref{thm:A} is
+  formalised, by a crude row bound on the Lagrange Gram matrix and Lemma~\ref{lem:bordered} instead of the atom
+  expansion. The multi-level statement needed by Lemma~\ref{lem:S} is proved directly (\lean{V\slash{}LemmaS} and its
+  helper files) instead of through the expansion of Lemma~7$'$: a Schur-complement form of the determinant, a
+  multilinear expansion of its bottom rows, and a Newton (divided-difference) factorisation that extracts the squared
+  Vandermonde factor. The polynomial factor enters through integer row and column exponents $(i-J)_+$, $(j-J-1)_+$ with
+  the same total $(J-1)^2$. This proof does not use $p\mid m$.
+\item \emph{Lemma $10_\nu$.} The Karamata step is replaced by a weighted Leibniz bound: by concavity
+  $\hat g(2i)+\hat g(2j)\le2\hat g(i+j)$, so integer row weights $\lfloor\hat g(2i)/2\rfloor$ and column weights
+  $\lceil\hat g(2j)/2\rceil$ give $v_2(\det G)\ge\sum_i\hat g(2i)$. Some entry bounds are coarser than in
+  Lemma~\ref{lem:tennu}, where the slack of its final bound allows it. For odd $m$ no half-integral valuations occur:
+  every bound is a rational power of $2$ times an element of the order.
+\item \emph{The shift lemma} is applied to the formal certificate of Theorem~U, in its discrete format: each grid cell is
+  split into $r$ subcells, and the left-endpoint sum loses $L(m)/(2rL)$, which is absorbed by taking $r$ large. So the
+  formal analytic constant at $z_m$ is $\Phi_\QQ-\frac12L(m)+\delta$ for any $\delta>0$, with
+  $\Phi_\QQ\approx-1.3538792$ in place of $\Phi(z_2)$ of Theorem~\ref{thm:cert}.
+\item \emph{The margins} are proved with this coarser constant, and the exception set is still exactly $\cE$. Even
+  $m\ge4$ and odd $m\ge69$ are handled by a closed form written with $\log m$ (the tightest case is $m=69$, with slack
+  about $10^{-3}$), $m=2$ exactly, and the $28$ odd $m\in[11,67]\setminus\cE$ one by one with rational bounds on the
+  logarithms (for instance $\log(2+\sqrt5)\le\frac{25}{12}\log2$).
+\item \emph{Lemma P$'$.} Congruences are taken in a residue field of the order at a prime above $\ell$, with
+  $\zeta:=z^\ell$ itself; no identification of $\zeta$ by Frobenius is needed, only
+  $1-\bar z^{2\ell}=(2m\bar z)^\ell$. The formal statement needs only $\ell\nmid2m$, for every $m$. The progression sums are
   handled by an exact shift identity instead of the Newton form.
 \item \emph{The endgame} uses only even $h$, through $P_h:=\Delta_{2\lfloor h/2\rfloor}$ in the criterion of
   \cite{Chi2Repo}.
@@ -1264,19 +1750,20 @@ value would make the build fail but could not make a false statement provable.
 \subsection{Cost}
 The kernel check of the certificate takes about $6.5$ minutes. A build of a fresh clone of the repository, with
 Mathlib's prebuilt cache and at most four parallel Lean processes, took $9$ minutes $35$ seconds ($9110$ jobs, no errors)
-on a Windows~11 desktop with $32$ logical processors and $31.7$\,GB of RAM, and \lean{Axioms.lean} then reported only the
-three standard axioms.
+on a Windows~11 desktop with $32$ logical processors and $31.7$\,GB of RAM, before the files for general $m$ were added;
+the complete project has $9124$ jobs, and \lean{Axioms.lean} reports only the three standard axioms.
 
 \subsection{What has to be trusted}
 Beyond the Lean kernel and the three axioms, the reader has to trust that the definitions displayed above express
-Theorem~\ref{thm:main}, and the Mathlib definitions they use (real numbers, \lean{tsum}, \lean{Real.sqrt},
+Theorem~\ref{thm:V} and Corollary~\ref{thm:U}, and the Mathlib definitions they use (real numbers, \lean{tsum}, \lean{Real.sqrt},
 \lean{Real.log}, \lean{Real.pi}, \lean{goldenRatio}, \lean{Irrational}). Nothing else, in particular no numerical data and
 no generating script, needs to be trusted. To avoid trusting the elaborator's handling of the environment, every
-declaration of the $62$ project modules was replayed through the kernel with \lean{leanchecker} (shipped with the Lean
-toolchain), each module against the compiled environment of its imports, on 7 November 2026; all modules passed, in
-about $42$ minutes in total. Mathlib itself was not replayed from scratch (\lean{--fresh}). An AI referee checked the
-fidelity of the statements (the definitions above, traced to Mathlib, and the absence of hypotheses, custom axioms and
-compiler trust) and found them faithful. Apart from the check by the Lean kernel, all verification of the formalisation
+declaration of the $76$ project modules was replayed through the kernel with \lean{leanchecker} (shipped with the Lean
+toolchain), each module against the compiled environment of its imports, on 8 November 2026; all modules passed, in about $52$ minutes in total.
+Mathlib itself was not replayed from scratch (\lean{--fresh}). Two AI referees, one for Corollary~\ref{thm:U} and one for
+Theorem~\ref{thm:V}, checked the fidelity of the statements (the definitions above, traced to Mathlib, and the absence of
+hypotheses, custom axioms and compiler trust) and found them faithful; the second also confirmed the exception set $\cE$
+independently in interval arithmetic for $m\le3000$. Apart from the check by the Lean kernel, all verification of the formalisation
 so far was carried out by AI systems; no human expert has yet reviewed the Lean code.
 
 % ===========================================================================
@@ -1284,39 +1771,50 @@ so far was carried out by AI systems; no human expert has yet reviewed the Lean 
 % ===========================================================================
 
 \subsection{Software}
-The computations use python-flint~0.9.0 \cite{pythonflint}: exact arithmetic over $\QQ$ and $\QQ(\sqrt5)$ for every
+The computations use python-flint~0.9.0 \cite{pythonflint}: exact arithmetic over $\QQ$ and $\QQ(\sqrt{d_m})$ for every
 statement about valuations, and Arb ball arithmetic \cite{Arb} for every real number that feeds a claim. Hankel
-determinants are evaluated at $T$ in ball arithmetic with working precision about $3.6h^2+8000$ bits. The formalisation
+determinants are evaluated at $T$ in ball arithmetic with working precision about $3.6h^2+8000$ bits at $m=2$, and at
+least $2\cdot(\text{bits of the coefficients})+4000$ bits in the independent check for general $m$. The formalisation
 uses Lean v4.35.0 and Mathlib v4.35.0.
 
 \subsection{What each computation is used for}
 \begin{itemize}
 \item \emph{Proof inputs.} The certificate of Theorem~\ref{thm:cert} (\texttt{cert\_U.py}, run with arguments
-  \texttt{1600 32 2 4}, $128$ bits, about one minute); the certificates of Theorem~\ref{thm:M1}
-  (\texttt{dual\_ref.py}, and \texttt{dualcert\_arb2.py} with its library \texttt{dualcert.py}), the margins and the
-  explicit numbers of Section~\ref{sec:M1}
-  (\texttt{facts\_M1.py}, Arb at $3000$ bits). These are rigorous: floating point is used only to choose the density and
-  $\lambda$, and any choice gives a valid bound.
-\item \emph{The effective threshold} of Remark~\ref{rem:effective} (\texttt{h0\_U.py}, \texttt{h0\_scan.py}): exact sums,
-  using the constants of Theorem~\ref{thm:B}.
-\item \emph{Checks of the lemmas} (not used by the proof). The machine and the matrix $\tilde E$
+  \texttt{1600 32 2 4}, $128$ bits, about one minute); the margin table for the odd $m\le65$ in the proof of
+  Proposition~\ref{prop:margins} (\texttt{margins\_V.py}, Arb at $200$ bits, which also lists every $m<200$); the
+  certificates of Theorem~\ref{thm:M1} (\texttt{dual\_ref.py}, and \texttt{dualcert\_arb2.py} with its library
+  \texttt{dualcert.py}), the margins and the explicit numbers of Section~\ref{sec:M1} (\texttt{facts\_M1.py}, Arb at
+  $3000$ bits). These are rigorous: floating point is used only to choose the density and $\lambda$, and any choice gives
+  a valid bound.
+\item \emph{Not used by the proof of Theorem~\ref{thm:V}.} The direct certificates of Table~\ref{tab:certV}
+  (\texttt{cert\_V.py}, the program \texttt{cert\_U.py} with only $z$ changed); the effective thresholds
+  (\texttt{h0\_U.py}, \texttt{h0\_scan.py} at $m=2$; \texttt{h0\_V.py}, \texttt{h0\_scan\_V.py} at $m=4$): exact sums,
+  using the constants of Theorem~\ref{thm:B}; the identity at $m=4$ in Section~\ref{sec:closed}
+  (\texttt{id17\_check.py}).
+\item \emph{Checks of the lemmas} (not used by the proof). At $m=2$: the machine and the matrix $\tilde E$
   (\texttt{umach\_core.py}); the bordered identity at $h=2,\dots,12$ and $X\in\{0,1,-3/7\}$ (\texttt{bordered\_check.py});
   the row claim (\texttt{rowclaim\_check.py}); Lemmas~\ref{lem:eight}, \ref{lem:nine} on exact profiles up to $h=256$
   (\texttt{law\_check.py}, \texttt{u\_profile.py} with \texttt{fastcontent.py}); Lemma~\ref{lem:classcount} by brute
-  force for every odd $d<K+40$ and $194$ values of $K$ (\texttt{law\_check.py}); Lemma~\ref{lem:ten} entrywise for $h\le64$ (\texttt{lemma10\_check.py}); Lemma~\ref{lem:P}
-  (\texttt{blocks\_check.py}, \texttt{lemmaP\_check.py}). An AI referee reimplemented the machine without sharing code
-  and reproduced the numbers it checked; the certificate reproduced bit for bit at $N=100,200,1600$.
+  force for every odd $d<K+40$ and $194$ values of $K$ (\texttt{law\_check.py}); Lemma~\ref{lem:ten} entrywise for $h\le64$
+  (\texttt{lemma10\_check.py}); Lemma~\ref{lem:P} (\texttt{blocks\_check.py}, \texttt{lemmaP\_check.py}). An AI referee
+  reimplemented the machine without sharing code and reproduced the numbers it checked; the certificate reproduced bit for
+  bit at $N=100,200,1600$. For general $m$: Lemma~\ref{lem:tennu} entrywise (\texttt{lemma10nu\_check.py}),
+  Lemmas~\ref{lem:eight}, \ref{lem:nine}, \ref{lem:S} and~\ref{lem:P} on exact data (\texttt{oddp\_check.py}), and the
+  scores of Table~\ref{tab:evidenceV} (\texttt{vprofile.py}). The AI referee of Theorem~\ref{thm:V} wrote an independent
+  implementation of the machine for general $m$, which checked these lemmas in $47$ pairs $(m,h)$, reproduced the scores
+  it recomputed and the certificate at $m=4$ bit for bit, and recomputed the margins independently.
 \end{itemize}
-These scripts are in the folder \texttt{scripts/paper} of the repository \cite{PiTwoRepo} (those for
-Section~\ref{sec:M1} in \texttt{scripts/paper/m1}), with a README that gives the command line for each of them and the
-small result files quoted here. Not included are the referees' own check scripts (apart from \texttt{dual\_ref.py}) and
-the earlier script that produced the exact profiles for $h\le128$ in Table~\ref{tab:evidence}; those profiles are
-included as data, and \texttt{u\_profile.py} computes the same quantities (checked at $h=16$).
+The scripts are in the folder \texttt{scripts/paper} of the repository \cite{PiTwoRepo} (those
+for Section~\ref{sec:M1} in \texttt{scripts/paper/m1}), with a README that gives the command line for each of them and
+the small result files quoted here. Not included are the referees' own check scripts (apart from \texttt{dual\_ref.py})
+and the earlier script that produced the exact profiles for $h\le128$ in Table~\ref{tab:evidence}; those profiles are
+included as data, and \texttt{u\_profile.py} computes the same quantities (checked at $h=16$). The scripts for general
+$m$ named above are in \texttt{scripts/paper/v}.
 
 \subsection{Numerical evidence}
-Table~\ref{tab:evidence} shows exact scores. The arithmetic column is $h^{-2}\sum_pn_p\log p$ for the exact contents, so
-the score is the sum of the two previous columns. The values approach the limits $-1.3592$ (or better) and
-$\frac43$ slowly, as $O(\log h/h)$.
+Table~\ref{tab:evidence} shows exact scores at $m=2$, and Table~\ref{tab:evidenceV} at other $m$. The arithmetic column
+is $h^{-2}\sum_pn_p\log p$ for the exact contents, so the score is the sum of the two previous columns. The values approach
+the limits slowly, as $O(\log h/h)$.
 
 \begin{table}[ht]
 \centering
@@ -1333,8 +1831,36 @@ $h$ & score $h^{-2}\log|F_h(T)|$ & analytic & arithmetic & $n_2$\\
 256 & $-0.0596$ & $-1.3781$ & $1.3185$ & 1918\\
 \bottomrule
 \end{tabular}
-\caption{Exact scores for Theorem~\ref{thm:main}. At $h=192$ and $256$ the contents are proved lower bounds for each
-$n_p$ (fast content computation), which can only make the score look worse.}\label{tab:evidence}
+\caption{Exact scores for Corollary~\ref{thm:U} ($m=2$). At $h=192$ and $256$ the contents are proved lower bounds for
+each $n_p$ (fast content computation), which can only make the score look worse.}\label{tab:evidence}
+\end{table}
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}rrcccr@{}}
+\toprule
+$m$ & $h$ & score & analytic & arithmetic & $n_2$\\
+\midrule
+4 & 16 & $-0.5479$ & $-1.7948$ & $1.2469$ & 94\\
+4 & 32 & $-0.3829$ & $-1.7739$ & $1.3910$ & 349\\
+4 & 48 & $-0.3502$ & $-1.7637$ & $1.4135$ & 737\\
+4 & 64 & $-0.3142$ & $-1.7572$ & $1.4429$ & 1277\\
+4 & 96 & $-0.2903$ & $-1.7491$ & $1.4587$ & 2721\\
+4 & 128 & $-0.2662$ & $-1.7443$ & $1.4781$ & 4733\\
+6 & 32 & $-0.5176$ & $-1.9798$ & $1.4622$ & 142\\
+6 & 64 & $-0.4434$ & $-1.9639$ & $1.5205$ & 350\\
+8 & 32 & $-0.5976$ & $-2.1254$ & $1.5278$ & 558\\
+8 & 64 & $-0.5096$ & $-2.1097$ & $1.6001$ & 2205\\
+11 & 32 & $-0.5330$ & $-2.2865$ & $1.7534$ & 196\\
+11 & 48 & $-0.4407$ & $-2.2769$ & $1.8362$ & 401\\
+\midrule
+3 & 32 & $-0.1326$ & $-1.6267$ & $1.4941$ & 196\\
+3 & 48 & $-0.0734$ & $-1.6165$ & $1.5431$ & 401\\
+\bottomrule
+\end{tabular}
+\caption{Exact scores at other $m$. The row $m=3$ is in $\cE$ and is not evidence for it (its score rises to $-0.0340$ at
+$h=64$). At $m=4$, $h=96,128$, the first computation gave proved lower bounds for the contents; an independent exact
+computation gave the same values.}\label{tab:evidenceV}
 \end{table}
 
 \subsection{Controls}
@@ -1343,17 +1869,22 @@ finite-$h$ bound of Remark~\ref{rem:effective} lies above the exact score at eve
 inequality holds on the exact profiles, often with equality; for a unit of norm $+1$ the reflection breaks; with poles
 on one side only the conjugate place costs $+0.50$ per $h^2$ at $h=16$; and at the points $\sqrt2-1$ and $\varphi^{-1}$ the
 corresponding scores are positive (primal lower bounds $+0.3286$ and $+0.6572$ for the limiting exponent), so the
-method does not conclude there. For Theorem~\ref{thm:M1}, the method does not conclude at $n=6$ ($m(6)\approx+0.477$),
-$n=400$ ($m(400)\ge+0.070$) or $n=720$ (numerical values).
+method does not conclude there. At $\sqrt2-1=z_1$ the exact scores are positive and rising (Section~\ref{sec:margins}),
+and Lemma~\ref{lem:P} fails at $\ell\mid m$ (Section~\ref{sec:nonvan}), as it must. For Theorem~\ref{thm:M1}, the
+method does not conclude at $n=6$ ($M_1(6)\approx+0.477$), $n=400$ ($M_1(400)\ge+0.070$) or $n=720$ (numerical values).
 
 \section*{Acknowledgements and disclosure}
+% Update after a whole-paper referee of this revision.
 The research, the construction, the proofs, the certificate programs, the Lean formalisation, the literature searches and
-the text of this paper were produced largely by AI models (Claude, Anthropic), working under the direction of the author. Apart from the check
-by the Lean kernel, all verification so far, including the internal reviews of the argument by AI referees, was
-carried out by AI systems. No human expert has yet reviewed the mathematics or the Lean code; we would be grateful for
-corrections. The prime number theorem in the formalisation is ported from the PrimeNumberTheoremAnd project of
-A.~Kontorovich, T.~Tao and collaborators \cite{PNTplus}, through the \lean{zeta5} repository of C\'esar Del Solar
-\cite{zeta5} and the formalisation of \cite{Chi2Paper}.
+the text of this paper were produced largely by AI models (Claude, Anthropic), working under the direction of the author.
+Apart from the check by the Lean kernel, all verification so far, including the internal reviews of the argument by AI
+referees, was carried out by AI systems. The proof of Theorem~\ref{thm:V} for general $m$ was checked by one AI referee,
+at a single gate, with an independent implementation of the machine, and it is formalised in Lean
+(Section~\ref{sec:lean}). No MathSciNet search or expert query has been made for it. The text of this revision, which adds Theorem~\ref{thm:V}, has not yet been reviewed
+as a whole. No human expert has yet reviewed the mathematics or the Lean code; we would be grateful for corrections. The
+prime number theorem in the formalisation is ported from the PrimeNumberTheoremAnd project of A.~Kontorovich, T.~Tao and
+collaborators \cite{PNTplus}, through the \lean{zeta5} repository of C\'esar Del Solar \cite{zeta5} and the formalisation
+of \cite{Chi2Paper}.
 
 \bibliographystyle{amsplain}
 \bibliography{references}

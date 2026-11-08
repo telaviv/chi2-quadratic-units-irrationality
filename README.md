@@ -1,15 +1,22 @@
-# π² − 18 log²φ is irrational: a Lean 4 proof
+# χ₂(√(m²+1) − m) is irrational for every m ≥ 16: a Lean 4 proof
 
 This repository contains a complete, machine-checked proof in [Lean 4](https://lean-lang.org/) and
-[Mathlib](https://github.com/leanprover-community/mathlib4) of the following theorem.
+[Mathlib](https://github.com/leanprover-community/mathlib4) of the following theorems.
 
-> **Theorem U.** Let φ = (1 + √5)/2 be the golden ratio. Then π² − 18 log²φ = 5.70143763069985955388… is irrational.
-> Equivalently, the value χ₂(√5 − 2) = π²/24 − ¾ log²φ = 0.23755990127916081474… of Legendre's chi function
-> χ₂(z) = Σ_{n≥0} z^{2n+1}/(2n+1)² is irrational.
+> **Theorem V.** For every integer m ≥ 2 with m ∉ {3, 5, 7, 9, 15}, the value χ₂(√(m² + 1) − m) of Legendre's chi
+> function χ₂(z) = Σ_{n≥0} z^{2n+1}/(2n+1)² is irrational. (√(m² + 1) − m is a unit of norm −1 in ℚ(√(m² + 1)).)
+
+> **Corollary (Theorem U, m = 2). Let φ = (1 + √5)/2 be the golden ratio. Then π² − 18 log²φ = 5.70143763069985955388… is irrational.
+> Equivalently, χ₂(√5 − 2) = π²/24 − ¾ log²φ = 0.23755990127916081474… is irrational.
 
 In Lean:
 
 ```lean
+-- Chi2U/V/Defs.lean, Chi2U/V/Interface.lean
+def Chi2U.V.TheoremV : Prop :=
+  ∀ m : ℕ, 2 ≤ m → m ∉ ({3, 5, 7, 9, 15} : Finset ℕ) → Irrational (chi2 (Real.sqrt ((m : ℝ) ^ 2 + 1) - m))
+theorem Chi2U.V.theoremV : Chi2U.V.TheoremV
+
 -- Chi2U/Golden/Corollary.lean
 theorem Chi2U.golden_irrational' : Irrational (Real.pi ^ 2 - 18 * Real.log goldenRatio ^ 2)
 
@@ -27,6 +34,7 @@ theorem Chi2U.chi2_sqrt5_sub_two_eq :
 ```
 
 ```
+'Chi2U.V.theoremV' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Chi2U.chi2_sqrt5_sub_two_irrational' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Chi2U.golden_irrational'' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
@@ -40,7 +48,11 @@ The paper is [`paper/pi2-log2-golden-irrationality.pdf`](paper/pi2-log2-golden-i
 
 ## Context
 
-We have not found Theorem U, or the irrationality of any number π² + c log²φ with c ∈ ℚ \ {0}, in the literature.
+We have not found Theorem V, Theorem U, or the irrationality of any number π² + c log²φ with c ∈ ℚ \ {0}, in the
+literature. For m ≥ 3 the values χ₂(√(m² + 1) − m) have no expression through π² and logarithms by symbol-preserving
+dilogarithm identities (paper, Proposition on the symbol); only m = 1, 2 have a Landen closed form. Explicit linear
+independence criteria at algebraic points (David–Hirata-Kohno–Kawashima) cover χ₂(√(m² + 1) − m) only for
+m ≥ 4 346 237 by our evaluation.
 
 - **Other golden-ratio values.** The classical dilogarithm evaluations Li₂(φ⁻²), Li₂(φ⁻¹), Li₂(−φ⁻¹), Li₂(−φ) all lie
   in ℚπ² + ℚ log²φ, but with c = −15, −10, −15/2 and +10 in the form π² + c log²φ; Theorem U has c = −18. The
@@ -59,7 +71,9 @@ and recent Lean repositories, but not MathSciNet or Google Scholar. Please tell 
 
 ## Outline of the proof
 
-The proof transposes the proof of [chi2-irrationality](https://github.com/telaviv/chi2-irrationality)
+The machine is formalised once with m as a parameter (`mz` in the files: `Qd mz` = ℚ(√(m² + 1)) as
+`QuadraticAlgebra ℚ (m² + 1) 0`, `zK mz`, `Delta mz h`). We describe it at m = 2; the changes for general m follow
+the outline. The proof transposes the proof of [chi2-irrationality](https://github.com/telaviv/chi2-irrationality)
 (χ₂(1/3), χ₂(1/5) ∉ ℚ) to the point z = √5 − 2 = φ⁻³, a unit of norm −1 in ℚ(√5). For even h take the K = h + 1 poles
 x_m = 2(m − h/2) (the even integers in [−h, h]), put D(t) = Π_m (t − x_m), and consider
 
@@ -90,7 +104,16 @@ X = T of Δ_h(X) = det(A(t^{i+j}) + X·B(t^{i+j})).
 5. **Conclusion (Lemma E).** The formal margin is 4/3 − 27/20 = −1/60 per h² (the paper's certificate gives
    −0.02588…). So den_h·Δ_h(T) → 0 faster than any b^{−h}, which contradicts T = a/b. Files: `Criterion.lean`,
    `MainCond.lean`, `Main.lean`.
-6. **Golden-ratio form.** χ₂(√5 − 2) = π²/24 − ¾ log²φ from Landen's identity for χ₂ at x = √5 − 2 (where
+6. **General m (Theorem V), files `V/`.** z_m = √(m² + 1) − m, 1 − z_m² = 2m·z_m.
+   - p = 2 (Lemma 10_ν, ν = 1 + v₂(m)): cost |ν − 2|·log 2/4 per h². Files: `V/Lemma10nu.lean`, `V/TwoAdicNu.lean`.
+   - Odd p | m (Lemma S): cost (e/4 + 1/(4(p − 1)))·log p per h², e = v_p(m), from a multi-level Lemma 8′ and the
+     Mahler form. Files: `V/LemmaS.lean`, `V/S*.lean`, `V/AKSize.lean`.
+   - Analytic part: the shift lemma moves the certificate at z₂ to z_m, gaining ½ log(z₂/z_m). File: `V/Shift.lean`.
+   - Margins: negative for every m ≥ 2 outside {3, 5, 7, 9, 15} (closed form for even m ≥ 4 and odd m ≥ 69, the rest
+     case by case). File: `V/Margin.lean`.
+   - Nonvanishing: Lemma P′ holds for every m and every prime ℓ ≥ 7 with ℓ ∤ 2m (`NonVan/` is generic in m).
+   - Assembly: `V/Interface.lean`.
+7. **Golden-ratio form.** χ₂(√5 − 2) = π²/24 − ¾ log²φ from Landen's identity for χ₂ at x = √5 − 2 (where
    (1 − x)/(1 + x) = φ⁻¹) and the value of χ₂(φ⁻¹), itself derived from Euler's reflection and Landen's identity for
    Li₂. Files: `Golden/`.
 
@@ -104,7 +127,7 @@ You need [elan](https://github.com/leanprover/elan). The toolchain (Lean v4.35.0
 
 ```sh
 lake exe cache get                 # download prebuilt Mathlib
-LEAN_NUM_THREADS=4 lake build      # about 10 minutes once Mathlib is cached (9110 jobs)
+LEAN_NUM_THREADS=4 lake build      # about 10 minutes once Mathlib is cached (9124 jobs)
 lake env lean Axioms.lean          # print the axioms of the main theorems and their ingredients
 ```
 
@@ -114,7 +137,9 @@ fresh-clone check and its timing are recorded in [TRUST.md](TRUST.md).
 
 The certificate data `Chi2U/Cert/DataU.lean` can be regenerated with `python scripts/gen_cert_u.py 50 8 4
 Chi2U/Cert/DataU.lean` (Python with numpy and mpmath). `scripts/check_defs.py` (python-flint) re-implements the Lean
-definitions and compares them with the paper's machine; its output is `scripts/check_defs.out`. The computations of the
+definitions and compares them with the paper's machine; its output is `scripts/check_defs.out`
+(`scripts/check_defs_v.py`, `scripts/check_defs_v.out` for general m). `scripts/margins_lean.py` and
+`scripts/margin_v_cases.py` evaluate the margins of Theorem V with the Lean constants. The computations of the
 paper are in [`scripts/paper/`](scripts/paper/README.md).
 
 ## Repository layout
@@ -124,8 +149,9 @@ Paths are relative to `Chi2U/`.
 | path | content |
 |---|---|
 | `Defs.lean`, `Statement.lean` | χ₂ and Theorem U |
+| `V/` | Theorem V: `Defs` (statement, constants), Lemma 10_ν, Lemma S, shift lemma, margins, Lemma P′_m, `Interface` (assembly) |
 | `Golden/` | the closed form π²/24 − ¾ log²φ (Landen, dilogarithm identities) and the golden-ratio corollaries |
-| `Field.lean` | ℚ(√5) = `QuadraticAlgebra ℚ 5 0`, z = √5 − 2, conjugation, real embedding |
+| `Field.lean` | ℚ(√(m²+1)) = `QuadraticAlgebra ℚ (m²+1) 0`, z = √(m²+1) − m, conjugation, real embedding |
 | `Moments.lean`, `MomentSeries.lean`, `Mahler.lean` | odd moments, the moment functional, the Mahler (forward-difference) form |
 | `Machine.lean`, `LemmaR.lean` | poles, D, partial sums, the functionals A, B, Δ_h ∈ ℚ[X]; Lemma R and Corollary R |
 | `PoleExpansion.lean` | Lemma 1′: Λ = A + T·B |
@@ -134,14 +160,14 @@ Paths are relative to `Chi2U/`.
 | `PNT/` | prime number theorem (θ(x) ~ x) and prime sums |
 | `Analytic/` | Theorem B′: node expansion, slot determinants, lattice energy inequality, pole bound |
 | `Interval/`, `Cert/` | rational interval arithmetic, log enclosures, and the kernel-checked dual certificate |
-| `NonVan/` | Lemma P′ |
+| `NonVan/` | Lemma P′ (every m) |
 | `Main.lean` | assembly |
 | `../scripts/gen_cert_u.py` | generator for the certificate data (untrusted; see TRUST.md) |
 | `../scripts/check_defs.py` | exact check of the definitions against the paper's machine |
 | `../scripts/leanchecker.log` | per-module results of the `leanchecker` replay |
 | `../scripts/paper/` | the computation scripts of the paper |
 | `../Axioms.lean` | axiom audit |
-| `../FIDELITY_REFEREE.md` | AI referee report on the fidelity of the statements |
+| `../FIDELITY_REFEREE.md`, `../FIDELITY_REFEREE_V.md` | AI referee reports on the fidelity of the statements (U, V) |
 
 Every Lean file starts with a docstring saying what it proves and how. The docstrings cite `PROOF_U §n`, the working
 proof notes that the paper was written from. Their sections correspond to the paper's: §1–§2 (machine, reflection,
@@ -156,11 +182,12 @@ some provenance headers belong to the development history and are not part of th
 - The construction, the proofs, the certificate programs, the paper and the Lean formalisation were produced largely by
   AI models (Claude, Anthropic), working under the direction of the author. Apart from the Lean kernel check, all
   verification so far has been done by AI systems.
-- The formal margin is thin (−1/60 per h²). It is certified, not estimated.
+- The formal margins are thin (−1/60 per h² at m = 2; about −0.0126 at m = 11 and −0.001 of slack in the closed form
+  at m = 69). They are certified, not estimated.
 
 ## Acknowledgements
 
-- The architecture, and about 7,800 of the roughly 16,700 lines, come from
+- The architecture, and about 7,800 of the roughly 20,100 lines, come from
   [chi2-irrationality](https://github.com/telaviv/chi2-irrationality), the author's Lean proof that χ₂(1/3) and χ₂(1/5)
   are irrational: the definition of χ₂, the criterion, the generic analytic files, `PNT/` and `Interval/`.
 - `PNT/` and `Interval/` were ported there from [beta-irrationality](https://github.com/telaviv/beta-irrationality),

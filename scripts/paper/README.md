@@ -41,6 +41,24 @@ Every row of `runs/dual_ref_out.jsonl` and `runs/dualcert_arb2_out.jsonl` record
 `n`, `place`, and `d0, x0, ratio, Xe, rsub` or `fine0, ratio, sub`), so each certificate can be re-run from its row. The
 density files (`runs/sigma_*.npz`) that the two certificate scripts also write are not committed.
 
+## Theorem V, general m (`scripts/paper/v/`)
+
+Copies of the working scripts of the Theorem V proof notes (`umach_core.py` is identical to the one above; `vlib.py` is
+the machine for general m). Run them from inside `v/`.
+
+| script | paper | command |
+|---|---|---|
+| `margins_V.py` | proof input: the margin table for odd m ≤ 65 (Proposition on the margins; Arb, 200 bits; also lists every m < 200) | `python margins_V.py` |
+| `cert_V.py` | the direct certificates at m = 4, 8 (not used by the proof) | `CERT_M=4 python cert_V.py 1600 32 2 4` |
+| `h0_V.py`, `h0_scan_V.py` | the effective threshold at m = 4 (not used by the proof) | `python h0_V.py 4`; `python h0_scan_V.py` |
+| `id17_check.py` | the identity at m = 4 in the section on closed forms | `python id17_check.py` |
+| `lemma10nu_check.py` | Lemma 10_ν entrywise | `python lemma10nu_check.py m h1,h2,...` |
+| `oddp_check.py` | Lemmas 8′, 9′, S and P′ on exact data | `python oddp_check.py S m h1,...`; `python oddp_check.py P m l1,...` |
+| `vprofile.py` | exact profiles and scores (the evidence table for Theorem V) | `python vprofile.py m h` |
+
+The Lean margins (with the Lean constant Φ = −1.3538792) are evaluated by `scripts/margins_lean.py` and
+`scripts/margin_v_cases.py` at the top level of the repository.
+
 ## Rigour
 
 The certificates (`cert_U.py`, `dual_ref.py`, `dualcert_arb2.py`) and `facts_M1.py` feed the proofs: floating point is
