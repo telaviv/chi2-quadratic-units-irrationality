@@ -44,7 +44,7 @@ identity for χ₂ and Euler's reflection and Landen's identity for the dilogari
 separate assumption. The proof uses only Lean's three standard axioms. There is no `sorry`, no added `axiom` and no
 `native_decide`: the numerical certificate is evaluated by the Lean kernel. See [TRUST.md](TRUST.md).
 
-The paper is [`paper/pi2-log2-golden-irrationality.pdf`](paper/pi2-log2-golden-irrationality.pdf) (source `paper/main.tex`).
+The paper is [`paper/chi2-quadratic-units-irrationality.pdf`](paper/chi2-quadratic-units-irrationality.pdf) (source `paper/main.tex`).
 
 ## Context
 
