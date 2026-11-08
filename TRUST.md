@@ -50,7 +50,7 @@ on Windows 11 Home with 32 logical processors and 31.7 GB of RAM:
 | `LEAN_NUM_THREADS=4 lake build` | `Build completed successfully (9110 jobs)`, no errors | 9 min 35 s |
 | `lake env lean Axioms.lean` | all 22 listed declarations: `[propext, Classical.choice, Quot.sound]` | 20 s |
 
-The clone was of commit `29bf98e`. Recording this result (in this file, the README and the paper's §9.6) is the only
+The clone was of commit `29bf98e`. Recording this result (in this file, the README and the paper's §10.6) is the only
 change since; no Lean file changed.
 
 ## The statements

@@ -279,14 +279,14 @@ $p=2$ & Lemmas~\ref{lem:ten}, \ref{lem:tennu} & $0$ & $0.173287$\\
 odd primes $p\mid m$ & Lemma~\ref{lem:S} & none & none\\
 \midrule
 arithmetic & & $1.333333$ & $1.506620$\\
-analytic $\Phi$ & Cor.~\ref{cor:shift} & $\le-1.359216$ & $\le-1.684755$\\
+analytic $\Phi$ & Cor.~\ref{cor:shift} & $\le-1.359216$ & $\le-1.684754$\\
 \midrule
-margin $M(m)$ & & $\le-0.025882$ & $\le-0.178135$\\
+margin $M(m)$ & & $\le-0.025882$ & $\le-0.178134$\\
 \bottomrule
 \end{tabular}
 \caption{The exponential budget for $m=2$ (Corollary~\ref{thm:U}) and $m=4$ ($\chi_2(\sqrt{17}-4)$). For $m=2$ the
 analytic value is the upper endpoint $-1.3592161834586374$ of the certified Arb ball, rounded up, and the margin is
-$-0.0258828501\ldots$, rounded up. Other values of $m$ are in Table~\ref{tab:margins}.}\label{tab:budget}
+$-0.0258828501\ldots$, rounded up; for $m=4$ the values $-1.6847547\ldots$ and $-0.1781346\ldots$ are rounded up. Other values of $m$ are in Table~\ref{tab:margins}.}\label{tab:budget}
 \end{table}
 
 For $m=2$ the margin is about $1.9\%$ of the arithmetic part. It is smaller than in \cite{Chi2Paper} for $q=3$ in
@@ -327,7 +327,7 @@ The first number is $\chi_2(z)+\chi_2(w)$, by Landen's identity. Theorem~\ref{th
 An earlier version of this paper treated only $m=2$. Section~\ref{sec:construction}, Sections~\ref{sec:atom}--\ref{sec:oddsum},
 Sections~\ref{sec:equil}--\ref{sec:cert} and Section~\ref{sec:nonvan} are that version's arguments with $z=z_m$: they use
 only $\sigma(z)=-1/z$ and that $z$, $y$, $1-y$ are units at the primes concerned, and they hold verbatim for every $m$
-except where the text says otherwise. New are Lemma~S (Section~\ref{sec:special}), Lemma~$10_\nu$
+except where the text says otherwise. New in this version are Lemma~S (Section~\ref{sec:special}), Lemma~$10_\nu$
 (Section~\ref{sec:two}), the shift lemma (Section~\ref{sec:shift}), the hypothesis $\ell\nmid m$ in Lemma~P$'$, and the
 margins (Section~\ref{sec:margins}).
 
@@ -770,7 +770,7 @@ $\hat g_1(s):=-(s-K)_+$, and $\sum_i\hat g_1(2i)=-(1+3+\dots+(h-3))=-(h/2-1)^2$.
 At $\nu=3$ (for example $m=4$) the bound reads $n_2\le h^2/4+h\lfloor\log_2h\rfloor+3h+1$. On exact profiles at $m=4$,
 $n_2=23,94,201,349,523,737,1277$ at $h=8,16,24,32,40,48,64$, against the bounds $65,177,313,513,721,961,1601$; the
 share $n_2\log2/h^2$ is $0.249$ at $h=8$ and $0.216$ at $h=64$, and $0.2046$, $0.2002$ at $h=96$, $128$, falling towards
-the proved limit $0.1733$. At $m=8$ ($\nu=4$), $n_2=2205$ at $h=64$ against the bound $2562$. Every entry bound (L), (U)
+the proved limit bound $0.1733$. At $m=8$ ($\nu=4$), $n_2=2205$ at $h=64$ against the bound $2562$. Every entry bound (L), (U)
 was checked on the exact Gram matrices for $m=1,3,4,6,8,12,16$ and $h\le64$ (both embeddings where $2$ splits), with no
 violation and with equality attained. In \cite{Chi2Paper} the corresponding quantity is $v_2(1-q^{-2})=3$, which costs
 $\frac14\log2$ per $h^2$, in agreement with $c_2(3)$.
@@ -1043,7 +1043,8 @@ In particular $\limsup_hh^{-2}\log|\Delta_h(\chi_2(z_m))|\le\Phi_U-\frac12L(m)$.
 $1/z_m=m+\sqrt{m^2+1}$, so $L(m)=\log(z_2/z_m)\ge0$. Apply Lemma~\ref{lem:shift} to Theorem~\ref{thm:cert}.
 \end{proof}
 
-For $m=4$, $L(4)=0.651077\ldots$ and the bound is $\Phi_{z_4}\le-1.684755$. The proof of Theorem~\ref{thm:V} uses only
+For $m=4$ the bound is $\Phi_U-\frac12L(4)=-1.6847547\ldots$, with $L(4)=0.651077\ldots$ (rounded up:
+$-1.684754$). The proof of Theorem~\ref{thm:V} uses only
 Corollary~\ref{cor:shift}, i.e.\ Theorem~\ref{thm:cert} and the shift lemma.
 
 \subsection{Direct certificates at \texorpdfstring{$m=4$}{m = 4} and \texorpdfstring{$m=8$}{m = 8}}\label{sec:certV}
@@ -1184,7 +1185,8 @@ $n_2=O(h\log h)$ by Lemma~\ref{lem:ten}. So $M(2)=\Phi_U+\frac43=-0.0258828\ldot
 $T=\chi_2(\sqrt5-2)$ is irrational; so is $24T=\pi^2-18\log^2\varphi$ by \eqref{eq:closedform}. \qed
 
 \subsection{The margins}\label{sec:margins}
-Table~\ref{tab:margins} lists $M(m)$ for some $m$. Every entry is an upper bound computed in Arb.
+Table~\ref{tab:margins} lists $M(m)$ for some $m$. The entries are computed in Arb and rounded to the digits shown;
+in the rows $m\notin\cE$ the last two columns are rounded up, so they are upper bounds.
 
 \begin{table}[ht]
 \centering\footnotesize
@@ -1193,8 +1195,8 @@ Table~\ref{tab:margins} lists $M(m)$ for some $m$. Every entry is an upper bound
 \toprule
 $m$ & $\nu$ & $c_2(\nu)$ & odd $p\mid m$: $\sum c_p(e)$ & arithmetic & $\Phi_U-\frac12L(m)$ & $M(m)$\\
 \midrule
-2 & 2 & 0 & --- & 1.333333 & $-1.359216$ & $-0.025883$\\
-4 & 3 & 0.173287 & --- & 1.506620 & $-1.684755$ & $-0.178135$\\
+2 & 2 & 0 & --- & 1.333333 & $-1.359216$ & $-0.025882$\\
+4 & 3 & 0.173287 & --- & 1.506620 & $-1.684754$ & $-0.178134$\\
 6 & 2 & 0 & $3$: 0.411980 & 1.745313 & $-1.883288$ & $-0.137975$\\
 8 & 4 & 0.346574 & --- & 1.679907 & $-2.025634$ & $-0.345727$\\
 10 & 2 & 0 & $5$: 0.502949 & 1.836283 & $-2.136509$ & $-0.300227$\\
@@ -1211,8 +1213,8 @@ $m$ & $\nu$ & $c_2(\nu)$ & odd $p\mid m$: $\sum c_p(e)$ & arithmetic & $\Phi_U-\
 15 & 1 & 0.173287 & $3,5$: 0.914929 & & & $+0.0830$\\
 \bottomrule
 \end{tabular}
-\caption{Limit margins $M(m)$ per $h^2$ (upper bounds; the analytic column uses only Corollary~\ref{cor:shift}). The
-rows below the line are the exceptional set $\cE$, where the bound is positive. The direct certificates of
+\caption{Limit margins $M(m)$ per $h^2$ (in the rows above the line, upper bounds; the analytic column uses only
+Corollary~\ref{cor:shift}). The rows below the line are the exceptional set $\cE$, where $M(m)$ is positive. The direct certificates of
 Table~\ref{tab:certV} improve the rows $m=4$ and $m=8$ to $M(4)\le-0.211335$ and $M(8)\le-0.392407$.}\label{tab:margins}
 \end{table}
 
@@ -1229,7 +1231,8 @@ If $a\ge1$, then $\nu=a+1\ge2$ and $c_2(\nu)=(a-1)\frac{\log2}4$, so
   M(m)&<\Bigl[\Phi_U+\tfrac43+\tfrac12\log(2+\sqrt5)-\tfrac34\log2\Bigr]-\tfrac a4\log2-\tfrac18\log q\\
   &=0.176075\ldots-0.173287\ldots\,a-\tfrac18\log q .
 \end{align*}
-This is negative unless $a=1$ and $q=1$, i.e.\ $m=2$, where $M(2)=-0.025883$ exactly as computed above.
+This is negative unless $a=1$ and $q=1$, i.e.\ $m=2$, where $M(2)=\Phi_U+\frac43=-0.0258828\ldots<0$ (proof of
+Corollary~\ref{thm:U} above).
 
 If $a=0$, then $\nu=1$ and $c_2(1)=\frac{\log2}4$, so
 \begin{align*}
@@ -1238,8 +1241,9 @@ If $a=0$, then $\nu=1$ and $c_2(1)=\frac{\log2}4$, so
 \end{align*}
 which is negative for $q>e^{8\cdot0.522648\ldots}=65.443\ldots$. For the odd $m\le65$ we evaluate $M(m)$ in Arb, with the
 exact $L(m)$; for $3\le m\le65$ it is negative except for $m\in\cE$, where the enclosures are positive, between
-$+0.083$ ($m=15$) and $+0.372$ ($m=3$) (Table~\ref{tab:margins}). For $m=1$ the independent interval computation
-mentioned below gives $M(1)\approx+0.4285$.
+$+0.083$ ($m=15$) and $+0.372$ ($m=3$) (Table~\ref{tab:margins}). For $m=1$, $L(1)<0$ and the right side of
+\eqref{eq:budget} is $M(1)=0.42853\ldots$ (Arb; also found by the independent computation mentioned below). For $m=1$
+this number is only the value of the formula: Corollary~\ref{cor:shift} needs $m\ge2$.
 \end{proof}
 
 So every $m>65$ is covered by the closed form, the odd $m\le65$ by the table, and the set of $m\ge2$ for which the
@@ -1335,7 +1339,8 @@ not a closed form; Theorem~\ref{thm:V} at $m=4$ is equivalent to the irrationali
 Table~\ref{tab:lit} compares Theorem~\ref{thm:V} with the general criteria of Section~\ref{sec:context}, evaluated at
 $z_m$ at the real place where $z_m$ is small. As there, $\chi_2(z)=z+\frac z4\Phi_2(\frac12,z^2)$, and the height of
 $z_m^{-2}$ at that place is $\log(1/z_m)$. The evaluations are ours; that of \cite[Thm.~1]{DHK2022b} through
-$\Phi_2(\frac12,z^2)$ was re-derived from the published statement by the AI referee of Theorem~\ref{thm:V}. None of them
+$\Phi_2(\frac12,z^2)$ was re-derived by the AI referee of Theorem~\ref{thm:V} from the statement in the arXiv version
+(arXiv:2010.09167) of \cite{DHK2022b}. None of them
 has been checked by the authors of the criteria.
 
 \begin{table}[ht]
@@ -1640,7 +1645,7 @@ $0<\sqrt{m^2+1}-m<1$, \lean{chi2 (Real.sqrt (m \^{} 2 + 1) - m)} are the genuine
 $\Li_2$ (\lean{Golden\slash{}Landen.lean}, \lean{Golden\slash{}Dilog.lean}), so the golden-ratio form is not a separate
 assumption.
 
-The command \lean{lake env lean Axioms.lean} prints
+The command \lean{lake env lean Axioms.lean} prints, among its other lines,
 \begin{quote}\ttfamily\small
 'Chi2U.V.theoremV' depends on axioms:\\
 \hspace*{2em}[propext, Classical.choice, Quot.sound]\\
@@ -1733,7 +1738,9 @@ The formal proof establishes what the endgame needs, and in several places it ta
   logarithms (for instance $\log(2+\sqrt5)\le\frac{25}{12}\log2$).
 \item \emph{Lemma P$'$.} Congruences are taken in a residue field of the order at a prime above $\ell$, with
   $\zeta:=z^\ell$ itself; no identification of $\zeta$ by Frobenius is needed, only
-  $1-\bar z^{2\ell}=(2m\bar z)^\ell$. The formal statement needs only $\ell\nmid2m$, for every $m$. The progression sums are
+  $1-\bar z^{2\ell}=(2m\bar z)^\ell$. The formal Lemma~P$'$ (\lean{lemmaP}) needs only $\ell\nmid2m$, for every $m$; the
+  instance used for Theorem~\ref{thm:V} (\lean{lemmaP\_m}) assumes $\ell\nmid2m(m^2+1)$, which still leaves infinitely
+  many $\ell$. The progression sums are
   handled by an exact shift identity instead of the Newton form.
 \item \emph{The endgame} uses only even $h$, through $P_h:=\Delta_{2\lfloor h/2\rfloor}$ in the criterion of
   \cite{Chi2Repo}.
@@ -1801,8 +1808,9 @@ uses Lean v4.35.0 and Mathlib v4.35.0.
   bit at $N=100,200,1600$. For general $m$: Lemma~\ref{lem:tennu} entrywise (\texttt{lemma10nu\_check.py}),
   Lemmas~\ref{lem:eight}, \ref{lem:nine}, \ref{lem:S} and~\ref{lem:P} on exact data (\texttt{oddp\_check.py}), and the
   scores of Table~\ref{tab:evidenceV} (\texttt{vprofile.py}). The AI referee of Theorem~\ref{thm:V} wrote an independent
-  implementation of the machine for general $m$, which checked these lemmas in $47$ pairs $(m,h)$, reproduced the scores
-  it recomputed and the certificate at $m=4$ bit for bit, and recomputed the margins independently.
+  implementation of the machine for general $m$, which checked these lemmas in $47$ pairs $(m,h)$ and reproduced the
+  scores it recomputed; the referee also re-ran \texttt{cert\_V.py} at $m=4$ (same result bit for bit), compared it with
+  an independent primal computation, and recomputed the margins with its own code.
 \end{itemize}
 The scripts are in the folder \texttt{scripts/paper} of the repository \cite{PiTwoRepo} (those
 for Section~\ref{sec:M1} in \texttt{scripts/paper/m1}), with a README that gives the command line for each of them and
@@ -1874,14 +1882,14 @@ and Lemma~\ref{lem:P} fails at $\ell\mid m$ (Section~\ref{sec:nonvan}), as it mu
 method does not conclude at $n=6$ ($M_1(6)\approx+0.477$), $n=400$ ($M_1(400)\ge+0.070$) or $n=720$ (numerical values).
 
 \section*{Acknowledgements and disclosure}
-% Update after a whole-paper referee of this revision.
+% Updated after the whole-paper referee of this revision (REFEREE_PAPER_V.md, 2026-11-08).
 The research, the construction, the proofs, the certificate programs, the Lean formalisation, the literature searches and
 the text of this paper were produced largely by AI models (Claude, Anthropic), working under the direction of the author.
 Apart from the check by the Lean kernel, all verification so far, including the internal reviews of the argument by AI
 referees, was carried out by AI systems. The proof of Theorem~\ref{thm:V} for general $m$ was checked by one AI referee,
 at a single gate, with an independent implementation of the machine, and it is formalised in Lean
-(Section~\ref{sec:lean}). No MathSciNet search or expert query has been made for it. The text of this revision, which adds Theorem~\ref{thm:V}, has not yet been reviewed
-as a whole. No human expert has yet reviewed the mathematics or the Lean code; we would be grateful for corrections. The
+(Section~\ref{sec:lean}). No MathSciNet search or expert query has been made for it. The text of this revision, which
+adds Theorem~\ref{thm:V}, was reviewed as a whole by one further AI referee. No human expert has yet reviewed the mathematics or the Lean code; we would be grateful for corrections. The
 prime number theorem in the formalisation is ported from the PrimeNumberTheoremAnd project of A.~Kontorovich, T.~Tao and
 collaborators \cite{PNTplus}, through the \lean{zeta5} repository of C\'esar Del Solar \cite{zeta5} and the formalisation
 of \cite{Chi2Paper}.
