@@ -3,8 +3,8 @@ stub statements of Chi2U/V/Interface.lean on exact Delta_h (python-flint, exact)
 
 * Smom (Lean recurrence with 1 - z^2 = 2m z) == umach_core.odd_moments, parity;
 * Lean Delta_h (tildeCoord with d * im) == pilot_V vlib.delta_poly for m = 3, 4, 6 (h = 2..8);
-* lemma10nu: n_2(Delta_h) <= n2V m h (m = 1, 3, 4, 6, 8; h = 4..16);
-* lemmaS: n_p <= sum_l AK(h, p^l) + v_p(m) (h/2 - 1)^2 for odd p | m (m = 3, 5, 6, 9, 15; h = 4..16);
+* lemma10nu: n_2(Delta_h) <= n2V m h (m = 1, 3, 4, 6, 8, 12; h = 2..16);
+* lemmaS: n_p <= sum_l AK(h, p^l) + v_p(m) (h/2 - 1)^2 for odd p | m (m = 3, 5, 6, 9, 15; h = 2..16);
 * padicNorm_Delta_odd (generic p not dividing 2m): n_p <= eOdd h p (m = 3, 4, 6; h = 8..16);
 * lemmaP_m spot check: v_l(c_0) = -2K, v_l(c_k) >= -2K + 2k at h = 3l - 1, l = 7 (m = 3, 4).
 usage: python scripts/check_defs_v.py   (output: scripts/check_defs_v.out)"""
@@ -159,22 +159,22 @@ for m in (3, 4, 6):
         assert P == delta(m, h), ("Delta", m, h)
 print("Smom == odd_moments (n <= 60) and Lean Delta == vlib.delta_poly (h = 2..8) for m = 3, 4, 6")
 
-for m in (1, 3, 4, 6, 8):
+for m in (1, 3, 4, 6, 8, 12):
     out = []
-    for h in (4, 6, 8, 10, 12, 14, 16):
+    for h in (2, 4, 6, 8, 10, 12, 14, 16):
         n2 = nexp(delta(m, h), 2)
         assert n2 <= n2V(m, h), ("lemma10nu", m, h, n2, n2V(m, h))
         out.append("%d<=%d" % (n2, n2V(m, h)))
-    print("lemma10nu m=%d (nu=%d): n2 <= n2V at h=4..16: %s" % (m, nuV(m), ' '.join(out)))
+    print("lemma10nu m=%d (nu=%d): n2 <= n2V at h=2..16: %s" % (m, nuV(m), ' '.join(out)))
 
 for m, ps in ((3, (3,)), (5, (5,)), (6, (3,)), (9, (3,)), (15, (3, 5))):
     for p in ps:
         out = []
-        for h in (4, 6, 8, 10, 12, 14, 16):
+        for h in (2, 4, 6, 8, 10, 12, 14, 16):
             npv = nexp(delta(m, h), p)
             assert npv <= eS(m, h, p), ("lemmaS", m, p, h, npv, eS(m, h, p))
             out.append("%d<=%d" % (npv, eS(m, h, p)))
-        print("lemmaS m=%d p=%d: n_p <= eS at h=4..16: %s" % (m, p, ' '.join(out)))
+        print("lemmaS m=%d p=%d: n_p <= eS at h=2..16: %s" % (m, p, ' '.join(out)))
 
 for m in (3, 4, 6):
     for h in (8, 10, 12, 14, 16):

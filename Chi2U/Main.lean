@@ -6,6 +6,7 @@
 * `β = −27/20` (Theorem B′ with a certificate `Φ < −27/20`: `exists_certU`);
 * margin `4/3 − 27/20 = −1/60 < 0`;
 * nonvanishing along `h = 3ℓ − 1` (Lemma P′: `nonvan_frequently`).
+The machine is the `mz = 2` instance of the parametric one (`Field.lean`: `Qd 2 = ℚ(√5)`, `zU_two`).
 -/
 import Chi2U.MainCond
 import Chi2U.Statement

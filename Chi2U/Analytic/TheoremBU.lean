@@ -1,5 +1,9 @@
 /-
-# Theorem B′: the analytic bound from a dual certificate (PROOF_U §5)
+# Theorem B′: the analytic bound from a dual certificate (PROOF_U §5; PROOF_V §5.1 for general `z`)
+
+Parametric: `DualCertU mz` is a certificate at `z = zU mz` and `DualCertU.analytic` holds for every `mz ≥ 1` (the
+`U` suffixes are historical). The proof uses `z` only through `v` and the two tail conditions; the monotonicity of `v`
+(`vU_strictAntiOn`, needs `mz ≥ 2`) is not used.
 
 The constant: for densities `0 ≤ ρ ≤ 1` on `[0, ∞)` of mass 1, `J(ρ) = E(ρ) + ∫ v dρ` with the external field
 

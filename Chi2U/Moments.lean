@@ -1,7 +1,8 @@
 /-
 # The odd moments `S_n = Σ_{t odd ≥ 1} z^t t^n` and their parity
 
-`Smom n ∈ ℚ(√5)` is defined by the recurrence obtained from `t^n − (t−2)^n` and `1 − z² = 4z`:
+`Smom mz n ∈ ℚ(√d)` (all parametrised by `mz` with `[Fact (1 ≤ mz)]`, `d = mz² + 1`; Theorem U is `mz = 2`) is defined by the recurrence obtained from
+`t^n − (t−2)^n` and `1 − z² = 2mz·z ≠ 0`:
 
     (1 − z²) S_n = (−1)^n z − Σ_{k<n} C(n,k) (−2)^{n−k} S_k.
 

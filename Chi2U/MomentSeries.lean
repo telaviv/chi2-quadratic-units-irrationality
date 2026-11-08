@@ -1,7 +1,7 @@
 /-
 # The moment series over `ℝ`
 
-`R_n = Σ_{s ≥ 0} z^{2s+1} (2s+1)^n` (`z = √5 − 2 ∈ (0, 1)`) converges and equals `emb S_n` (`hasSum_Smom'`):
+`R_n = Σ_{s ≥ 0} z^{2s+1} (2s+1)^n` (`z = zU mz = √(mz² + 1) − mz ∈ (0, 1)`) converges and equals `emb S_n` (`hasSum_Smom'`):
 the real series satisfies the recurrence defining `Smom` (shift `s ↦ s + 1` and `(2s−1)^n = ((2s+1) − 2)^n`).
 By linearity `Σ_s z^{2s+1} p(2s+1) = emb (Lmom p)` (`hasSum_Lmom'`).
 -/

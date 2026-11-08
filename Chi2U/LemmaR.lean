@@ -6,10 +6,10 @@ For `h` even (`K = h + 1` odd, poles `x_m` symmetric under `m ↦ h − m`):
 * `x_{h−m} = −x_m`, `D′(x_{h−m}) = D′(x_m)`, `σ(z^x) = z^{−x}` (`x` even), `σ P(x) = P(−x)`;
 * with the moment parity `σ μ(R) = −μ(R(−t))` (`Moments.sig_muPoly`) this gives **Lemma R**:
   `σ A(t^n) = (−1)^n A(t^n)` and `σ B(t^n) = (−1)^n B(t^n)` (`sig_Afun`, `sig_Bfun`):
-  even-`n` entries are rational, odd-`n` entries are rational multiples of `√5`.
-* **Corollary R** (`eval₂_Delta`): for every ring hom `ι : ℚ(√5) → L` and `x ∈ L`,
+  even-`n` entries are rational, odd-`n` entries are rational multiples of `√d` (only `σz = −1/z` is used).
+* **Corollary R** (`eval₂_Delta`): for every ring hom `ι : ℚ(√d) → L` and `x ∈ L`,
   `Δ_h(x) = det(ι A(t^{i+j}) + x ι B(t^{i+j}))`. Proof: `Ã + xB̃` (mapped) times `W = diag(w_j)`,
-  `w_j = √5^{[j odd]}`, equals `W` times the Hankel matrix, and `det W` is a unit.
+  `w_j = √d^{[j odd]}`, equals `W` times the Hankel matrix, and `det W` is a unit.
   Special cases: `aeval_Delta` (`ι = emb`, real `x`) and `Delta_map` (`ι = C`, `x = X`).
 -/
 import Chi2U.Machine
@@ -231,7 +231,7 @@ lemma tildeCoord_mul (i j : ℕ) {e : (Qd mz)} (he : sig e = (-1) ^ (i + j) * e)
     rw [if_pos hij, if_neg (Nat.not_even_iff_odd.mpr hi), if_neg (Nat.not_even_iff_odd.mpr hj)]
     ext <;> simp [sqrtd, him]
 
-/-- **Corollary R.** For any ring hom `ι : ℚ(√5) → L` and `x ∈ L`:
+/-- **Corollary R.** For any ring hom `ι : ℚ(√d) → L` and `x ∈ L`:
 `Δ_h(x) = det(ι A(t^{i+j}) + x · ι B(t^{i+j}))`. -/
 theorem eval₂_Delta (hh : Even h) {L : Type*} [CommRing L] (ι : (Qd mz) →+* L) (x : L) :
     (Delta mz h).eval₂ (ι.comp (algebraMap ℚ (Qd mz))) x =

@@ -1,5 +1,7 @@
 /-
-# The reflection Hankel machine for `χ₂(√5 − 2)` (PROOF_U §1)
+# The reflection Hankel machine for `χ₂(√(m² + 1) − m)` (PROOF_U §1, PROOF_V §1)
+
+Everything is parametrised by `mz` (`d = mz² + 1`, `z = √d − mz`; Theorem U is `mz = 2`); only `z` changes.
 
 For `h` even, `J = h/2`, `K = h + 1` poles at the even integers `x_m = 2(m − J)`, `m ≤ h`:
 * `D(t) = ∏_{m ≤ h} (t − x_m)`, `D′(x_m) = ∏_{l ≠ m} (x_m − x_l)`;
@@ -7,8 +9,8 @@ For `h` even, `J = h/2`, `K = h + 1` poles at the even integers `x_m = 2(m − J
   `−Σ_{n odd, −x<n<0} z^n/n²` for `x > 0`, `P(0) = 0`;
 * `Λ(g) = μ(g/D) = A(g) + T·B(g)` (Lemma 1′, `PoleExpansion.lean`) with
   `A(g) = μ(g div D) + Σ_m c_m z^{x_m} P(x_m)`, `B(g) = −Σ_m c_m z^{x_m}`, `c_m = g(x_m)/D′(x_m)`;
-  both are `ℚ(√5)`-valued;
-* the rational matrices `Ã_{ij}, B̃_{ij}`: the `ℚ`-coordinates of `E_{i+j}·√5^{[i odd] − [j odd]}`
+  both are `ℚ(√d)`-valued;
+* the rational matrices `Ã_{ij}, B̃_{ij}`: the `ℚ`-coordinates of `E_{i+j}·√d^{[i odd] − [j odd]}`
   (`tildeCoord`); by Lemma R (`LemmaR.lean`) these are the honest entries of a diagonal conjugate of the Hankel
   matrix, so
 * `Δ_h(X) = det(Ã + X·B̃) ∈ ℚ[X]` has `Δ_h(T) = det(Λ(t^{i+j}))` (`LemmaR.aeval_Delta`).

@@ -1,7 +1,7 @@
 /-
 # Lemma 1′: the pole expansion `Λ = A + T·B` (PROOF_U §1)
 
-`T = χ₂(z)`, `z = √5 − 2`. For `h` even and `g ∈ ℚ[t]`,
+`T = χ₂(z)`, `z = zU mz = √(mz² + 1) − mz` (Theorem U: `mz = 2`). For `h` even and `g ∈ ℚ[t]`,
 
     Σ_{s ≥ 0} z^{2s+1} (g/D)′(2s+1) = A(g) + T·B(g)        (in ℝ, via `emb`),
 
