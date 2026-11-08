@@ -1,7 +1,7 @@
 /-
 # Theorem V: the margin inequality (PROOF_V §0, §7)
 
-`margin_V_proof`: `α(m) + Φ_L − L(m)/2 < 0` for `m ≥ 2`, `m ∉ {3, 5, 7, 9, 15}` (the stub `margin_V`).
+`margin_V_proof`: `α(m) + Φ_L − L(m)/2 < 0` for `m ≥ 2`, `m ∉ {3, 5, 7, 9, 15}` (used as `margin_V` in `Interface.lean`).
 
 Route (PROOF_V §7 with Lean's constant `Φ_L = −1.3538792`):
 * `log m = v₂(m) log 2 + Σ_{p ∈ oddDiv m} v_p(m) log p` (`log_nat_eq`), so
@@ -426,7 +426,7 @@ lemma bsmall_of {m : ℕ} (h1 : 2 ≤ m) (h2 : m ≤ 68) (hodd : ¬ 2 ∣ m)
 
 lemma oddDiv_two : oddDiv 2 = ∅ := by simp [oddDiv, Nat.primeFactors]
 
-/-- **The margin inequality** (PROOF_V §0, §7) with `Φ_L`: the stub `margin_V`. -/
+/-- **The margin inequality** (PROOF_V §0, §7) with `Φ_L` (`margin_V`). -/
 theorem margin_V_proof {m : ℕ} (hm : 2 ≤ m) (hE : m ∉ ({3, 5, 7, 9, 15} : Finset ℕ)) :
     alphaV m + (PhiL - Lshift m / 2) < 0 := by
   have hm0 : m ≠ 0 := by omega

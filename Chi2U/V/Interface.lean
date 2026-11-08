@@ -59,10 +59,10 @@ theorem lemma10nu (m : ℕ) [Fact (1 ≤ m)] {h : ℕ} (hh : Even h) (h2 : 2 ≤
 
 
 /-- **Lemma S** (PROOF_V §3.2): for an odd prime `p ∣ m`, `n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + e(h/2 − 1)²`,
-`e = v_p(m)`. Needs the multi-level Lemma 8′ (statement in `attic/Lemma8_general_unused.lean`; a class-adapted
-proof for a similar machine is in `../lean_chi2/Chi2Irrational/Arith/ClassBound.lean`, `Special.lean`) plus the
-polynomial-minor bound `v_p(𝒫_ij) ≥ −e(i + j − K)₊` from the Mahler form (`Mahler.Lmom_eq_mahler`, denominators
-`(2m)^{b+1}`). Checked on exact `Δ_h` (`scripts/check_defs_v.py`). -/
+`e = v_p(m)`. Proof in `V/LemmaS.lean` (helpers `V/S*.lean`): a multi-level Lemma 8′ proved directly (Schur
+complement, multilinear expansion of the bottom rows, Newton/divided-difference factorisation of `Vand(x_S)²`) plus
+the polynomial-minor bound `v_p(𝒫_ij) ≥ −e(i + j − K)₊` from the Mahler form (`Mahler.Lmom_eq_mahler`,
+denominators `(2m)^{b+1}`). Checked on exact `Δ_h` (`scripts/check_defs_v.py`). -/
 theorem lemmaS (m : ℕ) [Fact (1 ≤ m)] {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) (hpm : p ∣ m) {h : ℕ} (hh : Even h)
     (k : ℕ) : padicNorm p ((Delta m h).coeff k) ≤ (p : ℚ) ^ eS m h p := by
   exact lemmaS_proof m hp hpm hh k
@@ -88,13 +88,14 @@ theorem margin_V {m : ℕ} (hm : 2 ≤ m) (hE : m ∉ ({3, 5, 7, 9, 15} : Finset
   exact margin_V_proof hm hE
 
 /-- **Lemma P′_m** (PROOF_V §6) for primes `ℓ ≥ 7` with `ℓ ∤ 2m(m² + 1)` (excluding `ℓ ∣ d` avoids the ramified
-and index cases; infinitely many `ℓ` remain). The Lean proof of Lemma P′ (`NonVan/**`) is written for `mz = 2`;
-its steps use `z`, `1 − y = 2mz·z` and `1 − z^{2ℓ}` only through their being `𝔩`-units. -/
+and index cases; infinitely many `ℓ` remain). Proof: `V/NonVan.lean`, from Lemma P′ (`NonVan/**`), which is
+generic in `mz` and needs only `ℓ ∤ 2mz` (`z`, `1 − y = 2mz·z`, `1 − z^{2ℓ}` enter only as `𝔩`-units); the
+hypothesis `ℓ ∤ m² + 1` is not used. -/
 theorem lemmaP_m (m : ℕ) [Fact (1 ≤ m)] {ℓ : ℕ} [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (hℓm : ¬ ℓ ∣ 2 * m * (m ^ 2 + 1))
     (a : ℤ) {b : ℕ} (hb : 0 < b) (hb2 : ¬ ℓ ^ 2 ∣ b) : (Delta m (3 * ℓ - 1)).eval ((a : ℚ) / b) ≠ 0 := by
   exact lemmaP_m_proof m hℓ hℓm a hb hb2
 
-/-! ## Assembly (proved from the stubs) -/
+/-! ## Assembly -/
 
 /-- `|Π_{q ∈ S} q^{f q}|_p = p^{−f p}` if `p ∈ S`, else `1` (`S` a set of primes). -/
 lemma padicNorm_prod_primes (p : ℕ) [Fact p.Prime] (S : Finset ℕ) (hS : ∀ q ∈ S, q.Prime) (f : ℕ → ℕ) :
@@ -271,7 +272,7 @@ theorem nonvan_frequently_V (m : ℕ) [Fact (1 ≤ m)] (a : ℤ) (b : ℕ) (hb :
     have : ℓ ≤ ℓ ^ 2 := Nat.le_self_pow (by norm_num) ℓ
     omega
 
-/-- The endgame inputs at `z_m`, from the stubs. -/
+/-- The endgame inputs at `z_m`. -/
 theorem exists_boundsV {m : ℕ} [Fact (1 ≤ m)] (hm : 2 ≤ m) (hE : m ∉ ({3, 5, 7, 9, 15} : Finset ℕ)) :
     Nonempty (MachineBoundsV m) := by
   obtain ⟨C, hC⟩ := exists_certU'
@@ -290,7 +291,7 @@ theorem exists_boundsV {m : ℕ} [Fact (1 ≤ m)] (hm : 2 ≤ m) (hE : m ∉ ({3
     analytic := C'.analytic
     nonvan := nonvan_frequently_V m }⟩
 
-/-- **Theorem V**, from the stubs. -/
+/-- **Theorem V.** -/
 theorem theoremV : TheoremV := by
   intro m hm hE
   have : Fact (1 ≤ m) := ⟨by omega⟩

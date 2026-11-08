@@ -2,7 +2,7 @@
 # Theorem V: the shift lemma (PROOF_V §5.2) in the certificate format of `Analytic/TheoremBU.lean`
 
 `shift_lemma_proof`: from a dual certificate `C` at `z₂` and `δ > 0`, a dual certificate `C'` at `z_m` (`m ≥ 2`) with
-`Φ(C') ≤ Φ(C) − L(m)/2 + δ` (the stub `shift_lemma`).
+`Φ(C') ≤ Φ(C) − L(m)/2 + δ` (used as `shift_lemma` in `Interface.lean`).
 
 Construction (PROOF_V §5.2, discretised): with `L = L(m) = log z₂ − log z_m ≥ 0`, `v_m(x) = v₂(x) − L·x`
 (`vU_shift`). Keep `μ` and `X`; `λ' = λ − L`; refine the grid by a factor `r` (`L' = rL`, `N = rL`) and put
@@ -101,7 +101,7 @@ lemma Lshift_nonneg (m : ℕ) (hm : 2 ≤ m) : 0 ≤ Lshift m := by
 
 /-! ## The shift lemma -/
 
-/-- **Shift lemma** (PROOF_V §5.2): the stub `shift_lemma`. -/
+/-- **Shift lemma** (PROOF_V §5.2), used as `shift_lemma`. -/
 theorem shift_lemma_proof (C : DualCertU 2) (m : ℕ) [Fact (1 ≤ m)] (hm : 2 ≤ m) {δ : ℝ} (hδ : 0 < δ) :
     ∃ C' : DualCertU m, C'.Phi ≤ C.Phi - Lshift m / 2 + δ := by
   set Lsh := Lshift m with hLsh

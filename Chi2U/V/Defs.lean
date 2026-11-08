@@ -2,7 +2,7 @@
 # Theorem V: definitions and constants (PROOF_V, `schanuel/four_exp/strong4/pilot_V/PROOF_V.md`)
 
 The statement `TheoremV`, the constants of the margin (`alphaV`, `Lshift`, `PhiL`), the exponents `n2V`, `eS`, and the
-proved size bound `lemma10nu_size`. The stage-B2 stubs and the assembly are in `Chi2U/V/Interface.lean`.
+proved size bound `lemma10nu_size`. The ingredients (proved in `Chi2U/V/*`) and the assembly are in `Chi2U/V/Interface.lean`.
 -/
 import Chi2U.Main
 

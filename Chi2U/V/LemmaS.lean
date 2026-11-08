@@ -1,7 +1,7 @@
 /-
 # Lemma S (PROOF_V §3.2): `n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + v_p(m)·(h/2 − 1)²` for odd `p`
 
-**Statement** (`lemmaS_proof`, the exact stub of `Interface.lean`): for an odd prime `p ∣ m` and even `h`, every
+**Statement** (`lemmaS_proof`, the exact statement of `lemmaS` in `Interface.lean`): for an odd prime `p ∣ m` and even `h`, every
 coefficient of `Δ_h` satisfies `|c_k|_p ≤ p^{eS m h p}`. The proof never uses `p ∣ m`: for `p ∤ 2m` it is the general
 multi-level Lemma 8′ of PROOF_U (`e = 0`).
 
