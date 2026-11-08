@@ -3,9 +3,9 @@
 
 * `Lmom_shift` (exact): `Lmom(p(t − 2n)) = z^{2n} Lmom(p) + Σ_{j<n} z^{2j+1} p(2j+1−2n)` (iterate rec₁).
 * `Cong_Lmom`: for `P ∈ ℤ[t]` and an odd prime `ℓ`,
-    `Lmom(P) ≡ (4z)^{−ℓ} Σ_{j<ℓ} z^{2j+1} P(2j+1)`  in the residue field `Fl ℓ`.
+    `Lmom(P) ≡ (2mz·z)^{−ℓ} Σ_{j<ℓ} z^{2j+1} P(2j+1)`  in the residue field `Fl mz ℓ` (`ℓ ∤ 2mz`).
   Proof: `Lmom(P(t − 2ℓ)) ≡ Lmom(P)` (the values at odd `t` agree mod `ℓ`; `vGe_Lmom_odd`), so the shift identity
-  with `n = ℓ` gives `(1 − z^{2ℓ}) Lmom(P) ≡ Σ_{j<ℓ} z^{2j+1} P(2j+1)`, and `1 − z̄^{2ℓ} = (1 − z̄²)^ℓ = (4z̄)^ℓ`
+  with `n = ℓ` gives `(1 − z^{2ℓ}) Lmom(P) ≡ Σ_{j<ℓ} z^{2j+1} P(2j+1)`, and `1 − z̄^{2ℓ} = (1 − z̄²)^ℓ = (2mz·z̄)^ℓ`
   (Frobenius in characteristic `ℓ`). This is PROOF_U's progression sum `Σ_γ z^{t_γ} F′(t_γ)/(1 − ζ²)` with
   `t_γ = 2γ + 1`, `ζ = z^ℓ`; no Frobenius identification of `ζ` is needed.
 -/
@@ -16,11 +16,13 @@ namespace LP
 
 open Polynomial Finset
 
+variable {mz : ℕ} [Fact (1 ≤ mz)]
+
 /-- The shift identity. -/
 lemma Lmom_shift (p : ℚ[X]) (n : ℕ) :
-    Lmom 2 (p.comp (X - C (2 * (n : ℚ)))) =
-      (zK 2) ^ (2 * n) * Lmom 2 p +
-        ∑ j ∈ range n, (zK 2) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * n) : ℚ) : Q5) := by
+    Lmom mz (p.comp (X - C (2 * (n : ℚ)))) =
+      (zK mz) ^ (2 * n) * Lmom mz p +
+        ∑ j ∈ range n, (zK mz) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * n) : ℚ) : Qd mz) := by
   induction n with
   | zero => simp
   | succ n ih =>
@@ -31,13 +33,13 @@ lemma Lmom_shift (p : ℚ[X]) (n : ℕ) :
       congr 2
       push_cast; ring
     rw [hc]
-    have h1 := Lmom_rec1 (mz := 2) (p.comp (X - C (2 * (n : ℚ))))
+    have h1 := Lmom_rec1 (mz := mz) (p.comp (X - C (2 * (n : ℚ))))
     rw [ih, eval_comp] at h1
     simp only [eval_sub, eval_X, eval_C] at h1
     rw [sum_range_succ']
-    have hsum : ∑ j ∈ range n, (zK 2) ^ (2 * (j + 1) + 1) *
-        ((p.eval (2 * ((j + 1 : ℕ) : ℚ) + 1 - 2 * ((n + 1 : ℕ) : ℚ)) : ℚ) : Q5) =
-        (zK 2) ^ 2 * ∑ j ∈ range n, (zK 2) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * n) : ℚ) : Q5) := by
+    have hsum : ∑ j ∈ range n, (zK mz) ^ (2 * (j + 1) + 1) *
+        ((p.eval (2 * ((j + 1 : ℕ) : ℚ) + 1 - 2 * ((n + 1 : ℕ) : ℚ)) : ℚ) : Qd mz) =
+        (zK mz) ^ 2 * ∑ j ∈ range n, (zK mz) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * n) : ℚ) : Qd mz) := by
       rw [mul_sum]
       refine sum_congr rfl (fun j _ => ?_)
       have : (2 * ((j + 1 : ℕ) : ℚ) + 1 - 2 * ((n + 1 : ℕ) : ℚ)) = 2 * (j : ℚ) + 1 - 2 * n := by
@@ -54,17 +56,17 @@ lemma eval_map_int (P : ℤ[X]) (a : ℤ) : (P.map (Int.castRingHom ℚ)).eval (
   rw [eval_intCast_map]; rfl
 
 /-- **Progression formula** mod `ℓ`. -/
-theorem Cong_Lmom (hℓ2 : ℓ ≠ 2) (P : ℤ[X]) :
-    Cong ℓ (Lmom 2 (P.map (Int.castRingHom ℚ)))
-      (((4 * zb ℓ) ^ ℓ)⁻¹ * ∑ j ∈ range ℓ, zb ℓ ^ (2 * j + 1) * ((P.eval (2 * (j : ℤ) + 1) : ℤ) : Fl ℓ)) := by
+theorem Cong_Lmom (hℓm : ¬ ℓ ∣ 2 * mz) (P : ℤ[X]) :
+    Cong ℓ (Lmom mz (P.map (Int.castRingHom ℚ)))
+      (((((2 * mz : ℕ) : Fl mz ℓ) * zb mz ℓ) ^ ℓ)⁻¹ * ∑ j ∈ range ℓ, zb mz ℓ ^ (2 * j + 1) * ((P.eval (2 * (j : ℤ) + 1) : ℤ) : Fl mz ℓ)) := by
   set p := P.map (Int.castRingHom ℚ) with hp
   have hcast : ∀ k : ℕ, (2 * (k : ℚ) + 1) = ((2 * (k : ℤ) + 1 : ℤ) : ℚ) := fun k => by push_cast; ring
-  have hint : vGe ℓ 0 (Lmom 2 p) := vGe_Lmom_odd_two hℓ2 p 0 (fun k => by
+  have hint : vGe ℓ 0 (Lmom mz p) := vGe_Lmom_odd hℓm p 0 (fun k => by
     rw [hcast, hp, eval_map_int]; simpa using padicNorm.of_int (p := ℓ) _)
-  obtain ⟨L, hL⟩ : ∃ L, Cong ℓ (Lmom 2 p) L := ⟨_, Cong_red ⟨_, pInt_of_vGe hint⟩⟩
-  have hsh : vGe ℓ 1 (Lmom 2 (p.comp (X - C (2 * (ℓ : ℚ)))) - Lmom 2 p) := by
+  obtain ⟨L, hL⟩ : ∃ L, Cong ℓ (Lmom mz p) L := ⟨_, Cong_red ⟨_, pInt_of_vGe hint⟩⟩
+  have hsh : vGe ℓ 1 (Lmom mz (p.comp (X - C (2 * (ℓ : ℚ)))) - Lmom mz p) := by
     rw [← map_sub]
-    refine vGe_Lmom_odd_two hℓ2 _ 1 (fun k => ?_)
+    refine vGe_Lmom_odd hℓm _ 1 (fun k => ?_)
     rw [eval_sub, eval_comp, eval_sub, eval_X, eval_C, hcast,
       show ((2 * (k : ℤ) + 1 : ℤ) : ℚ) - 2 * (ℓ : ℚ) = ((2 * (k : ℤ) + 1 - 2 * ℓ : ℤ) : ℚ) by push_cast; ring,
       hp, eval_map_int, eval_map_int, ← Int.cast_sub]
@@ -73,15 +75,15 @@ theorem Cong_Lmom (hℓ2 : ℓ ≠ 2) (P : ℤ[X]) :
       refine dvd_trans ⟨-2, ?_⟩ this
       push_cast; ring
     exact padicNorm.dvd_iff_norm_le.mp hd
-  have hL' : Cong ℓ (Lmom 2 (p.comp (X - C (2 * (ℓ : ℚ))))) L := Cong_of_vGe_sub hL hsh
+  have hL' : Cong ℓ (Lmom mz (p.comp (X - C (2 * (ℓ : ℚ))))) L := Cong_of_vGe_sub hL hsh
   rw [Lmom_shift] at hL'
-  have hS : Cong ℓ (∑ j ∈ range ℓ, (zK 2) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * ℓ) : ℚ) : Q5))
-      (∑ j ∈ range ℓ, zb ℓ ^ (2 * j + 1) * ((P.eval (2 * (j : ℤ) + 1) : ℤ) : Fl ℓ)) := by
+  have hS : Cong ℓ (∑ j ∈ range ℓ, (zK mz) ^ (2 * j + 1) * ((p.eval (2 * (j : ℚ) + 1 - 2 * ℓ) : ℚ) : Qd mz))
+      (∑ j ∈ range ℓ, zb mz ℓ ^ (2 * j + 1) * ((P.eval (2 * (j : ℤ) + 1) : ℤ) : Fl mz ℓ)) := by
     refine Cong_sum _ _ _ (fun j _ => Cong_mul (Cong_pow Cong_zK _) ?_)
     rw [show (2 * (j : ℚ) + 1 - 2 * ℓ) = ((2 * (j : ℤ) + 1 - 2 * ℓ : ℤ) : ℚ) by push_cast; ring, hp,
       eval_map_int, Rat.cast_intCast]
     refine Cong_congr (Cong_intCast _) rfl ?_
-    rw [CharP.intCast_eq_intCast (Fl ℓ) ℓ]
+    rw [CharP.intCast_eq_intCast (Fl mz ℓ) ℓ]
     apply Int.ModEq.symm
     rw [Int.modEq_iff_dvd]
     have := Polynomial.sub_dvd_eval_sub (2 * (j : ℤ) + 1 - 2 * ℓ) (2 * (j : ℤ) + 1) P
@@ -89,11 +91,11 @@ theorem Cong_Lmom (hℓ2 : ℓ ≠ 2) (P : ℤ[X]) :
     ring
   have hrhs := Cong_add (Cong_mul (Cong_pow (Cong_zK (ℓ := ℓ)) (2 * ℓ)) hL) hS
   have heq := hL'.unique hrhs
-  have hfrob : (4 * zb ℓ) ^ ℓ = 1 - zb ℓ ^ (2 * ℓ) := by
+  have hfrob : (((2 * mz : ℕ) : Fl mz ℓ) * zb mz ℓ) ^ ℓ = 1 - zb mz ℓ ^ (2 * ℓ) := by
     rw [← one_sub_zb_sq, sub_pow_char, one_pow, pow_mul]
-  have hne : (4 * zb ℓ) ^ ℓ ≠ 0 := pow_ne_zero _ (mul_ne_zero (four_ne_zero_Fl hℓ2) zb_ne_zero)
-  have : L = ((4 * zb ℓ) ^ ℓ)⁻¹ *
-      ∑ j ∈ range ℓ, zb ℓ ^ (2 * j + 1) * ((P.eval (2 * (j : ℤ) + 1) : ℤ) : Fl ℓ) := by
+  have hne : (((2 * mz : ℕ) : Fl mz ℓ) * zb mz ℓ) ^ ℓ ≠ 0 := pow_ne_zero _ (mul_ne_zero (twomz_ne_zero_Fl hℓm) zb_ne_zero)
+  have : L = ((((2 * mz : ℕ) : Fl mz ℓ) * zb mz ℓ) ^ ℓ)⁻¹ *
+      ∑ j ∈ range ℓ, zb mz ℓ ^ (2 * j + 1) * ((P.eval (2 * (j : ℤ) + 1) : ℤ) : Fl mz ℓ) := by
     rw [eq_inv_mul_iff_mul_eq₀ hne, hfrob]
     linear_combination heq
   rw [← this]; exact hL
