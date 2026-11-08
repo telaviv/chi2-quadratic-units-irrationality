@@ -24,3 +24,9 @@ import Chi2U
 #print axioms Chi2U.exists_certU
 #print axioms Chi2U.lemmaP
 #print axioms Chi2U.nonvan_frequently
+#print axioms Chi2U.V.theoremV
+#print axioms Chi2U.V.lemma10nu
+#print axioms Chi2U.V.lemmaS
+#print axioms Chi2U.V.shift_lemma
+#print axioms Chi2U.V.margin_V
+#print axioms Chi2U.V.lemmaP_m

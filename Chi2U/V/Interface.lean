@@ -1,24 +1,23 @@
 /-
-# Theorem V: the stage-B2 interface (PROOF_V, `schanuel/four_exp/strong4/pilot_V/PROOF_V.md`)
+# Theorem V: assembly (PROOF_V, `schanuel/four_exp/strong4/pilot_V/PROOF_V.md`)
 
 **Theorem V.** For every `m ≥ 2`, `m ∉ E = {3, 5, 7, 9, 15}`: `χ₂(√(m² + 1) − m) ∉ ℚ` (`TheoremV`).
 
 The machine of Theorem U is parametric in `m` (`Field`, `Moments`, `Machine`, `LemmaR`, `PoleExpansion`, `Mahler`,
 `Arith/VGe`, …, all with a parameter `mz`), and so are the endgame (`MainCond.irrational_of_bounds`), the generic
 odd primes `p ∤ 2m` (Lemmas 8′, 8A′, 9′: `padicNorm_Delta_odd`; Theorem A′: `theoremA`) and Theorem B′
-(`DualCertU.analytic`, any `m`, given a dual certificate at `z_m`). This file states, as `sorry` stubs, exactly what is
-still missing (six stubs; `lemma10nu_size` is already proved), and **proves** `TheoremV` from the stubs
-(`theoremV`):
+(`DualCertU.analytic`, any `m`, given a dual certificate at `z_m`). This file states the
+remaining ingredients, each proved in its own file (stage B2, 2026-11-08), and **proves** `TheoremV` (`theoremV`):
 
-| stub | PROOF_V | statement |
+| ingredient | PROOF_V | statement (proof) |
 |---|---|---|
-| `lemma10nu` | §4, Lemma 10_ν | `n₂ ≤ n2V m h` (`ν = 1 + v₂(m)`) |
+| `lemma10nu` | §4, Lemma 10_ν | `n₂ ≤ n2V m h` (`ν = 1 + v₂(m)`) (`V/Lemma10nu`, `V/TwoAdicNu`) |
 | `lemma10nu_size` | §4 ("consequently") | `n2V m h · log 2 ≤ (c₂(ν) + ε) h²` eventually — **proved** (`n2V_le`) |
-| `lemmaS` | §3.2, Lemma S | odd `p ∣ m`: `n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + e·(h/2 − 1)²`, `e = v_p(m)` |
-| `AK_levels_size` | §3.2 ("for the limit") | `Σ_l A_K(p^l) ≤ (1/(4(p − 1)) + ε) h²` eventually |
-| `shift_lemma` | §5.2 | a certificate at `z₂` gives one at `z_m` with `Φ' ≤ Φ − L(m)/2 + δ` (any `δ > 0`) |
-| `margin_V` | §0, §7 | `α(m) + Φ_L − L(m)/2 < 0` for `m ≥ 2`, `m ∉ E` |
-| `lemmaP_m` | §6, Lemma P′_m | `Δ_{3ℓ−1}(a/b) ≠ 0` for primes `ℓ ≥ 7`, `ℓ ∤ 2m(m² + 1)`, `ℓ² ∤ b` |
+| `lemmaS` | §3.2, Lemma S | odd `p ∣ m`: `n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + e·(h/2 − 1)²`, `e = v_p(m)` (`V/LemmaS`, `V/S*`) |
+| `AK_levels_size` | §3.2 ("for the limit") | `Σ_l A_K(p^l) ≤ (1/(4(p − 1)) + ε) h²` eventually (`V/AKSize`) |
+| `shift_lemma` | §5.2 | a certificate at `z₂` gives one at `z_m` with `Φ' ≤ Φ − L(m)/2 + δ` (any `δ > 0`) (`V/Shift`) |
+| `margin_V` | §0, §7 | `α(m) + Φ_L − L(m)/2 < 0` for `m ≥ 2`, `m ∉ E` (`V/Margin`) |
+| `lemmaP_m` | §6, Lemma P′_m | `Δ_{3ℓ−1}(a/b) ≠ 0` for primes `ℓ ≥ 7`, `ℓ ∤ 2m(m² + 1)`, `ℓ² ∤ b` (`V/NonVan`, `NonVan/**` generic in `mz`) |
 
 Constants (weaker than PROOF_V where the Lean pieces are weaker):
 * `Φ_L = −1.3538792` (the Lean certificate: `exists_certU'`, `data.PhiQ = −1.3538792442…`) instead of PROOF_V's
@@ -30,7 +29,7 @@ Margins with `Φ_L` (`scripts/margins_lean.py`, 60-digit arithmetic, `m ≤ 3000
 with `Φ_L`, valid for odd `m > 68` and all even `m ≥ 4`): `M(m) ≥ 0` exactly for `m ∈ E`; tightest `m = 11`
 (`M = −0.012571`), `m = 21` (`−0.015023`), `m = 2` (`−0.020546`).
 
-Proof of `theoremV` from the stubs: denominators `denV0 m h = 2^{n2V} · Π_{p ≤ h odd, p ∤ m} p^{eOdd} ·
+Proof of `theoremV` from these: denominators `denV0 m h = 2^{n2V} · Π_{p ≤ h odd, p ∤ m} p^{eOdd} ·
 Π_{p ∣ m odd} p^{eS}` (integrality from `lemma10nu`, `padicNorm_Delta_odd`, `lemmaS`; size from `lemma10nu_size`,
 `theoremA`, `AK_levels_size`), `β = Φ` of the shifted certificate, nonvanishing along `h = 3ℓ − 1` for large primes
 `ℓ`; then `irrational_of_boundsV`.
@@ -40,6 +39,8 @@ import Chi2U.V.Lemma10nu
 import Chi2U.V.Shift
 import Chi2U.V.Margin
 import Chi2U.V.NonVan
+import Chi2U.V.LemmaS
+import Chi2U.V.AKSize
 
 
 namespace Chi2U
@@ -48,7 +49,7 @@ namespace V
 open Polynomial Filter Finset
 
 
-/-! ## The stubs (stage B2) -/
+/-! ## The ingredients (proved in `Chi2U/V/*`) -/
 
 /-- **Lemma 10_ν** (PROOF_V §4): `n₂(Δ_h) ≤ n2V m h` for even `h ≥ 2`. Generalises Lemma 10′ (`Arith/TwoAdic*`,
 `mz = 2`, where `n₂ ≤ h⌊log₂ h⌋ + 3h`). Checked on exact `Δ_h` for `m = 1, 3, 4, 6, 8, 12`, `h ≤ 16` (`scripts/check_defs_v.py`). -/
@@ -64,13 +65,13 @@ polynomial-minor bound `v_p(𝒫_ij) ≥ −e(i + j − K)₊` from the Mahler f
 `(2m)^{b+1}`). Checked on exact `Δ_h` (`scripts/check_defs_v.py`). -/
 theorem lemmaS (m : ℕ) [Fact (1 ≤ m)] {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) (hpm : p ∣ m) {h : ℕ} (hh : Even h)
     (k : ℕ) : padicNorm p ((Delta m h).coeff k) ≤ (p : ℚ) ^ eS m h p := by
-  sorry
+  exact lemmaS_proof m hp hpm hh k
 
 /-- Lemma S, limit form: `Σ_l A_K(p^l) ≤ (1/(4(p − 1)) + ε) h²` eventually (`A_K(d) ≤ K²/(4d) + O(K)`,
 `Σ_l p^{−l} ≤ 1/(p − 1)`). -/
 theorem AK_levels_size {p : ℕ} (hp : p.Prime) (hp2 : p ≠ 2) : ∀ ε > 0, ∀ᶠ h : ℕ in atTop,
     ((∑ l ∈ levelsV h p, AK h (p ^ l) : ℕ) : ℝ) ≤ (1 / (4 * ((p : ℝ) - 1)) + ε) * (h : ℝ) ^ 2 := by
-  sorry
+  exact AK_levels_size_proof hp hp2
 
 /-- **Shift lemma** (PROOF_V §5.2) in the certificate format of `Analytic/TheoremBU.lean`: from a certificate at
 `z₂` build one at `z_m` (same `μ`, `λ' = λ − L(m)`, every cell split into `r` subcells with
