@@ -14,6 +14,7 @@ import Chi2U.V.SMatrix
 
 namespace Chi2U
 namespace V
+namespace LS
 
 open Polynomial Finset
 
@@ -221,5 +222,6 @@ lemma det_Emat : (Emat x S).det = ∏ a ∈ S, ∏ k ∈ S.filter (· < a), (x a
 
 end Mats
 
+end LS
 end V
 end Chi2U

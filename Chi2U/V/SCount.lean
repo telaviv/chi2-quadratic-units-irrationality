@@ -11,6 +11,7 @@ import Chi2U.V.SVal
 
 namespace Chi2U
 namespace V
+namespace LS
 
 open Finset
 
@@ -108,5 +109,6 @@ lemma sum_trunc_sq (J : ℕ) :
     simp only [Nat.add_sub_cancel] at g2
     nlinarith
 
+end LS
 end V
 end Chi2U

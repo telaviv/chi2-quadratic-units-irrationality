@@ -11,6 +11,7 @@ import Chi2U.V.Defs
 
 namespace Chi2U
 namespace V
+namespace LS
 
 open Finset Filter
 
@@ -119,6 +120,10 @@ lemma card_levelsV_le {h p : ℕ} (hp : 3 ≤ p) (h1 : 1 ≤ h) : ((levelsV h p)
   calc ((levelsV h p).card : ℝ) ≤ Nat.log p h := by exact_mod_cast hc
     _ ≤ (Nat.log p h : ℝ) * Real.log p := by nlinarith
     _ ≤ Real.log h := hlog
+
+end LS
+
+open LS Finset Filter
 
 /-- Lemma S, limit form: `Σ_l A_K(p^l) ≤ (1/(4(p − 1)) + ε) h²` eventually (`A_K(d) ≤ K²/(4d) + O(K)`,
 `Σ_l p^{−l} ≤ 1/(p − 1)`). -/

@@ -12,6 +12,7 @@ import Chi2U.V.SNewton
 
 namespace Chi2U
 namespace V
+namespace LS
 
 open Polynomial Finset
 
@@ -200,5 +201,6 @@ lemma padicValRat_dPrime (hp2 : p ≠ 2) {h m : ℕ} (hm : m ≤ h) :
   · simp
   · exact padicValRat_pole_sub hp2 hm (Nat.lt_succ_iff.mp (mem_range.mp hl)) (Ne.symm hlm)
 
+end LS
 end V
 end Chi2U

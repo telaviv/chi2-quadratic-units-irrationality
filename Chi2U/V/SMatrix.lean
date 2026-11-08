@@ -11,6 +11,7 @@ import Chi2U.V.Defs
 
 namespace Chi2U
 namespace V
+namespace LS
 
 open Polynomial Finset
 
@@ -87,5 +88,6 @@ lemma vGeX_X : vGeX p 0 (X : (Qd mz)[X]) := by
 
 end VGe
 
+end LS
 end V
 end Chi2U

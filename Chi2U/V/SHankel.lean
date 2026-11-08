@@ -10,6 +10,7 @@ import Chi2U.V.SCount
 
 namespace Chi2U
 namespace V
+namespace LS
 
 open Polynomial Finset Matrix
 
@@ -94,10 +95,11 @@ lemma det_HkM_expand : (HkM m h).det =
   obtain ⟨a, -, rfl⟩ := mem_map.mp hr
   funext c
   rcases c with j | b
-  · simp [BlkM, aRow, uRow, wRow, Matrix.diagonal_mul]; ring
+  · simp [BlkM, aRow, uRow, wRow, Matrix.diagonal_mul]
   · simp [BlkM, aRow, uRow, wRow, Matrix.one_apply]
 
 end Setup
 
+end LS
 end V
 end Chi2U
