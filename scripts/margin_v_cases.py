@@ -1,3 +1,7 @@
+"""Exponents for the finite cases of `Chi2U/V/Margin.lean` (`bsmall_*`, odd 11 <= m <= 67, plus the m >= 69 tail and
+the even case): log n bounded by 2^j <= n^k (lower) / n^k <= 2^j (upper), checked in exact rationals with
+log 2 in (0.6931471803, 0.6931471808), log(2+sqrt5) <= (25/12) log 2, Phi_L = -1.3538792. Writes cases.json.
+"""
 from fractions import Fraction as F
 from math import log, floor, ceil
 from sympy import primefactors
