@@ -36,6 +36,10 @@ Proof of `theoremV` from the stubs: denominators `denV0 m h = 2^{n2V} · Π_{p �
 `ℓ`; then `irrational_of_boundsV`.
 -/
 import Chi2U.V.Defs
+import Chi2U.V.Lemma10nu
+import Chi2U.V.Shift
+import Chi2U.V.Margin
+import Chi2U.V.NonVan
 
 
 namespace Chi2U
@@ -50,7 +54,7 @@ open Polynomial Filter Finset
 `mz = 2`, where `n₂ ≤ h⌊log₂ h⌋ + 3h`). Checked on exact `Δ_h` for `m = 1, 3, 4, 6, 8, 12`, `h ≤ 16` (`scripts/check_defs_v.py`). -/
 theorem lemma10nu (m : ℕ) [Fact (1 ≤ m)] {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (k : ℕ) :
     padicNorm 2 ((Delta m h).coeff k) ≤ (2 : ℚ) ^ n2V m h := by
-  sorry
+  exact lemma10nu_proof m hh h2 k
 
 
 /-- **Lemma S** (PROOF_V §3.2): for an odd prime `p ∣ m`, `n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + e(h/2 − 1)²`,
@@ -74,20 +78,20 @@ theorem AK_levels_size {p : ℕ} (hp : p.Prime) (hp2 : p ≠ 2) : ∀ ε > 0, �
 `Φ' ≤ Φ − L(m)/2 + L(m)/(2rL)`, and `r` is taken large. -/
 theorem shift_lemma (C : DualCertU 2) (m : ℕ) [Fact (1 ≤ m)] (hm : 2 ≤ m) {δ : ℝ} (hδ : 0 < δ) :
     ∃ C' : DualCertU m, C'.Phi ≤ C.Phi - Lshift m / 2 + δ := by
-  sorry
+  exact shift_lemma_proof C m hm hδ
 
 /-- **The margin inequality** `M(m) < 0` (PROOF_V §0, §7) with Lean's constant `Φ_L`. Numerically: `M(m) ≥ 0`
 exactly on `E` for `m ≤ 3000`; closed form beyond (`scripts/margins_lean.py`); tightest `M(11) = −0.012571`. -/
 theorem margin_V {m : ℕ} (hm : 2 ≤ m) (hE : m ∉ ({3, 5, 7, 9, 15} : Finset ℕ)) :
     alphaV m + (PhiL - Lshift m / 2) < 0 := by
-  sorry
+  exact margin_V_proof hm hE
 
 /-- **Lemma P′_m** (PROOF_V §6) for primes `ℓ ≥ 7` with `ℓ ∤ 2m(m² + 1)` (excluding `ℓ ∣ d` avoids the ramified
 and index cases; infinitely many `ℓ` remain). The Lean proof of Lemma P′ (`NonVan/**`) is written for `mz = 2`;
 its steps use `z`, `1 − y = 2mz·z` and `1 − z^{2ℓ}` only through their being `𝔩`-units. -/
 theorem lemmaP_m (m : ℕ) [Fact (1 ≤ m)] {ℓ : ℕ} [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (hℓm : ¬ ℓ ∣ 2 * m * (m ^ 2 + 1))
     (a : ℤ) {b : ℕ} (hb : 0 < b) (hb2 : ¬ ℓ ^ 2 ∣ b) : (Delta m (3 * ℓ - 1)).eval ((a : ℚ) / b) ≠ 0 := by
-  sorry
+  exact lemmaP_m_proof m hℓ hℓm a hb hb2
 
 /-! ## Assembly (proved from the stubs) -/
 
