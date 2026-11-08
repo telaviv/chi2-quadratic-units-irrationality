@@ -113,7 +113,6 @@ theorem vGe_fd_seqM1 {Q e : Qd mz} (hη : vGe 2 1 (Q - 1)) (he : vGe 2 0 e) {s :
     have hk := mem_range.mp hk
     rw [fd_ratCastM]
     refine vGe_mono ?_ (vGe_mul (vGe_pow hη _) (vGe_of_V2M (V2_fd_gSZ hs k)))
-    push_cast
     have := Nat.zero_le (vf k)
     omega
 
@@ -227,7 +226,7 @@ lemma GA_LM {h i j : ℕ} (hi : i ≤ h + 1) (hj : j ≤ h + 1) (hij : h + 1 ≤
 lemma GB_LM {h i j : ℕ} (hi : i ≤ h + 1) (hj : j ≤ h + 1) (hij : h + 1 ≤ i + j) : GBm mz h i j = 0 := by
   rw [GB_eqM hj, PZ_L hi hj hij, Bfun_D_mulM, mul_zero]
 
-lemma natDegree_L {h i j : ℕ} (hπ : h + 2 ≤ i + j) (hi : i ≤ h + 1) (hj : j ≤ h + 1) :
+lemma natDegree_L {h i j : ℕ} (hπ : h + 2 ≤ i + j) (hj : j ≤ h + 1) :
     ((derivative (PZint h (Ico (h + 1 - j) i))).map (Int.castRingHom ℚ)).natDegree < i + j - (h + 1) := by
   rw [← derivative_map, ← PZ_eq_map]
   have hc : (PZ h (Ico (h + 1 - j) i)).natDegree = i + j - (h + 1) := by
@@ -241,7 +240,7 @@ lemma vGe_GA_L {h i j : ℕ} (hi : i < h) (hj : j < h) (hπ : h + 2 ≤ i + j) (
     vGe 2 B (GAm mz h i j) := by
   rw [GA_LM (by omega) (by omega) (by omega)]
   have h1 := vGe_of_V2M (mz := mz) (V2_two_zpow ((h : ℤ) + 2 - i - j))
-  have h2 := vGe_Lmom_intM (mz := mz) _ (natDegree_L hπ (by omega) (by omega)) (B - ((h : ℤ) + 2 - i - j))
+  have h2 := vGe_Lmom_intM (mz := mz) _ (natDegree_L hπ (by omega)) (B - ((h : ℤ) + 2 - i - j))
     (fun b hb => by have := hB b hb; linarith)
   refine vGe_mono (le_of_eq ?_) (vGe_mul h1 h2)
   ring
