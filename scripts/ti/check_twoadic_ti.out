@@ -1,0 +1,32 @@
+recurrence identities: OK
+n=  4 nu=2 h=12 n2=   36 bound=   84 ok
+n=  4 nu=2 h=16 n2=   54 bound=  128 ok
+n=  6 nu=1 h=12 n2=   38 bound=   61 ok
+n=  6 nu=1 h=16 n2=   60 bound=   97 ok
+n=  8 nu=3 h=12 n2=   54 bound=  109 ok
+n=  8 nu=3 h=16 n2=   94 bound=  177 ok
+n= 10 nu=1 h=12 n2=   38 bound=   61 ok
+n= 10 nu=1 h=16 n2=   60 bound=   97 ok
+n= 12 nu=2 h=12 n2=   36 bound=   84 ok
+n= 12 nu=2 h=16 n2=   54 bound=  128 ok
+n= 16 nu=4 h=12 n2=   74 bound=  134 ok
+n= 16 nu=4 h=16 n2=  135 bound=  226 ok
+n= 22 nu=1 h=12 n2=   38 bound=   61 ok
+n= 22 nu=1 h=16 n2=   60 bound=   97 ok
+n= 32 nu=5 h=12 n2=   94 bound=  159 ok
+n= 32 nu=5 h=16 n2=  176 bound=  275 ok
+n= 48 nu=4 h=12 n2=   74 bound=  134 ok
+n= 48 nu=4 h=16 n2=  135 bound=  226 ok
+n=  3 nu=0 h=12 n2=   67 bound=   84 ok
+n=  3 nu=0 h=16 n2=  104 bound=  144 ok
+n=  5 nu=0 h=12 n2=   67 bound=   84 ok
+n=  5 nu=0 h=16 n2=  104 bound=  144 ok
+n=  7 nu=0 h=12 n2=   67 bound=   84 ok
+n=  7 nu=0 h=16 n2=  104 bound=  144 ok
+n=  9 nu=0 h=12 n2=   67 bound=   84 ok
+n=  9 nu=0 h=16 n2=  104 bound=  144 ok
+n= 11 nu=0 h=12 n2=   67 bound=   84 ok
+n= 11 nu=0 h=16 n2=  104 bound=  144 ok
+n= 71 nu=0 h=12 n2=   67 bound=   84 ok
+n= 71 nu=0 h=16 n2=  104 bound=  144 ok
+ALL OK
