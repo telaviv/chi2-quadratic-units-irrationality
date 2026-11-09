@@ -117,8 +117,8 @@ lemma sum_g_le (m : ℕ) : ∑ p ∈ oddDiv m, Real.log p / (4 * ((p : ℝ) - 1)
 
 /-! ## The shift -/
 
-lemma zU_le_inv (m : ℕ) (hm : 1 ≤ m) : zU m ≤ 1 / (2 * m) := by
-  unfold zU
+lemma zU_le_inv (m : ℕ) (hm : 1 ≤ m) : zU (2 * m) ≤ 1 / (2 * m) := by
+  rw [zU_two_mul]
   have hm' : (1 : ℝ) ≤ m := by exact_mod_cast hm
   have hs : Real.sqrt ((m : ℝ) ^ 2 + 1) * Real.sqrt ((m : ℝ) ^ 2 + 1) = (m : ℝ) ^ 2 + 1 :=
     Real.mul_self_sqrt (by positivity)
@@ -126,11 +126,11 @@ lemma zU_le_inv (m : ℕ) (hm : 1 ≤ m) : zU m ≤ 1 / (2 * m) := by
   rw [le_div_iff₀ (by positivity)]
   nlinarith
 
-lemma log_zU_two : Real.log (zU 2) = -Real.log (Real.sqrt 5 + 2) := by
+lemma log_zU_four : Real.log (zU 4) = -Real.log (Real.sqrt 5 + 2) := by
   have h5 : Real.sqrt 5 * Real.sqrt 5 = 5 := Real.mul_self_sqrt (by norm_num)
   have hpos : 0 < Real.sqrt 5 + 2 := by positivity
-  have e : zU 2 = (Real.sqrt 5 + 2)⁻¹ := by
-    rw [zU_two]
+  have e : zU 4 = (Real.sqrt 5 + 2)⁻¹ := by
+    rw [zU_four]
     exact eq_inv_of_mul_eq_one_left (by linear_combination h5)
   rw [e, Real.log_inv]
 
@@ -142,7 +142,7 @@ lemma Lshift_ge (m : ℕ) (hm : 1 ≤ m) :
   have h1 := Real.log_le_log zU_pos (zU_le_inv m hm)
   rw [one_div, Real.log_inv, Real.log_mul (by norm_num) hm'.ne'] at h1
   unfold Lshift
-  rw [log_zU_two]
+  rw [log_zU_four]
   linarith
 
 /-! ## The finite cases `11 ≤ m ≤ 67` odd -/
@@ -436,7 +436,7 @@ theorem margin_V_proof {m : ℕ} (hm : 2 ≤ m) (hE : m ∉ ({3, 5, 7, 9, 15} : 
     have hn : nuV 2 = 2 := by unfold nuV; simp
     have hc2 : c2V 2 = 0 := by unfold c2V; rw [hn]; norm_num
     unfold alphaV Lshift PhiL
-    rw [hc, hc2, sub_self]
+    rw [hc, hc2, show (2 * 2 : ℕ) = 4 from rfl, sub_self]
     norm_num
   have hLS := log_sqrt5_add_two_le
   have hL := Lshift_ge m (by omega)

@@ -1,10 +1,10 @@
 /-
 # Lemma S: the local valuation facts
 
-* `vGe_Lmom_special`: the Mahler form with denominators `(2m)^{b+1}` (`Mahler.Lmom_eq_mahler`) gives, for any prime
+* `vGe_Lmom_special`: the Mahler form with denominators `az^{b+1}` (`Mahler.Lmom_eq_mahler`) gives, for any prime
   `p` and `F` with `p`-integral values at the odd integers and `F = 0 ∨ deg F < r`,
-  `v_p(Lmom F) ≥ −v_p(2m)·r` (PROOF_V §3.2; the paper's extra `v_p(b!)` is not needed).
-* `vGe_muPoly_divD`: hence `v_p(μ(t^n div D)) ≥ −v_p(2m)·(n − K)₊` (`K = h + 1`): the polynomial part `𝒫_{ij}`.
+  `v_p(Lmom F) ≥ −v_p(az)·r` (PROOF_V §3.2; the paper's extra `v_p(b!)` is not needed).
+* `vGe_muPoly_divD`: hence `v_p(μ(t^n div D)) ≥ −v_p(az)·(n − K)₊` (`K = h + 1`): the polynomial part `𝒫_{ij}`.
 * `vGe_Psum_levels`: `v_p(P(x_m)) ≥ −Σ_{l ∈ levelsV} w_{p^l}(m)` (all levels; Lemma8One has the one-level case).
 * `padicValRat_pole_sub`: `v_p(x_m − x_l) = #{l' ∈ levelsV : p^{l'} ∣ m − l}` for odd `p`, `m ≠ l ≤ h`.
 -/
@@ -16,7 +16,7 @@ namespace LS
 
 open Polynomial Finset
 
-variable {mz : ℕ} [Fact (1 ≤ mz)] {p : ℕ} [hpF : Fact p.Prime]
+variable {az : ℕ} [Fact (1 ≤ az)] {p : ℕ} [hpF : Fact p.Prime]
 
 /-! ### The polynomial part -/
 
@@ -25,14 +25,14 @@ lemma padicValRat_one_div_pow {n : ℕ} (hn : n ≠ 0) (b : ℕ) :
   have hn' : (n : ℚ) ≠ 0 := by exact_mod_cast hn
   rw [padicValRat.div one_ne_zero (pow_ne_zero _ hn'), padicValRat.one, padicValRat.pow, zero_sub]
 
-/-- Mahler form with denominators `(2m)^{b+1}`: `v_p(Lmom F) ≥ −v_p(2m)·r`. -/
+/-- Mahler form with denominators `az^{b+1}`: `v_p(Lmom F) ≥ −v_p(az)·r`. -/
 theorem vGe_Lmom_special (F : ℚ[X]) (r : ℕ)
     (hF : ∀ k : ℕ, padicNorm p (F.eval (2 * (k : ℚ) + 1)) ≤ 1) (hr : F = 0 ∨ F.natDegree < r) :
-    vGe p (-(padicValRat p ((2 * mz : ℕ) : ℚ) * r)) (Lmom mz F) := by
+    vGe p (-(padicValRat p ((az : ℕ) : ℚ) * r)) (Lmom az F) := by
   rcases hr with rfl | hr
   · rw [map_zero]; exact vGe_zero _
-  have h2m : (2 * mz : ℕ) ≠ 0 := by have := (Fact.out : 1 ≤ mz); omega
-  have he0 : 0 ≤ padicValRat p ((2 * mz : ℕ) : ℚ) := by rw [padicValRat.of_nat]; positivity
+  have h2m : (az : ℕ) ≠ 0 := by have := (Fact.out : 1 ≤ az); omega
+  have he0 : 0 ≤ padicValRat p ((az : ℕ) : ℚ) := by rw [padicValRat.of_nat]; positivity
   rw [Lmom_eq_mahler]
   refine vGe_sum _ _ (fun b hb => ?_)
   have hbr : b + 1 ≤ r := by have := mem_range.mp hb; omega
@@ -45,12 +45,12 @@ theorem vGe_Lmom_special (F : ℚ[X]) (r : ℕ)
     calc padicNorm p ((-1 : ℚ) ^ (b - k) * (b.choose k : ℚ)) * padicNorm p (F.eval (2 * (k : ℚ) + 1))
         ≤ 1 * 1 := mul_le_mul hint (hF k) (padicNorm.nonneg _) zero_le_one
       _ = 1 := one_mul _
-  have h1 : vGe p 0 (mahlerCoeff F b : (Qd mz)) := vGe_of_pInt (pInt_ratCast hm)
-  have h2 : vGe p 0 ((zK mz) ^ b) := vGe_of_pInt (pInt_pow pInt_zK b)
-  have h3 := vGe_ratCast (mz := mz) (p := p) (1 / ((2 * mz : ℕ) : ℚ) ^ (b + 1))
+  have h1 : vGe p 0 (mahlerCoeff F b : (Qd az)) := vGe_of_pInt (pInt_ratCast hm)
+  have h2 : vGe p 0 ((zK az) ^ b) := vGe_of_pInt (pInt_pow pInt_zK b)
+  have h3 := vGe_ratCast (az := az) (p := p) (1 / ((az : ℕ) : ℚ) ^ (b + 1))
   rw [padicValRat_one_div_pow h2m] at h3
-  have e : (mahlerCoeff F b : (Qd mz)) * (zK mz) ^ b / ((2 * mz : ℕ) : Qd mz) ^ (b + 1) =
-      (mahlerCoeff F b : (Qd mz)) * (zK mz) ^ b * ((1 / ((2 * mz : ℕ) : ℚ) ^ (b + 1) : ℚ) : Qd mz) := by
+  have e : (mahlerCoeff F b : (Qd az)) * (zK az) ^ b / ((az : ℕ) : Qd az) ^ (b + 1) =
+      (mahlerCoeff F b : (Qd az)) * (zK az) ^ b * ((1 / ((az : ℕ) : ℚ) ^ (b + 1) : ℚ) : Qd az) := by
     push_cast; ring
   rw [e]
   refine vGe_mono ?_ (vGe_mul (vGe_mul h1 h2) h3)
@@ -58,10 +58,10 @@ theorem vGe_Lmom_special (F : ℚ[X]) (r : ℕ)
   have := mul_le_mul_of_nonneg_left hb' he0
   linarith
 
-/-- `v_p(μ(t^n div D)) ≥ −v_p(2m)·(n − K)` (truncated subtraction, `K = h + 1`). -/
+/-- `v_p(μ(t^n div D)) ≥ −v_p(az)·(n − K)` (truncated subtraction, `K = h + 1`). -/
 theorem vGe_muPoly_divD (h n : ℕ) :
-    vGe p (-(padicValRat p ((2 * mz : ℕ) : ℚ) * ((n - (h + 1) : ℕ) : ℤ)))
-      (muPoly mz ((X ^ n : ℚ[X]) /ₘ Dpoly h)) := by
+    vGe p (-(padicValRat p ((az : ℕ) : ℚ) * ((n - (h + 1) : ℕ) : ℤ)))
+      (muPoly az ((X ^ n : ℚ[X]) /ₘ Dpoly h)) := by
   have hQ : (X ^ n : ℚ[X]) /ₘ Dpoly h = ((X ^ n : ℤ[X]) /ₘ l8DZ h).map (Int.castRingHom ℚ) := by
     rw [l8_Dpoly_eq, Polynomial.map_divByMonic _ l8_DZ_monic, Polynomial.map_pow, Polynomial.map_X]
   have hD := Dpoly_monic h
@@ -128,12 +128,12 @@ lemma padicNorm_inv_sq_levels {h m k : ℕ} (hh : Even h) (hm : m ≤ h) (hk : 2
 
 /-- `v_p(P(x_m)) ≥ −wT(m)` (all levels). -/
 lemma vGe_Psum_levels {h m : ℕ} (hh : Even h) (hm : m ≤ h) :
-    vGe p (-(wT h p m : ℤ)) (Psum mz (poleZ h m)) := by
-  have hterm : ∀ k ∈ range ((poleZ h m).natAbs / 2), ∀ u : (Qd mz), pInt p u →
-      vGe p (-(wT h p m : ℤ)) (u / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2) := by
+    vGe p (-(wT h p m : ℤ)) (Psum az (poleZ h m)) := by
+  have hterm : ∀ k ∈ range ((poleZ h m).natAbs / 2), ∀ u : (Qd az), pInt p u →
+      vGe p (-(wT h p m : ℤ)) (u / ((2 * k + 1 : ℕ) : (Qd az)) ^ 2) := by
     intro k hk u hu
     have hk' : 2 * k + 1 < (poleZ h m).natAbs := by have := mem_range.mp hk; omega
-    have e : u / ((2 * k + 1 : ℕ) : (Qd mz)) ^ 2 = u * (((1 / ((2 * k + 1 : ℕ) : ℚ) ^ 2 : ℚ)) : (Qd mz)) := by
+    have e : u / ((2 * k + 1 : ℕ) : (Qd az)) ^ 2 = u * (((1 / ((2 * k + 1 : ℕ) : ℚ) ^ 2 : ℚ)) : (Qd az)) := by
       push_cast; ring
     rw [e]
     have := vGe_mul (vGe_of_pInt hu) (vGe_ratCast_of_padicNorm (n := -(wT h p m : ℤ))

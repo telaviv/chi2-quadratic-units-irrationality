@@ -4,13 +4,13 @@
 For `i = γ + rℓ`, `j = γ′ + sℓ` (`γ, γ′ < ℓ`, `r, s < 3`):
 * `Bfun_ff`: `B(f_i f_j) = −[i = j] D′(x_i) z^{x_i}` (step 2);
 * `Afun_ff`: `A(f_i f_j) = μ(f_i f_j div D) + [i = j] D′(x_i) z^{x_i} P(x_i)`;
-* `Cong_mu`: `μ(f_i f_j div D) ≡ −[γ = γ′] z^{2γ+1}/(2mz·z)^ℓ` (progression formula `Cong_Lmom` + `deriv_PZ_mod`);
+* `Cong_mu`: `μ(f_i f_j div D) ≡ −[γ = γ′] z^{2γ+1}/(az·z)^ℓ` (progression formula `Cong_Lmom` + `deriv_PZ_mod`);
 * `dPrime_split`: `D′(x_i) = ℓ²·κ_r·W` with `κ = (8, −4, 8)` and `W = Π_{m ≢ γ}(x_i − x_m) ≡ U_γ = −1`;
 * `Cong_Psum`: `ℓ² P(x) ≡ z^ℓ` (`x < −ℓ`), `0` (`|x| < ℓ`), `−z^{−ℓ}` (`x > ℓ`): only `n = ±ℓ` is divisible by `ℓ`;
 * **`Cong_Afun`** (steps 3–4): `G^f(0)_{ij} ≡ [γ = γ′]·e_γ·(c + [r = s] d_r)` with `e_γ = −z^{x_γ}`,
-  `c = z^{3ℓ}/(2mz·z)^ℓ`, `d = (8z^ℓ, 0, −8z^{3ℓ})`. (PROOF_U's `c = ζ³/(1 − ζ²)`, `ζ = z^ℓ`: `1 − ζ̄² = (2mz·z̄)^ℓ`.)
+  `c = z^{3ℓ}/(az·z)^ℓ`, `d = (8z^ℓ, 0, −8z^{3ℓ})`. (PROOF_U's `c = ζ³/(1 − ζ²)`, `ζ = z^ℓ`: `1 − ζ̄² = (az·z̄)^ℓ`.)
 
-Parametric in `mz` (Theorem V, Lemma P′_m); the hypothesis `ℓ ∤ 2mz` makes `2mz·z̄` a unit.
+Parametric in `az` (Theorem V, Lemma P′_m); the hypothesis `ℓ ∤ az` makes `az·z̄` a unit.
 -/
 import Chi2U.NonVan.PolyMod
 import Chi2U.Arith.LemmaB
@@ -20,7 +20,7 @@ namespace LP
 
 open Polynomial Finset
 
-variable {mz : ℕ} [Fact (1 ≤ mz)]
+variable {az : ℕ} [Fact (1 ≤ az)]
 
 /-! ### Pole coefficients of `f_i f_j` (as in `Arith/OddPrimes.lean`) -/
 
@@ -36,9 +36,9 @@ lemma cPole_ff {h : ℕ} (i j : ℕ) {m : ℕ} (hm : m ≤ h) :
     · rw [if_pos rfl, if_neg h2, if_neg (fun hh => h2 hh.2), mul_zero, zero_div]
   · rw [if_neg h1, zero_mul, zero_div, if_neg (fun hh => h1 hh.1)]
 
-lemma sum_cPole_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) (F : ℕ → Qd mz) :
-    ∑ m ∈ range (h + 1), (cPole h (fLag h i * fLag h j) m : Qd mz) * F m =
-      if i = j then (dPrime h i : Qd mz) * F i else 0 := by
+lemma sum_cPole_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) (F : ℕ → Qd az) :
+    ∑ m ∈ range (h + 1), (cPole h (fLag h i * fLag h j) m : Qd az) * F m =
+      if i = j then (dPrime h i : Qd az) * F i else 0 := by
   rw [sum_eq_single i]
   · rw [cPole_ff i j hi]
     by_cases hij : i = j
@@ -50,16 +50,16 @@ lemma sum_cPole_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) (F : ℕ → Qd mz) :
   · intro hh; exact absurd (mem_range.mpr (Nat.lt_succ_of_le hi)) hh
 
 lemma Bfun_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) :
-    Bfun mz h (fLag h i * fLag h j) = if i = j then -((dPrime h i : Qd mz) * (zK mz) ^ (poleZ h i)) else 0 := by
-  have := sum_cPole_ff j hi (fun m => (zK mz) ^ (poleZ h m))
+    Bfun az h (fLag h i * fLag h j) = if i = j then -((dPrime h i : Qd az) * (zK az) ^ (poleZ h i)) else 0 := by
+  have := sum_cPole_ff j hi (fun m => (zK az) ^ (poleZ h m))
   unfold Bfun
   rw [this]
   split_ifs <;> simp
 
 lemma Afun_ff {h i : ℕ} (j : ℕ) (hi : i ≤ h) :
-    Afun mz h (fLag h i * fLag h j) = muPoly mz ((fLag h i * fLag h j) /ₘ Dpoly h) +
-      if i = j then (dPrime h i : Qd mz) * (zK mz) ^ (poleZ h i) * Psum mz (poleZ h i) else 0 := by
-  have := sum_cPole_ff j hi (fun m => (zK mz) ^ (poleZ h m) * Psum mz (poleZ h m))
+    Afun az h (fLag h i * fLag h j) = muPoly az ((fLag h i * fLag h j) /ₘ Dpoly h) +
+      if i = j then (dPrime h i : Qd az) * (zK az) ^ (poleZ h i) * Psum az (poleZ h i) else 0 := by
+  have := sum_cPole_ff j hi (fun m => (zK az) ^ (poleZ h m) * Psum az (poleZ h m))
   simp only [← mul_assoc] at this
   unfold Afun
   rw [this]
@@ -78,17 +78,17 @@ lemma divByMonic_eq_map (h i j : ℕ) :
 
 variable {ℓ : ℕ} [hℓ : Fact ℓ.Prime]
 
-lemma castHom_intCast (n : ℤ) : ZMod.castHom (dvd_refl ℓ) (Fl mz ℓ) (n : ZMod ℓ) = (n : Fl mz ℓ) := map_intCast _ n
+lemma castHom_intCast (n : ℤ) : ZMod.castHom (dvd_refl ℓ) (Fl az ℓ) (n : ZMod ℓ) = (n : Fl az ℓ) := map_intCast _ n
 
 /-- The polynomial part of `G^f(0)_{ij}` mod `ℓ`. -/
-theorem Cong_mu (hℓm : ¬ ℓ ∣ 2 * mz) {i j : ℕ} (hi : i < 3 * ℓ) (hj : j < 3 * ℓ) :
-    Cong ℓ (muPoly mz ((fLag (3 * ℓ - 1) i * fLag (3 * ℓ - 1) j) /ₘ Dpoly (3 * ℓ - 1)))
-      (if i % ℓ = j % ℓ then -(((((2 * mz : ℕ) : Fl mz ℓ) * zb mz ℓ) ^ ℓ)⁻¹ * zb mz ℓ ^ (2 * (i % ℓ) + 1)) else 0) := by
+theorem Cong_mu (hℓm : ¬ ℓ ∣ 2 * az) {i j : ℕ} (hi : i < 3 * ℓ) (hj : j < 3 * ℓ) :
+    Cong ℓ (muPoly az ((fLag (3 * ℓ - 1) i * fLag (3 * ℓ - 1) j) /ₘ Dpoly (3 * ℓ - 1)))
+      (if i % ℓ = j % ℓ then -(((((az : ℕ) : Fl az ℓ) * zb az ℓ) ^ ℓ)⁻¹ * zb az ℓ ^ (2 * (i % ℓ) + 1)) else 0) := by
   rw [divByMonic_eq_map, muPoly, derivative_map]
   refine Cong_congr (Cong_Lmom hℓm _) rfl ?_
-  have hterm : ∀ γ ∈ range ℓ, zb mz ℓ ^ (2 * γ + 1) *
-      (((derivative (PZ (3 * ℓ - 1) i j)).eval (2 * (γ : ℤ) + 1) : ℤ) : Fl mz ℓ) =
-      if γ = i % ℓ then (if i % ℓ = j % ℓ then -zb mz ℓ ^ (2 * (i % ℓ) + 1) else 0) else 0 := by
+  have hterm : ∀ γ ∈ range ℓ, zb az ℓ ^ (2 * γ + 1) *
+      (((derivative (PZ (3 * ℓ - 1) i j)).eval (2 * (γ : ℤ) + 1) : ℤ) : Fl az ℓ) =
+      if γ = i % ℓ then (if i % ℓ = j % ℓ then -zb az ℓ ^ (2 * (i % ℓ) + 1) else 0) else 0 := by
     intro γ hγ
     rw [← castHom_intCast, deriv_PZ_mod (ne_two_of_not_dvd hℓm) hi hj (mem_range.mp hγ)]
     by_cases h1 : γ = i % ℓ
@@ -116,13 +116,13 @@ lemma not_dvd_odd_lt (hℓ2 : ℓ ≠ 2) {n : ℕ} (hodd : Odd n) (hn : n < 3 * 
   · exact (Nat.not_even_iff_odd.mpr hodd) (by rw [mul_comm]; exact even_two_mul ℓ)
 
 /-- `ℓ² Σ_{k<N} u^{2k+1}/(2k+1)² ≡ [ℓ < 2N] ū^ℓ`. -/
-lemma Cong_sum_inv_sq (hℓ2 : ℓ ≠ 2) {u : Qd mz} {ub : Fl mz ℓ} (hu : Cong ℓ u ub) {N : ℕ} (hN : 2 * N < 3 * ℓ + 1) :
-    Cong ℓ ((ℓ : Qd mz) ^ 2 * ∑ k ∈ range N, u ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : Qd mz) ^ 2)
+lemma Cong_sum_inv_sq (hℓ2 : ℓ ≠ 2) {u : Qd az} {ub : Fl az ℓ} (hu : Cong ℓ u ub) {N : ℕ} (hN : 2 * N < 3 * ℓ + 1) :
+    Cong ℓ ((ℓ : Qd az) ^ 2 * ∑ k ∈ range N, u ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : Qd az) ^ 2)
       (if ℓ < 2 * N then ub ^ ℓ else 0) := by
   obtain ⟨k₀, hk₀⟩ := hℓ.out.odd_of_ne_two hℓ2
-  have hl0 : (ℓ : Qd mz) ≠ 0 := by exact_mod_cast hℓ.out.ne_zero
+  have hl0 : (ℓ : Qd az) ≠ 0 := by exact_mod_cast hℓ.out.ne_zero
   rw [mul_sum]
-  have hterm : ∀ k ∈ range N, Cong ℓ ((ℓ : Qd mz) ^ 2 * (u ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : Qd mz) ^ 2))
+  have hterm : ∀ k ∈ range N, Cong ℓ ((ℓ : Qd az) ^ 2 * (u ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : Qd az) ^ 2))
       (if k = k₀ then ub ^ ℓ else 0) := by
     intro k hk
     have hk' := mem_range.mp hk
@@ -139,8 +139,8 @@ lemma Cong_sum_inv_sq (hℓ2 : ℓ ≠ 2) {u : Qd mz} {ub : Fl mz ℓ} (hu : Con
           padicNorm.padicNorm_p_of_prime]
         norm_num [zpow_neg, sq]
       have h1 := vGe_mul (vGe_ratCast_of_padicNorm (p := ℓ) hr) (vGe_of_pInt (pInt_pow hu.mem (2 * k + 1)))
-      have e : (((ℓ : ℚ) ^ 2 / ((2 * k + 1 : ℕ) : ℚ) ^ 2 : ℚ) : Qd mz) * u ^ (2 * k + 1) =
-          (ℓ : Qd mz) ^ 2 * (u ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : Qd mz) ^ 2) := by
+      have e : (((ℓ : ℚ) ^ 2 / ((2 * k + 1 : ℕ) : ℚ) ^ 2 : ℚ) : Qd az) * u ^ (2 * k + 1) =
+          (ℓ : Qd az) ^ 2 * (u ^ (2 * k + 1) / ((2 * k + 1 : ℕ) : Qd az) ^ 2) := by
         push_cast; ring
       rw [e] at h1
       exact vGe_mono (by norm_num) h1
@@ -152,8 +152,8 @@ lemma Cong_sum_inv_sq (hℓ2 : ℓ ≠ 2) {u : Qd mz} {ub : Fl mz ℓ} (hu : Con
 
 /-- `ℓ² P(x)` mod `ℓ`, `x` even with `|x| < 3ℓ`. -/
 lemma Cong_Psum (hℓ2 : ℓ ≠ 2) {x : ℤ} (hx : Even x) (hx3 : x.natAbs < 3 * ℓ) :
-    Cong ℓ ((ℓ : Qd mz) ^ 2 * Psum mz x)
-      (if ℓ < x.natAbs then (if x ≤ 0 then zb mz ℓ ^ ℓ else -(zb mz ℓ ^ ℓ)⁻¹) else 0) := by
+    Cong ℓ ((ℓ : Qd az) ^ 2 * Psum az x)
+      (if ℓ < x.natAbs then (if x ≤ 0 then zb az ℓ ^ ℓ else -(zb az ℓ ^ ℓ)⁻¹) else 0) := by
   have h2N : 2 * (x.natAbs / 2) = x.natAbs := by
     have := Int.natAbs_even.mpr hx
     obtain ⟨t, ht⟩ := this; omega
@@ -161,12 +161,12 @@ lemma Cong_Psum (hℓ2 : ℓ ≠ 2) {x : ℤ} (hx : Even x) (hx3 : x.natAbs < 3 
   unfold Psum
   by_cases hx0 : x ≤ 0
   · rw [if_pos hx0]
-    have := Cong_sum_inv_sq hℓ2 (Cong_zK (mz := mz) (ℓ := ℓ)) hN
+    have := Cong_sum_inv_sq hℓ2 (Cong_zK (az := az) (ℓ := ℓ)) hN
     rw [h2N] at this
     refine Cong_congr this rfl ?_
     split_ifs <;> rfl
   · rw [if_neg hx0]
-    have := Cong_neg (Cong_sum_inv_sq hℓ2 (Cong_zK_inv (mz := mz) (ℓ := ℓ)) hN)
+    have := Cong_neg (Cong_sum_inv_sq hℓ2 (Cong_zK_inv (az := az) (ℓ := ℓ)) hN)
     rw [h2N] at this
     refine Cong_congr this (by simp only [inv_pow]; ring) ?_
     split_ifs <;> simp [inv_pow]

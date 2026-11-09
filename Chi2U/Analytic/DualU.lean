@@ -16,7 +16,7 @@ import Chi2U.Analytic.Polya
 
 namespace Chi2U
 
-variable {mz : ℕ} [Fact (1 ≤ mz)]
+variable {az : ℕ} [Fact (1 ≤ az)]
 
 open Finset Real
 
@@ -132,11 +132,11 @@ lemma sum_pairs_symm {n : ℕ} (F : Fin n → Fin n → ℝ) (hF : ∀ i j, F i 
     _ = 2 * ∑ i, ∑ j ∈ Ioi i, F i j := by simp_rw [hIoi]; ring
 
 /-- The node weight function `g`. -/
-noncomputable def gD (mz : ℕ) [Fact (1 ≤ mz)] (h M : ℕ) (m : ℕ → ℝ) (lam : ℝ) (s : ℕ) : ℝ :=
-  Real.log (bN mz h s) + 2 * Pm M m s - lam
+noncomputable def gD (az : ℕ) [Fact (1 ≤ az)] (h M : ℕ) (m : ℕ → ℝ) (lam : ℝ) (s : ℕ) : ℝ :=
+  Real.log (bN az h s) + 2 * Pm M m s - lam
 
 /-- The dual constant. -/
-noncomputable def Cd (mz : ℕ) [Fact (1 ≤ mz)] (h M : ℕ) (m : ℕ → ℝ) (lam : ℝ) : ℝ :=
+noncomputable def Cd (az : ℕ) [Fact (1 ≤ az)] (h M : ℕ) (m : ℕ → ℝ) (lam : ℝ) : ℝ :=
   -Em M m + lam * h + Real.log 2 * (4 * h + 2 * ∑ s ∈ range M, m s ^ 2)
 
 lemma card_fiber_le_two {h T : ℕ} (f : Fin h → Fin T × Fin 3)
@@ -154,8 +154,8 @@ lemma card_fiber_le_two {h T : ℕ} (f : Fin h → Fin T × Fin 3)
 theorem pattern_le {h T M : ℕ} (hh' : Even h) (hh : 2 ≤ h) (hTM : 2 * T < M) (m : ℕ → ℝ)
     (hmsum : ∑ s ∈ range M, m s = h) (lam : ℝ) (f : Fin h → Fin T × Fin 3)
     (hinj : Function.Injective (fun i => xslot (f i))) :
-    (∏ i, bN mz h (tnode (f i))) * ∏ i, ∏ j ∈ Ioi i, pairFactor (tnode (f i)) (tnode (f j)) ^ 2 ≤
-      Real.exp (Cd mz h M m lam + ∑ i, gD mz h M m lam (tnode (f i))) := by
+    (∏ i, bN az h (tnode (f i))) * ∏ i, ∏ j ∈ Ioi i, pairFactor (tnode (f i)) (tnode (f j)) ^ 2 ≤
+      Real.exp (Cd az h M m lam + ∑ i, gD az h M m lam (tnode (f i))) := by
   set t : Fin h → ℕ := fun i => tnode (f i)
   have ht : ∀ i, t i < M := fun i => by simp only [t, tnode]; have := (f i).1.isLt; omega
   set n : ℕ → ℝ := fun s => ((univ.filter (fun i => t i = s)).card : ℝ)
@@ -169,9 +169,9 @@ theorem pattern_le {h T M : ℕ} (hh' : Even h) (hh : 2 ≤ h) (hTM : 2 * T < M)
     rw [← this]
   have hM : 1 ≤ M := by omega
   -- the product as an exponential
-  have hb : ∀ i, 0 < bN mz h (t i) := fun i => bN_tnode_pos hh' (f i)
-  have hprod : (∏ i, bN mz h (t i)) * ∏ i, ∏ j ∈ Ioi i, pairFactor (t i) (t j) ^ 2 =
-      Real.exp (∑ i, Real.log (bN mz h (t i)) + ∑ i, ∑ j, Lk (t i) (t j)) := by
+  have hb : ∀ i, 0 < bN az h (t i) := fun i => bN_tnode_pos hh' (f i)
+  have hprod : (∏ i, bN az h (t i)) * ∏ i, ∏ j ∈ Ioi i, pairFactor (t i) (t j) ^ 2 =
+      Real.exp (∑ i, Real.log (bN az h (t i)) + ∑ i, ∑ j, Lk (t i) (t j)) := by
     rw [Real.exp_add, Real.exp_sum, sum_pairs_symm (fun i j => Lk (t i) (t j))
       (fun i j => Lk_symm _ _) (fun i => by simp [Lk])]
     congr 1
@@ -186,13 +186,13 @@ theorem pattern_le {h T M : ℕ} (hh' : Even h) (hh : 2 ≤ h) (hTM : 2 * T < M)
   have hpairs : ∑ i, ∑ j, Lk (t i) (t j) = ∑ s ∈ range M, ∑ s' ∈ range M, n s * n s' * Lk s s' :=
     sum_fiber2 t ht Lk
   -- the weight sum
-  have hwt : ∑ i, Real.log (bN mz h (t i)) + 2 * ∑ s ∈ range M, n s * Pm M m s =
-      ∑ i, gD mz h M m lam (t i) + lam * h := by
+  have hwt : ∑ i, Real.log (bN az h (t i)) + 2 * ∑ s ∈ range M, n s * Pm M m s =
+      ∑ i, gD az h M m lam (t i) + lam * h := by
     have hP := sum_fiber t ht (fun s => Pm M m s)
     unfold gD
     rw [← hP, Finset.mul_sum, ← Finset.sum_add_distrib]
-    rw [show ∑ i, (Real.log (bN mz h (t i)) + 2 * Pm M m (t i) - lam) + lam * h =
-      ∑ i, (Real.log (bN mz h (t i)) + 2 * Pm M m (t i)) - lam * h + lam * h by
+    rw [show ∑ i, (Real.log (bN az h (t i)) + 2 * Pm M m (t i) - lam) + lam * h =
+      ∑ i, (Real.log (bN az h (t i)) + 2 * Pm M m (t i)) - lam * h + lam * h by
         rw [Finset.sum_sub_distrib, Finset.sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul]; ring]
     ring
   -- the lattice inequality
@@ -227,15 +227,15 @@ lemma card_fiber_idx_le_two {h T : ℕ} (f : Fin h → Fin T × Fin 3)
   simpa using this
 
 /-- The far-node weight: `1` for node indices `< N₀`, `e^{g(τ)}` beyond. -/
-noncomputable def zf (mz : ℕ) [Fact (1 ≤ mz)] (h M : ℕ) (m : ℕ → ℝ) (lam : ℝ) (N0 : ℕ) {T : ℕ} (k : Fin T × Fin 3) : ℝ :=
-  if (k.1 : ℕ) < N0 then 1 else Real.exp (gD mz h M m lam (tnode k))
+noncomputable def zf (az : ℕ) [Fact (1 ≤ az)] (h M : ℕ) (m : ℕ → ℝ) (lam : ℝ) (N0 : ℕ) {T : ℕ} (k : Fin T × Fin 3) : ℝ :=
+  if (k.1 : ℕ) < N0 then 1 else Real.exp (gD az h M m lam (tnode k))
 
 lemma split_near_far {h T M : ℕ} (m : ℕ → ℝ) (lam : ℝ) (N0 : ℕ)
     (f : Fin h → Fin T × Fin 3) (hinj : Function.Injective (fun i => xslot (f i))) :
-    ∑ i, gD mz h M m lam (tnode (f i)) ≤
-      2 * ∑ r ∈ range N0, max (gD mz h M m lam (2 * r + 1)) 0 +
-        ∑ i, (if ((f i).1 : ℕ) < N0 then 0 else gD mz h M m lam (tnode (f i))) := by
-  set g := gD mz h M m lam
+    ∑ i, gD az h M m lam (tnode (f i)) ≤
+      2 * ∑ r ∈ range N0, max (gD az h M m lam (2 * r + 1)) 0 +
+        ∑ i, (if ((f i).1 : ℕ) < N0 then 0 else gD az h M m lam (tnode (f i))) := by
+  set g := gD az h M m lam
   set u : Fin h → ℕ := fun i => ((f i).1 : ℕ)
   have hu : ∀ i, u i < T := fun i => (f i).1.isLt
   have htn : ∀ i, tnode (f i) = 2 * u i + 1 := fun i => rfl
@@ -263,18 +263,18 @@ lemma split_near_far {h T M : ℕ} (m : ℕ → ℝ) (lam : ℝ) (N0 : ℕ)
 /-- **The dual bound on the truncated determinant.** -/
 theorem abs_det_HT_le_dual {h T M : ℕ} (hh' : Even h) (hh : 2 ≤ h) (hTM : 2 * T < M) (m : ℕ → ℝ)
     (hmsum : ∑ s ∈ range M, m s = h) (lam : ℝ) (N0 : ℕ) :
-    |(HT mz h T).det| ≤ ((h.factorial : ℝ))⁻¹ * Kslot h ^ 2 *
-      (Real.exp (Cd mz h M m lam + 2 * ∑ r ∈ range N0, max (gD mz h M m lam (2 * r + 1)) 0) *
-        (∑ k : Fin T × Fin 3, zf mz h M m lam N0 k) ^ h) := by
+    |(HT az h T).det| ≤ ((h.factorial : ℝ))⁻¹ * Kslot h ^ 2 *
+      (Real.exp (Cd az h M m lam + 2 * ∑ r ∈ range N0, max (gD az h M m lam (2 * r + 1)) 0) *
+        (∑ k : Fin T × Fin 3, zf az h M m lam N0 k) ^ h) := by
   refine (abs_det_HT_le hh' hh).trans ?_
   refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg (inv_nonneg.mpr (by positivity)) (sq_nonneg _))
   rw [Finset.sum_pow', Fintype.piFinset_univ, Finset.mul_sum]
   refine Finset.sum_le_sum (fun f _ => ?_)
   split_ifs with hinj
   · refine (pattern_le hh' hh hTM m hmsum lam f hinj).trans ?_
-    have hsplit := split_near_far (mz := mz) (M := M) m lam N0 f hinj
-    have hz : ∏ i, zf mz h M m lam N0 (f i) =
-        Real.exp (∑ i, (if ((f i).1 : ℕ) < N0 then 0 else gD mz h M m lam (tnode (f i)))) := by
+    have hsplit := split_near_far (az := az) (M := M) m lam N0 f hinj
+    have hz : ∏ i, zf az h M m lam N0 (f i) =
+        Real.exp (∑ i, (if ((f i).1 : ℕ) < N0 then 0 else gD az h M m lam (tnode (f i)))) := by
       rw [Real.exp_sum]
       refine Finset.prod_congr rfl (fun i _ => ?_)
       unfold zf; split_ifs <;> simp

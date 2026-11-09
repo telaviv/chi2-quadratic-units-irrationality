@@ -115,7 +115,7 @@ lemma exists_int_of_padicNorm_le_U (x : ℚ) (hx : ∀ p : ℕ, p.Prime → padi
   linarith
 
 /-- `denU h · Δ_h ∈ ℤ[X]` for even `h`. -/
-theorem denU_int {h : ℕ} (hh : Even h) (k : ℕ) : ∃ z : ℤ, denU h * (Delta 2 h).coeff k = z := by
+theorem denU_int {h : ℕ} (hh : Even h) (k : ℕ) : ∃ z : ℤ, denU h * (Delta 4 h).coeff k = z := by
   refine exists_int_of_padicNorm_le_U _ (fun p hp => ?_)
   have := Fact.mk hp
   unfold denU
@@ -127,30 +127,30 @@ theorem denU_int {h : ℕ} (hh : Even h) (k : ℕ) : ∃ z : ℤ, denU h * (Delt
     have e : (2 : ℚ) = (p : ℚ) := by rw [h2]; norm_num
     rw [e] at hc
     subst h2
-    calc (((2 : ℕ) : ℚ)⁻¹) ^ e2 h * padicNorm 2 ((Delta 2 h).coeff k)
+    calc (((2 : ℕ) : ℚ)⁻¹) ^ e2 h * padicNorm 2 ((Delta 4 h).coeff k)
         ≤ (((2 : ℕ) : ℚ)⁻¹) ^ e2 h * ((2 : ℕ) : ℚ) ^ e2 h := mul_le_mul_of_nonneg_left hc (by positivity)
       _ = 1 := by rw [inv_pow]; field_simp
   · rw [ite_eq_right (Ne.symm h2), ite_eq_right h2, one_pow, one_mul]
-    have hc := padicNorm_Delta_odd (p := p) h2 (not_dvd_two_of_ne h2) hh k
-    calc ((p : ℚ)⁻¹) ^ eOdd h p * padicNorm p ((Delta 2 h).coeff k)
+    have hc := padicNorm_Delta_odd (p := p) h2 (not_dvd_four_of_ne h2) hh k
+    calc ((p : ℚ)⁻¹) ^ eOdd h p * padicNorm p ((Delta 4 h).coeff k)
         ≤ ((p : ℚ)⁻¹) ^ eOdd h p * (p : ℚ) ^ eOdd h p := mul_le_mul_of_nonneg_left hc (by positivity)
       _ = 1 := by rw [inv_pow]; field_simp
 
 /-- The denominators used by the endgame. -/
 noncomputable def denAll (h : ℕ) : ℚ :=
-  if Even h then denU h else Classical.choose (exists_den (Delta 2 h))
+  if Even h then denU h else Classical.choose (exists_den (Delta 4 h))
 
 lemma denAll_pos (h : ℕ) : 0 < denAll h := by
   unfold denAll
   split_ifs
   · exact denU_pos h
-  · exact (Classical.choose_spec (exists_den (Delta 2 h))).1
+  · exact (Classical.choose_spec (exists_den (Delta 4 h))).1
 
-lemma denAll_int (h k : ℕ) : ∃ z : ℤ, denAll h * (Delta 2 h).coeff k = z := by
+lemma denAll_int (h k : ℕ) : ∃ z : ℤ, denAll h * (Delta 4 h).coeff k = z := by
   unfold denAll
   split_ifs with hh
   · exact denU_int hh k
-  · exact (Classical.choose_spec (exists_den (Delta 2 h))).2 k
+  · exact (Classical.choose_spec (exists_den (Delta 4 h))).2 k
 
 /-! ### The size of the denominator -/
 

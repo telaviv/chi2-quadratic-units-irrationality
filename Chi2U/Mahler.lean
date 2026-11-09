@@ -3,18 +3,18 @@
 
 For `p ∈ ℚ[t]` put `G(s) = p(2s+1)` and `Δ^b G(0) = Σ_{k ≤ b} (−1)^{b−k} C(b,k) p(2k+1)` (`mahlerCoeff`). Then
 
-    Lmom p = Σ_{t odd ≥ 1} z^t p(t) = z Σ_b Δ^bG(0) y^b/(1−y)^{b+1} = Σ_b Δ^bG(0) · z^b / (2mz)^{b+1}
+    Lmom p = Σ_{t odd ≥ 1} z^t p(t) = z Σ_b Δ^bG(0) y^b/(1−y)^{b+1} = Σ_b Δ^bG(0) · z^b / (az)^{b+1}
 
-(using `y = z²`, `1 − y = 2mz·z`), a finite sum (`Lmom_eq_mahler`). Proof: the right-hand side satisfies the recurrence
+(using `y = z²`, `1 − y = az·z`), a finite sum (`Lmom_eq_mahler`). Proof: the right-hand side satisfies the recurrence
 rec₁ of `Moments.lean`, which has a unique solution (`eq_Lmom_of_rec1`).
-Consequence for primes `q ∤ 2mz` (`z`, `2mz` are `q`-units): `v_q(Lmom p) ≥ min_k v_q(p(2k+1))` (`vGe_Lmom_odd`).
+Consequence for primes `q ∤ az` (`z`, `az` are `q`-units): `v_q(Lmom p) ≥ min_k v_q(p(2k+1))` (`vGe_Lmom_odd`).
 -/
 import Chi2U.Arith.VGe
 import Chi2U.MomentSeries
 
 namespace Chi2U
 
-variable {mz : ℕ} [Fact (1 ≤ mz)]
+variable {az : ℕ} [Fact (1 ≤ az)]
 
 open Polynomial Finset
 
@@ -86,19 +86,19 @@ lemma hasSum_choose_geom {y : ℝ} (hy0 : 0 ≤ y) (hy1 : y < 1) (b : ℕ) :
   convert (hasSum_nat_add_iff (f := fun s : ℕ => (s.choose b : ℝ) * y ^ s) b).mp h' using 1
   rw [sum_eq_zero (fun i hi => by rw [Nat.choose_eq_zero_of_lt (mem_range.mp hi)]; simp), add_zero]
 
-/-- **Mahler form**: `Lmom p = Σ_{b ≤ deg p} Δ^bG(0) z^b / (2mz)^{b+1}`. -/
+/-- **Mahler form**: `Lmom p = Σ_{b ≤ deg p} Δ^bG(0) z^b / (az)^{b+1}`. -/
 theorem Lmom_eq_mahler (p : ℚ[X]) :
-    Lmom mz p = ∑ b ∈ range (p.natDegree + 1), (mahlerCoeff p b : (Qd mz)) * (zK mz) ^ b / ((2 * mz : ℕ) : Qd mz) ^ (b + 1) := by
+    Lmom az p = ∑ b ∈ range (p.natDegree + 1), (mahlerCoeff p b : (Qd az)) * (zK az) ^ b / ((az : ℕ) : Qd az) ^ (b + 1) := by
   apply emb_injective
-  have hz0 := zU_pos (mz := mz)
-  have hy0 : 0 ≤ (zU mz) ^ 2 := by positivity
-  have hy1 : (zU mz) ^ 2 < 1 := by have := zU_lt_one (mz := mz); nlinarith
+  have hz0 := zU_pos (az := az)
+  have hy0 : 0 ≤ (zU az) ^ 2 := by positivity
+  have hy1 : (zU az) ^ 2 < 1 := by have := zU_lt_one (az := az); nlinarith
   have hS := hasSum_sum (s := range (p.natDegree + 1)) (fun b _ =>
-    (hasSum_choose_geom hy0 hy1 b).mul_left (((mahlerCoeff p b : ℚ) : ℝ) * (zU mz)))
-  have hL := hasSum_Lmom' (mz := mz) p
-  have hfun : (fun s : ℕ => (zU mz) ^ (2 * s + 1) * aeval ((2 * s + 1 : ℕ) : ℝ) p) =
+    (hasSum_choose_geom hy0 hy1 b).mul_left (((mahlerCoeff p b : ℚ) : ℝ) * (zU az)))
+  have hL := hasSum_Lmom' (az := az) p
+  have hfun : (fun s : ℕ => (zU az) ^ (2 * s + 1) * aeval ((2 * s + 1 : ℕ) : ℝ) p) =
       (fun s : ℕ => ∑ b ∈ range (p.natDegree + 1),
-        ((mahlerCoeff p b : ℚ) : ℝ) * (zU mz) * ((s.choose b : ℝ) * ((zU mz) ^ 2) ^ s)) := by
+        ((mahlerCoeff p b : ℚ) : ℝ) * (zU az) * ((s.choose b : ℝ) * ((zU az) ^ 2) ^ s)) := by
     funext s
     have hev : aeval ((2 * s + 1 : ℕ) : ℝ) p = ((p.eval (2 * (s : ℚ) + 1) : ℚ) : ℝ) := by
       rw [show ((2 * s + 1 : ℕ) : ℝ) = (((2 * (s : ℚ) + 1) : ℚ) : ℝ) by push_cast; ring]
@@ -112,16 +112,16 @@ theorem Lmom_eq_mahler (p : ℚ[X]) :
   rw [hL.unique hS, map_sum]
   refine sum_congr rfl (fun b _ => ?_)
   simp only [map_div₀, map_mul, map_pow, emb_zK, map_ratCast, map_natCast]
-  have h4 : 1 - (zU mz) ^ 2 = 2 * (mz : ℝ) * (zU mz) := by linear_combination -(zU_sq_add (mz := mz))
-  have hm0 : (mz : ℝ) ≠ 0 := by have := (Fact.out : 1 ≤ mz); positivity
+  have h4 : 1 - (zU az) ^ 2 = (az : ℝ) * (zU az) := by linear_combination -(zU_sq_add (az := az))
+  have hm0 : (az : ℝ) ≠ 0 := by have := (Fact.out : 1 ≤ az); positivity
   rw [h4]
   push_cast
   field_simp
   ring
 
-/-- For a prime `q ∤ 2mz`: if `|p(2k+1)|_q ≤ q^{−n}` for all `k`, then `v_q(Lmom p) ≥ n`. -/
-theorem vGe_Lmom_odd {q : ℕ} [Fact q.Prime] (hq : ¬ q ∣ 2 * mz) (p : ℚ[X]) (n : ℤ)
-    (hp : ∀ k : ℕ, padicNorm q (p.eval (2 * (k : ℚ) + 1)) ≤ (q : ℚ) ^ (-n)) : vGe q n (Lmom mz p) := by
+/-- For a prime `q ∤ az`: if `|p(2k+1)|_q ≤ q^{−n}` for all `k`, then `v_q(Lmom p) ≥ n`. -/
+theorem vGe_Lmom_odd {q : ℕ} [Fact q.Prime] (hq : ¬ q ∣ az) (p : ℚ[X]) (n : ℤ)
+    (hp : ∀ k : ℕ, padicNorm q (p.eval (2 * (k : ℚ) + 1)) ≤ (q : ℚ) ^ (-n)) : vGe q n (Lmom az p) := by
   rw [Lmom_eq_mahler]
   refine vGe_sum _ _ (fun b _ => ?_)
   have hqpos : (0 : ℚ) ≤ (q : ℚ) ^ (-n) := (zpow_pos (by exact_mod_cast (Fact.out : q.Prime).pos) _).le
@@ -134,45 +134,39 @@ theorem vGe_Lmom_odd {q : ℕ} [Fact q.Prime] (hq : ¬ q ∣ 2 * mz) (p : ℚ[X]
     calc padicNorm q ((-1 : ℚ) ^ (b - k) * (b.choose k : ℚ)) * padicNorm q (p.eval (2 * (k : ℚ) + 1))
         ≤ 1 * (q : ℚ) ^ (-n) := mul_le_mul hint (hp k) (padicNorm.nonneg _) zero_le_one
       _ = (q : ℚ) ^ (-n) := one_mul _
-  have h1 : vGe q n (mahlerCoeff p b : (Qd mz)) := vGe_ratCast_of_padicNorm hm
-  have h4 : padicNorm q ((1 / ((2 * mz : ℕ) : ℚ) ^ (b + 1) : ℚ)) ≤ 1 := by
-    have hnd : ¬ q ∣ (2 * mz) ^ (b + 1) := fun hd => hq ((Fact.out : q.Prime).dvd_of_dvd_pow hd)
-    have h4n : padicNorm q (((2 * mz) ^ (b + 1) : ℕ) : ℚ) = 1 := (padicNorm.nat_eq_one_iff (p := q) _).mpr hnd
+  have h1 : vGe q n (mahlerCoeff p b : (Qd az)) := vGe_ratCast_of_padicNorm hm
+  have h4 : padicNorm q ((1 / ((az : ℕ) : ℚ) ^ (b + 1) : ℚ)) ≤ 1 := by
+    have hnd : ¬ q ∣ az ^ (b + 1) := fun hd => hq ((Fact.out : q.Prime).dvd_of_dvd_pow hd)
+    have h4n : padicNorm q ((az ^ (b + 1) : ℕ) : ℚ) = 1 := (padicNorm.nat_eq_one_iff (p := q) _).mpr hnd
     rw [padicNorm.div, padicNorm.one]
     push_cast at h4n ⊢
     rw [h4n]; norm_num
-  have h2 : vGe q 0 ((zK mz) ^ b / ((2 * mz : ℕ) : Qd mz) ^ (b + 1)) := by
+  have h2 : vGe q 0 ((zK az) ^ b / ((az : ℕ) : Qd az) ^ (b + 1)) := by
     refine vGe_of_pInt ?_
     rw [div_eq_mul_inv]
     refine pInt_mul (pInt_pow pInt_zK b) ?_
-    have : (((2 * mz : ℕ) : Qd mz) ^ (b + 1))⁻¹ = ((1 / ((2 * mz : ℕ) : ℚ) ^ (b + 1) : ℚ) : (Qd mz)) := by
+    have : (((az : ℕ) : Qd az) ^ (b + 1))⁻¹ = ((1 / ((az : ℕ) : ℚ) ^ (b + 1) : ℚ) : (Qd az)) := by
       push_cast; ring
     rw [this]; exact pInt_ratCast h4
   have := vGe_mul h1 h2
   rw [add_zero] at this
   rw [mul_div_assoc]; exact this
 
-/-- Theorem U's form (`mz = 2`): the hypothesis `q ≠ 2` suffices. -/
-theorem vGe_Lmom_odd_two {q : ℕ} [hq' : Fact q.Prime] (hq : q ≠ 2) (p : ℚ[X]) (n : ℤ)
-    (hp : ∀ k : ℕ, padicNorm q (p.eval (2 * (k : ℚ) + 1)) ≤ (q : ℚ) ^ (-n)) : vGe q n (Lmom 2 p) := by
+/-- Theorem U's form (`az = 4`): the hypothesis `q ≠ 2` suffices. -/
+theorem vGe_Lmom_odd_four {q : ℕ} [hq' : Fact q.Prime] (hq : q ≠ 2) (p : ℚ[X]) (n : ℤ)
+    (hp : ∀ k : ℕ, padicNorm q (p.eval (2 * (k : ℚ) + 1)) ≤ (q : ℚ) ^ (-n)) : vGe q n (Lmom 4 p) := by
   refine vGe_Lmom_odd (fun hd => hq ?_) p n hp
   have : q ∣ 2 ^ 2 := by simpa using hd
   exact (Nat.prime_dvd_prime_iff_eq hq'.out Nat.prime_two).mp (hq'.out.dvd_of_dvd_pow this)
 
 /-- Theorem U's Mahler form with `4^{b+1}`. -/
-theorem Lmom_eq_mahler_two (p : ℚ[X]) :
-    Lmom 2 p = ∑ b ∈ range (p.natDegree + 1), (mahlerCoeff p b : Q5) * (zK 2) ^ b / 4 ^ (b + 1) := by
+theorem Lmom_eq_mahler_four (p : ℚ[X]) :
+    Lmom 4 p = ∑ b ∈ range (p.natDegree + 1), (mahlerCoeff p b : Q5) * (zK 4) ^ b / 4 ^ (b + 1) := by
   rw [Lmom_eq_mahler]; norm_num
 
-/-- `q ∤ 2mz` from `q ≠ 2` and `q ∤ mz` (`q` prime). -/
-lemma not_dvd_two_mul {q : ℕ} [hq' : Fact q.Prime] (hq : q ≠ 2) (hqm : ¬ q ∣ mz) : ¬ q ∣ 2 * mz := by
-  intro hd
-  rcases (Nat.Prime.dvd_mul hq'.out).mp hd with h2 | h2
-  · exact hq ((Nat.prime_dvd_prime_iff_eq hq'.out Nat.prime_two).mp h2)
-  · exact hqm h2
-
-/-- For `mz = 2` an odd prime does not divide `mz`. -/
-lemma not_dvd_two_of_ne {q : ℕ} [hq' : Fact q.Prime] (hq : q ≠ 2) : ¬ q ∣ 2 :=
-  fun h2 => hq ((Nat.prime_dvd_prime_iff_eq hq'.out Nat.prime_two).mp h2)
+/-- For `az = 4` an odd prime does not divide `az`. -/
+lemma not_dvd_four_of_ne {q : ℕ} [hq' : Fact q.Prime] (hq : q ≠ 2) : ¬ q ∣ 4 := fun h4 => by
+  have : q ∣ 2 ^ 2 := by simpa using h4
+  exact hq ((Nat.prime_dvd_prime_iff_eq hq'.out Nat.prime_two).mp (hq'.out.dvd_of_dvd_pow this))
 
 end Chi2U

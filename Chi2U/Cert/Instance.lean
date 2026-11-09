@@ -78,10 +78,10 @@ def lzRaw (zlo zhi : ℚ) : IV :=
   | ival a _, ival _ b => ival a b
   | _, _ => top
 
-lemma mem_lzRaw {zlo zhi : ℚ} (h0 : 0 < zlo) (hlo : (zlo : ℝ) ≤ (zU 2)) (hhi : (zU 2) ≤ zhi) :
-    (lzRaw zlo zhi).mem (Real.log (zU 2)) := by
-  have l1 : Real.log zlo ≤ Real.log (zU 2) := Real.log_le_log (by exact_mod_cast h0) hlo
-  have l2 : Real.log (zU 2) ≤ Real.log zhi := Real.log_le_log zU_pos hhi
+lemma mem_lzRaw {zlo zhi : ℚ} (h0 : 0 < zlo) (hlo : (zlo : ℝ) ≤ (zU 4)) (hhi : (zU 4) ≤ zhi) :
+    (lzRaw zlo zhi).mem (Real.log (zU 4)) := by
+  have l1 : Real.log zlo ≤ Real.log (zU 4) := Real.log_le_log (by exact_mod_cast h0) hlo
+  have l2 : Real.log (zU 4) ≤ Real.log zhi := Real.log_le_log zU_pos hhi
   have m1 := mem_logPt 30 zlo
   have m2 := mem_logPt 30 zhi
   unfold lzRaw
@@ -92,19 +92,19 @@ lemma mem_lzRaw {zlo zhi : ℚ} (h0 : 0 < zlo) (hlo : (zlo : ℝ) ≤ (zU 2)) (h
   · trivial
   · exact ⟨m1.1.trans l1, l2.trans m2.2⟩
 
-lemma zlo_le {q : ℚ} (h2 : 0 ≤ q + 2) (h : (q + 2) ^ 2 ≤ 5) : (q : ℝ) ≤ (zU 2) := by
+lemma zlo_le {q : ℚ} (h2 : 0 ≤ q + 2) (h : (q + 2) ^ 2 ≤ 5) : (q : ℝ) ≤ (zU 4) := by
   have h2' : (0 : ℝ) ≤ (q : ℝ) + 2 := by exact_mod_cast h2
   have h' : ((q : ℝ) + 2) ^ 2 ≤ 5 := by exact_mod_cast h
   have : (q : ℝ) + 2 ≤ Real.sqrt 5 := by
     rw [← Real.sqrt_sq h2']; exact Real.sqrt_le_sqrt h'
-  rw [zU_two]; linarith
+  rw [zU_four]; linarith
 
-lemma le_zhi {q : ℚ} (h2 : 0 ≤ q + 2) (h : 5 ≤ (q + 2) ^ 2) : (zU 2) ≤ (q : ℝ) := by
+lemma le_zhi {q : ℚ} (h2 : 0 ≤ q + 2) (h : 5 ≤ (q + 2) ^ 2) : (zU 4) ≤ (q : ℝ) := by
   have h2' : (0 : ℝ) ≤ (q : ℝ) + 2 := by exact_mod_cast h2
   have h' : (5 : ℝ) ≤ ((q : ℝ) + 2) ^ 2 := by exact_mod_cast h
   have : Real.sqrt 5 ≤ (q : ℝ) + 2 := by
     rw [← Real.sqrt_sq h2']; exact Real.sqrt_le_sqrt h'
-  rw [zU_two]; linarith
+  rw [zU_four]; linarith
 
 namespace CDataU
 
@@ -220,7 +220,7 @@ noncomputable def μ (hv : d.Valid) : StepData where
     field_simp
     linarith
 
-lemma mem_lw (hv : d.Valid) : d.lw.mem (Real.log (zU 2)) := by
+lemma mem_lw (hv : d.Valid) : d.lw.mem (Real.log (zU 4)) := by
   have hm := mem_lzRaw hv.zlo0 (zlo_le (by have := hv.zlo0; linarith) hv.zlo5) (le_zhi hv.zhi2 hv.zhi5)
   have h := hv.lw
   simp only [lwOK, Bool.and_eq_true] at h
@@ -228,8 +228,8 @@ lemma mem_lw (hv : d.Valid) : d.lw.mem (Real.log (zU 2)) := by
 
 /-- `2U + v` as a sum of `ψ`-terms. -/
 lemma F_eq (hv : d.Valid) (x : ℝ) :
-    2 * (μ hv).U x + vU 2 x =
-      ∑ j ∈ range (d.K + 3), (d.D j : ℝ) * psiF (x - (d.α j : ℝ) / d.L) + x * Real.log (zU 2) := by
+    2 * (μ hv).U x + vU 4 x =
+      ∑ j ∈ range (d.K + 3), (d.D j : ℝ) * psiF (x - (d.α j : ℝ) / d.L) + x * Real.log (zU 4) := by
   have hL : (d.L : ℝ) ≠ 0 := by exact_mod_cast (by have := hv.L1; omega : d.L ≠ 0)
   have hU : 2 * (μ hv).U x = ∑ j ∈ range (d.K + 1), (d.D j : ℝ) * psiF (x - (d.α j : ℝ) / d.L) := by
     unfold StepData.U Uint
@@ -259,7 +259,7 @@ lemma F_eq (hv : d.Valid) (x : ℝ) :
   ring
 
 /-- **The `DualCertU` of checked data.** -/
-noncomputable def toCert (hv : d.Valid) : DualCertU 2 where
+noncomputable def toCert (hv : d.Valid) : DualCertU 4 where
   μ := μ hv
   hc1 := fun j => by
     change (d.c j : ℝ) ≤ 1

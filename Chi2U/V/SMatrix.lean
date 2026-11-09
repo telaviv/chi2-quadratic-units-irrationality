@@ -61,10 +61,10 @@ theorem det_expand_rows {n R : Type*} [Fintype n] [DecidableEq n] [CommRing R]
 
 section VGe
 
-variable {mz : ℕ} [Fact (1 ≤ mz)] {p : ℕ} [Fact p.Prime]
+variable {az : ℕ} [Fact (1 ≤ az)] {p : ℕ} [Fact p.Prime]
 
 /-- Leibniz with row and column exponents, any finite index type. -/
-theorem vGeX_det_rc {n : Type*} [Fintype n] [DecidableEq n] (M : Matrix n n (Qd mz)[X]) (ρ κ : n → ℤ)
+theorem vGeX_det_rc {n : Type*} [Fintype n] [DecidableEq n] (M : Matrix n n (Qd az)[X]) (ρ κ : n → ℤ)
     (h : ∀ i j, vGeX p (ρ i + κ j) (M i j)) : vGeX p (∑ i, ρ i + ∑ j, κ j) M.det := by
   rw [Matrix.det_apply]
   refine vGeX_sum _ _ (fun σ _ => ?_)
@@ -74,17 +74,17 @@ theorem vGeX_det_rc {n : Type*} [Fintype n] [DecidableEq n] (M : Matrix n n (Qd 
   · simpa using hprod
   · simpa using vGeX_neg hprod
 
-lemma vGeX_mono {n m : ℤ} (hmn : m ≤ n) {F : (Qd mz)[X]} (hF : vGeX p n F) : vGeX p m F :=
+lemma vGeX_mono {n m : ℤ} (hmn : m ≤ n) {F : (Qd az)[X]} (hF : vGeX p n F) : vGeX p m F :=
   fun k => vGe_mono hmn (hF k)
 
-lemma vGeX_zero (n : ℤ) : vGeX p n (0 : (Qd mz)[X]) := fun k => by
-  simpa using vGe_zero (mz := mz) (p := p) n
+lemma vGeX_zero (n : ℤ) : vGeX p n (0 : (Qd az)[X]) := fun k => by
+  simpa using vGe_zero (az := az) (p := p) n
 
-lemma vGeX_intCast (z : ℤ) : vGeX p 0 ((z : (Qd mz)[X])) := by
+lemma vGeX_intCast (z : ℤ) : vGeX p 0 ((z : (Qd az)[X])) := by
   rw [← C_eq_intCast]; exact vGeX_C (vGe_of_pInt (pInt_intCast z))
 
-lemma vGeX_X : vGeX p 0 (X : (Qd mz)[X]) := by
-  simpa using vGeX_X_mul (vGeX_one (mz := mz) (p := p))
+lemma vGeX_X : vGeX p 0 (X : (Qd az)[X]) := by
+  simpa using vGeX_X_mul (vGeX_one (az := az) (p := p))
 
 end VGe
 

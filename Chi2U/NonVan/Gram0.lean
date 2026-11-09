@@ -4,7 +4,7 @@
 * `dPrime_split`: `D′(x_i) = ℓ² κ_r W` for `i = γ + rℓ`, `κ = (8, −4, 8)`, `W = Π_{m ≢ γ}(x_i − x_m)`, and
   `W ≡ U_γ = −1` (`Cong_Wz`). In particular `v_ℓ(D′(x_i)) = 2` (`padicValRat_dPrime`).
 * **`Cong_Afun`**: `G^f(0)_{γ+rℓ, γ′+sℓ} ≡ [γ = γ′]·e_γ·(c + [r = s] d_r)` with `e_γ = −z^{x_γ}`,
-  `c = z^{3ℓ}/(2mz·z)^ℓ`, `d = (8z^ℓ, 0, −8z^{3ℓ})` (PROOF_U's `e_γ M`, `M = c𝟙𝟙ᵀ + diag(8ζ, 0, −8ζ³)` with `U_γ = −1`).
+  `c = z^{3ℓ}/(az·z)^ℓ`, `d = (8z^ℓ, 0, −8z^{3ℓ})` (PROOF_U's `e_γ M`, `M = c𝟙𝟙ᵀ + diag(8ζ, 0, −8ζ³)` with `U_γ = −1`).
 -/
 import Chi2U.NonVan.Entries
 
@@ -20,7 +20,7 @@ def kap (r : ℕ) : ℤ := if r = 1 then -4 else 8
 def Wz (ℓ γ i : ℕ) : ℤ :=
   ∏ m ∈ (range (3 * ℓ)).filter (fun m => m % ℓ ≠ γ), (poleZ (3 * ℓ - 1) i - poleZ (3 * ℓ - 1) m)
 
-variable {mz : ℕ} [Fact (1 ≤ mz)] {ℓ : ℕ} [hℓ : Fact ℓ.Prime]
+variable {az : ℕ} [Fact (1 ≤ az)] {ℓ : ℕ} [hℓ : Fact ℓ.Prime]
 
 omit hℓ in
 lemma lt_three_mul {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) : γ + r * ℓ < 3 * ℓ := by
@@ -63,29 +63,29 @@ lemma dPrime_split {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) :
   · rw [if_neg (by omega), if_neg (by omega), if_pos (by omega)]; simp only [kap]; push_cast; ring
 
 lemma Cong_Wz (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) :
-    Cong ℓ ((Wz ℓ γ (γ + r * ℓ) : ℚ) : Qd mz) (-1) := by
+    Cong ℓ ((Wz ℓ γ (γ + r * ℓ) : ℚ) : Qd az) (-1) := by
   rw [Rat.cast_intCast]
   refine Cong_congr (Cong_intCast _) rfl ?_
   rw [← castHom_intCast, Wz, Int.cast_prod]
   simp only [Int.cast_sub]
   rw [abar_of_mod hℓ2 hγ (add_mul_mod_eq hγ), Ubar_eq hℓ2 hγ, map_neg, map_one]
 
-/-- `v_ℓ(D′(x_i)) = 2` (a statement over `ℚ`; the proof reduces in `Fl 2 ℓ`, any residue field of characteristic
+/-- `v_ℓ(D′(x_i)) = 2` (a statement over `ℚ`; the proof reduces in `Fl 4 ℓ`, any residue field of characteristic
 `ℓ` would do). -/
 lemma padicValRat_dPrime (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) :
     padicValRat ℓ (dPrime (3 * ℓ - 1) (γ + r * ℓ)) = 2 := by
   have hk : ((kap r : ℚ) : Q5) = ((kap r : ℤ) : Q5) := by push_cast; rfl
-  have hC : Cong ℓ ((((kap r : ℚ) * (Wz ℓ γ (γ + r * ℓ) : ℚ)) : ℚ) : Q5) (-(kap r : Fl 2 ℓ)) := by
+  have hC : Cong ℓ ((((kap r : ℚ) * (Wz ℓ γ (γ + r * ℓ) : ℚ)) : ℚ) : Q5) (-(kap r : Fl 4 ℓ)) := by
     rw [Rat.cast_mul, hk]
-    refine Cong_congr (Cong_mul (Cong_intCast _) (Cong_Wz (mz := 2) hℓ2 hγ)) rfl (by ring)
-  have hne : -(kap r : Fl 2 ℓ) ≠ 0 := by
+    refine Cong_congr (Cong_mul (Cong_intCast _) (Cong_Wz (az := 4) hℓ2 hγ)) rfl (by ring)
+  have hne : -(kap r : Fl 4 ℓ) ≠ 0 := by
     rw [neg_ne_zero]
     unfold kap
     split_ifs
-    · have : ((-4 : ℤ) : Fl 2 ℓ) = -(4 : Fl 2 ℓ) := by push_cast; ring
-      rw [this, neg_ne_zero]; exact four_ne_zero_Fl (mz := 2) hℓ2
-    · have : ((8 : ℤ) : Fl 2 ℓ) = 4 * 2 := by push_cast; ring
-      rw [this]; exact mul_ne_zero (four_ne_zero_Fl (mz := 2) hℓ2) (two_ne_zero_Fl (mz := 2) hℓ2)
+    · have : ((-4 : ℤ) : Fl 4 ℓ) = -(4 : Fl 4 ℓ) := by push_cast; ring
+      rw [this, neg_ne_zero]; exact four_ne_zero_Fl (az := 4) hℓ2
+    · have : ((8 : ℤ) : Fl 4 ℓ) = 4 * 2 := by push_cast; ring
+      rw [this]; exact mul_ne_zero (four_ne_zero_Fl (az := 4) hℓ2) (two_ne_zero_Fl (az := 4) hℓ2)
   have h1 := padicNorm_eq_one_of_Cong hC hne
   have hq0 : (kap r : ℚ) * (Wz ℓ γ (γ + r * ℓ) : ℚ) ≠ 0 := by
     intro h0; rw [h0, padicNorm.zero] at h1; exact zero_ne_one h1
@@ -101,27 +101,27 @@ lemma padicValRat_dPrime (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr :
 
 /-! ### The block entries -/
 
-variable (mz ℓ) in
+variable (az ℓ) in
 /-- `e_γ = −z^{x_γ}`. -/
-noncomputable def eB (γ : ℕ) : Fl mz ℓ := -(zb mz ℓ ^ poleZ (3 * ℓ - 1) γ)
+noncomputable def eB (γ : ℕ) : Fl az ℓ := -(zb az ℓ ^ poleZ (3 * ℓ - 1) γ)
 
-variable (mz ℓ) in
-/-- `c = z^{3ℓ}/(2mz·z)^ℓ`. -/
-noncomputable def cB : Fl mz ℓ := ((((2 * mz : ℕ) : Fl mz ℓ) * zb mz ℓ) ^ ℓ)⁻¹ * zb mz ℓ ^ (3 * ℓ)
+variable (az ℓ) in
+/-- `c = z^{3ℓ}/(az·z)^ℓ`. -/
+noncomputable def cB : Fl az ℓ := ((((az : ℕ) : Fl az ℓ) * zb az ℓ) ^ ℓ)⁻¹ * zb az ℓ ^ (3 * ℓ)
 
-variable (mz ℓ) in
+variable (az ℓ) in
 /-- `d = (8z^ℓ, 0, −8z^{3ℓ})`. -/
-noncomputable def dB (r : ℕ) : Fl mz ℓ := if r = 0 then 8 * zb mz ℓ ^ ℓ else if r = 1 then 0 else -8 * zb mz ℓ ^ (3 * ℓ)
+noncomputable def dB (r : ℕ) : Fl az ℓ := if r = 0 then 8 * zb az ℓ ^ ℓ else if r = 1 then 0 else -8 * zb az ℓ ^ (3 * ℓ)
 
 lemma zb_poleZ_add (hℓ2 : ℓ ≠ 2) (γ r : ℕ) :
-    zb mz ℓ ^ poleZ (3 * ℓ - 1) (γ + r * ℓ) = zb mz ℓ ^ poleZ (3 * ℓ - 1) γ * zb mz ℓ ^ (2 * r * ℓ) := by
+    zb az ℓ ^ poleZ (3 * ℓ - 1) (γ + r * ℓ) = zb az ℓ ^ poleZ (3 * ℓ - 1) γ * zb az ℓ ^ (2 * r * ℓ) := by
   rw [poleZ_eq (hℓ.out.odd_of_ne_two hℓ2), poleZ_eq (hℓ.out.odd_of_ne_two hℓ2), ← zpow_natCast,
     ← zpow_add₀ zb_ne_zero]
   congr 1; push_cast; ring
 
 lemma zb_poleZ_mul (hℓ2 : ℓ ≠ 2) (γ : ℕ) :
-    zb mz ℓ ^ poleZ (3 * ℓ - 1) γ * zb mz ℓ ^ (3 * ℓ) = zb mz ℓ ^ (2 * γ + 1) := by
-  rw [poleZ_eq (hℓ.out.odd_of_ne_two hℓ2), ← zpow_natCast (zb mz ℓ) (3 * ℓ), ← zpow_add₀ zb_ne_zero,
+    zb az ℓ ^ poleZ (3 * ℓ - 1) γ * zb az ℓ ^ (3 * ℓ) = zb az ℓ ^ (2 * γ + 1) := by
+  rw [poleZ_eq (hℓ.out.odd_of_ne_two hℓ2), ← zpow_natCast (zb az ℓ) (3 * ℓ), ← zpow_add₀ zb_ne_zero,
     ← zpow_natCast]
   congr 1; push_cast; ring
 
@@ -131,8 +131,8 @@ lemma natAbs_poleZ (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3
 
 /-- The pole part of a diagonal entry mod `ℓ`. -/
 lemma Cong_pole (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) :
-    Cong ℓ ((dPrime (3 * ℓ - 1) (γ + r * ℓ) : Qd mz) * (zK mz) ^ (poleZ (3 * ℓ - 1) (γ + r * ℓ)) *
-      Psum mz (poleZ (3 * ℓ - 1) (γ + r * ℓ))) (eB mz ℓ γ * dB mz ℓ r) := by
+    Cong ℓ ((dPrime (3 * ℓ - 1) (γ + r * ℓ) : Qd az) * (zK az) ^ (poleZ (3 * ℓ - 1) (γ + r * ℓ)) *
+      Psum az (poleZ (3 * ℓ - 1) (γ + r * ℓ))) (eB az ℓ γ * dB az ℓ r) := by
   set x := poleZ (3 * ℓ - 1) (γ + r * ℓ) with hx
   have hxe : x = 2 * (γ : ℤ) + 1 + (2 * r - 3) * ℓ := natAbs_poleZ hℓ2 hγ hr
   have hev : Even x := by
@@ -140,16 +140,16 @@ lemma Cong_pole (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) :
   have hx3 : x.natAbs < 3 * ℓ := by
     have hl := hℓ.out.pos
     interval_cases r <;> omega
-  have hP := Cong_Psum (mz := mz) hℓ2 hev hx3
-  have hk : ((kap r : ℚ) : Qd mz) = ((kap r : ℤ) : Qd mz) := by push_cast; rfl
-  have e : (dPrime (3 * ℓ - 1) (γ + r * ℓ) : Qd mz) * (zK mz) ^ x * Psum mz x =
-      ((kap r : ℤ) : Qd mz) * ((Wz ℓ γ (γ + r * ℓ) : ℚ) : Qd mz) * (zK mz) ^ x * ((ℓ : Qd mz) ^ 2 * Psum mz x) := by
+  have hP := Cong_Psum (az := az) hℓ2 hev hx3
+  have hk : ((kap r : ℚ) : Qd az) = ((kap r : ℤ) : Qd az) := by push_cast; rfl
+  have e : (dPrime (3 * ℓ - 1) (γ + r * ℓ) : Qd az) * (zK az) ^ x * Psum az x =
+      ((kap r : ℤ) : Qd az) * ((Wz ℓ γ (γ + r * ℓ) : ℚ) : Qd az) * (zK az) ^ x * ((ℓ : Qd az) ^ 2 * Psum az x) := by
     rw [dPrime_split hγ hr, Rat.cast_mul, Rat.cast_mul, hk]; push_cast; ring
   rw [e]
   have hC := Cong_mul (Cong_mul (Cong_mul (Cong_intCast (ℓ := ℓ) (kap r)) (Cong_Wz (r := r) hℓ2 hγ))
     (Cong_zK_zpow (ℓ := ℓ) x)) hP
   refine Cong_congr hC rfl ?_
-  have hz := zb_poleZ_add (mz := mz) hℓ2 γ r
+  have hz := zb_poleZ_add (az := az) hℓ2 γ r
   rw [← hx] at hz
   have hl := hℓ.out.pos
   interval_cases r
@@ -159,15 +159,15 @@ lemma Cong_pole (hℓ2 : ℓ ≠ 2) {γ r : ℕ} (hγ : γ < ℓ) (hr : r < 3) :
     simp [eB, dB]
   · rw [if_pos (by omega), if_neg (by omega)]
     simp only [eB, dB, kap, hz]
-    have hz0 : zb mz ℓ ^ ℓ ≠ 0 := pow_ne_zero _ zb_ne_zero
+    have hz0 : zb az ℓ ^ ℓ ≠ 0 := pow_ne_zero _ zb_ne_zero
     push_cast
     field_simp
     ring
 
 /-- **Steps 3–4**: `G^f(0)` mod `ℓ` in block form. -/
-theorem Cong_Afun (hℓm : ¬ ℓ ∣ 2 * mz) {γ γ' r s : ℕ} (hγ : γ < ℓ) (hγ' : γ' < ℓ) (hr : r < 3) (hs : s < 3) :
-    Cong ℓ (Afun mz (3 * ℓ - 1) (fLag (3 * ℓ - 1) (γ + r * ℓ) * fLag (3 * ℓ - 1) (γ' + s * ℓ)))
-      (if γ = γ' then eB mz ℓ γ * (cB mz ℓ + if r = s then dB mz ℓ r else 0) else 0) := by
+theorem Cong_Afun (hℓm : ¬ ℓ ∣ 2 * az) {γ γ' r s : ℕ} (hγ : γ < ℓ) (hγ' : γ' < ℓ) (hr : r < 3) (hs : s < 3) :
+    Cong ℓ (Afun az (3 * ℓ - 1) (fLag (3 * ℓ - 1) (γ + r * ℓ) * fLag (3 * ℓ - 1) (γ' + s * ℓ)))
+      (if γ = γ' then eB az ℓ γ * (cB az ℓ + if r = s then dB az ℓ r else 0) else 0) := by
   have hℓ2 : ℓ ≠ 2 := ne_two_of_not_dvd hℓm
   have hi := lt_three_mul hγ hr
   have hj := lt_three_mul hγ' hs
@@ -176,7 +176,7 @@ theorem Cong_Afun (hℓm : ¬ ℓ ∣ 2 * mz) {γ γ' r s : ℕ} (hγ : γ < ℓ
   rw [Afun_ff _ (by omega)]
   have hmu := Cong_mu hℓm hi hj
   rw [hiγ, hjγ] at hmu
-  have hpoly : -(((((2 * mz : ℕ) : Fl mz ℓ) * zb mz ℓ) ^ ℓ)⁻¹ * zb mz ℓ ^ (2 * γ + 1)) = eB mz ℓ γ * cB mz ℓ := by
+  have hpoly : -(((((az : ℕ) : Fl az ℓ) * zb az ℓ) ^ ℓ)⁻¹ * zb az ℓ ^ (2 * γ + 1)) = eB az ℓ γ * cB az ℓ := by
     rw [eB, cB, ← zb_poleZ_mul hℓ2 γ]; ring
   by_cases hij : γ + r * ℓ = γ' + s * ℓ
   · have hgg : γ = γ' := by rw [← hiγ, ← hjγ, hij]

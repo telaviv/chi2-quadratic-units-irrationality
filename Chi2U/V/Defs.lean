@@ -17,13 +17,16 @@ open Polynomial Filter Finset
 def TheoremV : Prop :=
   ∀ m : ℕ, 2 ≤ m → m ∉ ({3, 5, 7, 9, 15} : Finset ℕ) → Irrational (chi2 (Real.sqrt ((m : ℝ) ^ 2 + 1) - m))
 
-/-- The endgame inputs at `z_m` (`α` = arithmetic limit constant, `β` = analytic constant). -/
-abbrev MachineBoundsV (m : ℕ) [Fact (1 ≤ m)] : Type := MachineBounds m
+/-- The endgame inputs at `z_m` (`α` = arithmetic limit constant, `β` = analytic constant): the machine at the
+trace `az = 2m`. -/
+abbrev MachineBoundsV (m : ℕ) [Fact (1 ≤ m)] : Type := MachineBounds (2 * m)
 
-/-- The endgame (Lemma E) at `z_m`: proved, generic in `m`. -/
+/-- The endgame (Lemma E) at `z_m`: proved, generic in `m` (`zU (2m) = √(m² + 1) − m`, `zU_two_mul`). -/
 theorem irrational_of_boundsV {m : ℕ} [Fact (1 ≤ m)] (H : MachineBoundsV m) :
-    Irrational (chi2 (Real.sqrt ((m : ℝ) ^ 2 + 1) - m)) :=
-  irrational_of_bounds H
+    Irrational (chi2 (Real.sqrt ((m : ℝ) ^ 2 + 1) - m)) := by
+  have := irrational_of_bounds H
+  unfold TU at this
+  rwa [zU_two_mul] at this
 
 /-! ## Constants -/
 
@@ -43,8 +46,8 @@ noncomputable def cSV (m : ℕ) : ℝ :=
 /-- The arithmetic limit constant `α(m) = 4/3 + c₂(ν) + Σ_{p ∣ m odd} c_p(e)`. -/
 noncomputable def alphaV (m : ℕ) : ℝ := 4 / 3 + c2V m + cSV m
 
-/-- `L(m) = log(z₂/z_m) = log((m + √(m² + 1))/(2 + √5))`. -/
-noncomputable def Lshift (m : ℕ) : ℝ := Real.log (zU 2) - Real.log (zU m)
+/-- `L(m) = log(z₂/z_m) = log((m + √(m² + 1))/(2 + √5))` (machine traces `4` and `2m`: `zU_four`, `zU_two_mul`). -/
+noncomputable def Lshift (m : ℕ) : ℝ := Real.log (zU 4) - Real.log (zU (2 * m))
 
 /-- `Φ_L = −1.3538792`, the exponent of Theorem U's Lean certificate (`exists_certU'`). -/
 noncomputable def PhiL : ℝ := -13538792 / 10000000
@@ -62,6 +65,44 @@ def levelsV (h p : ℕ) : Finset ℕ := (Icc 1 h).filter (fun l => p ^ l ≤ h)
 
 /-- Lemma S's bound on `n_p` for odd `p ∣ m`: `Σ_l A_K(p^l) + v_p(m)·(h/2 − 1)²`. -/
 def eS (m h p : ℕ) : ℕ := ∑ l ∈ levelsV h p, AK h (p ^ l) + padicValNat p m * (h / 2 - 1) ^ 2
+
+/-! ## Trace-indexed versions (the machine lemmas take the trace `az`; Theorem V uses `az = 2m`)
+
+The ingredients in `Interface.lean` are stated at a trace `az` (`lemma10nu` for even `az`, `lemmaS`, `shift_lemma`,
+`lemmaP_m`); the assembly instantiates `az := 2 * m` and converts with the bridges below. -/
+
+/-- `ν = v₂(az)` (`= 1 + v₂(m)` for `az = 2m`, `nuA_two_mul`). -/
+def nuA (az : ℕ) : ℕ := padicValNat 2 az
+
+/-- `n2V` in terms of the trace (`ν = nuA az`). -/
+def n2A (az h : ℕ) : ℕ :=
+  if 2 ≤ nuA az then (nuA az - 1) * (h / 2 - 1) ^ 2 + h * Nat.log 2 h + 5 * h - 1 - (h / 2) ^ 2
+  else (h / 2 - 1) ^ 2 + 3 * h
+
+/-- `eS` in terms of the trace (`e = v_p(az)`). -/
+def eSA (az h p : ℕ) : ℕ := ∑ l ∈ levelsV h p, AK h (p ^ l) + padicValNat p az * (h / 2 - 1) ^ 2
+
+/-- `L = log(zU 4 / zU az)` in terms of the trace. -/
+noncomputable def LshiftA (az : ℕ) : ℝ := Real.log (zU 4) - Real.log (zU az)
+
+lemma nuA_two_mul {m : ℕ} (hm : m ≠ 0) : nuA (2 * m) = nuV m := by
+  unfold nuA nuV
+  rw [padicValNat.mul two_ne_zero hm, padicValNat_self]
+
+lemma n2A_two_mul {m : ℕ} (hm : m ≠ 0) (h : ℕ) : n2A (2 * m) h = n2V m h := by
+  unfold n2A n2V; rw [nuA_two_mul hm]
+
+/-- `v_p(2m) = v_p(m)` for odd primes `p`. -/
+lemma padicValNat_two_mul_of_ne_two {p m : ℕ} (hp : p.Prime) (hp2 : p ≠ 2) (hm : m ≠ 0) :
+    padicValNat p (2 * m) = padicValNat p m := by
+  have : Fact p.Prime := ⟨hp⟩
+  rw [padicValNat.mul two_ne_zero hm,
+    padicValNat.eq_zero_of_not_dvd (fun hd => hp2 ((Nat.prime_dvd_prime_iff_eq hp Nat.prime_two).mp hd)), zero_add]
+
+lemma eSA_two_mul {m h p : ℕ} (hp : p.Prime) (hp2 : p ≠ 2) (hm : m ≠ 0) : eSA (2 * m) h p = eS m h p := by
+  unfold eSA eS; rw [padicValNat_two_mul_of_ne_two hp hp2 hm]
+
+lemma LshiftA_two_mul (m : ℕ) : LshiftA (2 * m) = Lshift m := rfl
 
 /-- `n2V m h ≤ |ν − 2|·(h/2)² + h⌊log₂ h⌋ + 5h`. -/
 lemma n2V_le (m h : ℕ) :

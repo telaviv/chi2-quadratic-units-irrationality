@@ -59,10 +59,10 @@ theorem sum_adjugate_blockB (e : ι → K) (c d0 d2 : K) (he : ∀ γ, e γ ≠ 
 
 end Generic
 
-variable {mz : ℕ} [Fact (1 ≤ mz)] {ℓ : ℕ} [hℓ : Fact ℓ.Prime]
+variable {az : ℕ} [Fact (1 ≤ az)] {ℓ : ℕ} [hℓ : Fact ℓ.Prime]
 
 /-- `Σ_{γ<ℓ} w^γ ≠ 0` for `w ≠ 1` in characteristic `ℓ`. -/
-lemma geom_ne_zero {w : Fl mz ℓ} (hw : w ≠ 1) : ∑ γ ∈ range ℓ, w ^ γ ≠ 0 := by
+lemma geom_ne_zero {w : Fl az ℓ} (hw : w ≠ 1) : ∑ γ ∈ range ℓ, w ^ γ ≠ 0 := by
   intro h0
   have h := geom_sum_mul w ℓ
   rw [h0, zero_mul] at h
@@ -71,15 +71,15 @@ lemma geom_ne_zero {w : Fl mz ℓ} (hw : w ≠ 1) : ∑ γ ∈ range ℓ, w ^ γ
   exact sub_ne_zero.mpr hw (pow_eq_zero_iff (hℓ.out.ne_zero) |>.mp h.symm)
 
 /-- `Σ_γ e_γ⁻¹ ≠ 0` for `e_γ = −z^{x_γ}`. -/
-lemma sum_inv_eB_ne_zero (hℓm : ¬ ℓ ∣ 2 * mz) : ∑ γ ∈ range ℓ, (eB mz ℓ γ)⁻¹ ≠ 0 := by
+lemma sum_inv_eB_ne_zero (hℓm : ¬ ℓ ∣ 2 * az) : ∑ γ ∈ range ℓ, (eB az ℓ γ)⁻¹ ≠ 0 := by
   have hℓ2 : ℓ ≠ 2 := ne_two_of_not_dvd hℓm
-  have hz := zb_ne_zero (mz := mz) (ℓ := ℓ)
-  set w : Fl mz ℓ := (zb mz ℓ ^ 2)⁻¹ with hw
-  have hterm : ∀ γ ∈ range ℓ, (eB mz ℓ γ)⁻¹ = -(zb mz ℓ ^ (3 * ℓ) * (zb mz ℓ)⁻¹) * w ^ γ := by
+  have hz := zb_ne_zero (az := az) (ℓ := ℓ)
+  set w : Fl az ℓ := (zb az ℓ ^ 2)⁻¹ with hw
+  have hterm : ∀ γ ∈ range ℓ, (eB az ℓ γ)⁻¹ = -(zb az ℓ ^ (3 * ℓ) * (zb az ℓ)⁻¹) * w ^ γ := by
     intro γ _
-    have h1 := zb_poleZ_mul (mz := mz) hℓ2 γ
+    have h1 := zb_poleZ_mul (az := az) hℓ2 γ
     rw [eB, hw]
-    have h3 : zb mz ℓ ^ poleZ (3 * ℓ - 1) γ = zb mz ℓ ^ (2 * γ + 1) / zb mz ℓ ^ (3 * ℓ) := by
+    have h3 : zb az ℓ ^ poleZ (3 * ℓ - 1) γ = zb az ℓ ^ (2 * γ + 1) / zb az ℓ ^ (3 * ℓ) := by
       rw [← h1]; field_simp
     rw [h3, inv_pow, ← pow_mul]
     field_simp
@@ -87,10 +87,10 @@ lemma sum_inv_eB_ne_zero (hℓm : ¬ ℓ ∣ 2 * mz) : ∑ γ ∈ range ℓ, (eB
   rw [sum_congr rfl hterm, ← mul_sum]
   refine mul_ne_zero (neg_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ hz) (inv_ne_zero hz))) (geom_ne_zero ?_)
   intro h1
-  have : zb mz ℓ ^ 2 = 1 := by rw [hw] at h1; exact inv_eq_one.mp h1
-  have h4 := one_sub_zb_sq (mz := mz) (ℓ := ℓ)
+  have : zb az ℓ ^ 2 = 1 := by rw [hw] at h1; exact inv_eq_one.mp h1
+  have h4 := one_sub_zb_sq (az := az) (ℓ := ℓ)
   rw [this, sub_self] at h4
-  exact mul_ne_zero (twomz_ne_zero_Fl hℓm) hz h4.symm
+  exact mul_ne_zero (az_ne_zero_Fl hℓm) hz h4.symm
 
 end LP
 end Chi2U

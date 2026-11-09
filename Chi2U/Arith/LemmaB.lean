@@ -24,7 +24,7 @@ import Chi2U.Arith.Defs
 
 namespace Chi2U
 
-variable {mz : ℕ} [Fact (1 ≤ mz)]
+variable {az : ℕ} [Fact (1 ≤ az)]
 
 open Polynomial Finset
 
@@ -32,11 +32,11 @@ open Polynomial Finset
 noncomputable def fLag (h i : ℕ) : ℚ[X] := ∏ m ∈ (range (h + 1)).erase i, (X - C ((poleZ h m : ℤ) : ℚ))
 
 /-- `Λ_X(g) = A(g) + X·B(g) ∈ ℚ(√5)[X]`. -/
-noncomputable def LamX (mz : ℕ) [Fact (1 ≤ mz)] (h : ℕ) (g : ℚ[X]) : (Qd mz)[X] := C (Afun mz h g) + X * C (Bfun mz h g)
+noncomputable def LamX (az : ℕ) [Fact (1 ≤ az)] (h : ℕ) (g : ℚ[X]) : (Qd az)[X] := C (Afun az h g) + X * C (Bfun az h g)
 
 /-- The `K × K` Lagrange Gram matrix `G^f(X)`. -/
-noncomputable def GramF (mz : ℕ) [Fact (1 ≤ mz)] (h : ℕ) : Matrix (Fin (h + 1)) (Fin (h + 1)) (Qd mz)[X] :=
-  fun i j => LamX mz h (fLag h i * fLag h j)
+noncomputable def GramF (az : ℕ) [Fact (1 ≤ az)] (h : ℕ) : Matrix (Fin (h + 1)) (Fin (h + 1)) (Qd az)[X] :=
+  fun i j => LamX az h (fLag h i * fLag h j)
 
 namespace LB
 
@@ -45,30 +45,30 @@ namespace LB
 lemma cPole_add (h : ℕ) (g₁ g₂ : ℚ[X]) (m : ℕ) : cPole h (g₁ + g₂) m = cPole h g₁ m + cPole h g₂ m := by
   simp [cPole, add_div]
 
-lemma Afun_add (h : ℕ) (g₁ g₂ : ℚ[X]) : Afun mz h (g₁ + g₂) = Afun mz h g₁ + Afun mz h g₂ := by
+lemma Afun_add (h : ℕ) (g₁ g₂ : ℚ[X]) : Afun az h (g₁ + g₂) = Afun az h g₁ + Afun az h g₂ := by
   simp only [Afun, add_divByMonic, muPoly_add, cPole_add, Rat.cast_add, add_mul, sum_add_distrib]
   ring
 
-lemma Bfun_add (h : ℕ) (g₁ g₂ : ℚ[X]) : Bfun mz h (g₁ + g₂) = Bfun mz h g₁ + Bfun mz h g₂ := by
+lemma Bfun_add (h : ℕ) (g₁ g₂ : ℚ[X]) : Bfun az h (g₁ + g₂) = Bfun az h g₁ + Bfun az h g₂ := by
   simp only [Bfun, cPole_add, Rat.cast_add, add_mul, sum_add_distrib]
   ring
 
-lemma LamX_add (h : ℕ) (g₁ g₂ : ℚ[X]) : LamX mz h (g₁ + g₂) = LamX mz h g₁ + LamX mz h g₂ := by
+lemma LamX_add (h : ℕ) (g₁ g₂ : ℚ[X]) : LamX az h (g₁ + g₂) = LamX az h g₁ + LamX az h g₂ := by
   simp only [LamX, Afun_add, Bfun_add, C_add]; ring
 
 /-- `Λ_X` as an additive map. -/
-noncomputable def LamXHom (mz : ℕ) [Fact (1 ≤ mz)] (h : ℕ) : ℚ[X] →+ (Qd mz)[X] := AddMonoidHom.mk' (LamX mz h) (LamX_add h)
+noncomputable def LamXHom (az : ℕ) [Fact (1 ≤ az)] (h : ℕ) : ℚ[X] →+ (Qd az)[X] := AddMonoidHom.mk' (LamX az h) (LamX_add h)
 
-lemma LamXHom_apply (h : ℕ) (g : ℚ[X]) : LamXHom mz h g = LamX mz h g := rfl
+lemma LamXHom_apply (h : ℕ) (g : ℚ[X]) : LamXHom az h g = LamX az h g := rfl
 
-lemma LamX_C_mul (h : ℕ) (c : ℚ) (g : ℚ[X]) : LamX mz h (C c * g) = C (c : (Qd mz)) * LamX mz h g := by
-  have := map_rat_smul (LamXHom mz h) c g
+lemma LamX_C_mul (h : ℕ) (c : ℚ) (g : ℚ[X]) : LamX az h (C c * g) = C (c : (Qd az)) * LamX az h g := by
+  have := map_rat_smul (LamXHom az h) c g
   rw [LamXHom_apply, LamXHom_apply] at this
   rw [← smul_eq_C_mul, this, Algebra.smul_def, Polynomial.algebraMap_apply, eq_ratCast]
 
 lemma LamX_sum {ι : Type*} (h : ℕ) (s : Finset ι) (g : ι → ℚ[X]) :
-    LamX mz h (∑ i ∈ s, g i) = ∑ i ∈ s, LamX mz h (g i) :=
-  map_sum (LamXHom mz h) g s
+    LamX az h (∑ i ∈ s, g i) = ∑ i ∈ s, LamX az h (g i) :=
+  map_sum (LamXHom az h) g s
 
 /-! ### The coefficient matrix -/
 
@@ -96,12 +96,12 @@ lemma fLag_eq_sum {h : ℕ} (i : Fin (h + 1)) :
   conv_lhs => rw [as_sum_range_C_mul_X_pow (fLag h i), natDegree_fLag (Nat.lt_succ_iff.mp i.isLt)]
 
 /-- The Hankel matrix `H_{h+1} = (Λ_X(t^{a+b}))_{a,b ≤ h}`. -/
-noncomputable def Hmat (mz : ℕ) [Fact (1 ≤ mz)] (h : ℕ) : Matrix (Fin (h + 1)) (Fin (h + 1)) (Qd mz)[X] :=
-  fun a b => LamX mz h (X ^ ((a : ℕ) + b))
+noncomputable def Hmat (az : ℕ) [Fact (1 ≤ az)] (h : ℕ) : Matrix (Fin (h + 1)) (Fin (h + 1)) (Qd az)[X] :=
+  fun a b => LamX az h (X ^ ((a : ℕ) + b))
 
 /-- `G^f = C' H C'ᵀ`. -/
 lemma GramF_eq (h : ℕ) :
-    GramF mz h = (coefM h).map (algebraMap ℚ (Qd mz)[X]) * Hmat mz h * ((coefM h).map (algebraMap ℚ (Qd mz)[X])).transpose := by
+    GramF az h = (coefM h).map (algebraMap ℚ (Qd az)[X]) * Hmat az h * ((coefM h).map (algebraMap ℚ (Qd az)[X])).transpose := by
   refine Matrix.ext (fun i j => ?_)
   simp only [GramF, Matrix.mul_apply, Matrix.map_apply, Matrix.transpose_apply, Hmat]
   rw [fLag_eq_sum i, fLag_eq_sum j, sum_mul_sum, LamX_sum]
@@ -133,21 +133,21 @@ lemma adjugate_last {R : Type*} [CommRing R] {n : ℕ} (M : Matrix (Fin (n + 1))
 
 /-- `𝟙ᵀ adj(G^f) 𝟙 = (det C)² adj(H)_{hh}`. -/
 lemma sum_adjugate_GramF (h : ℕ) :
-    ∑ a, ∑ b, (GramF mz h).adjugate a b =
-      C (((coefM h).det : ℚ) : (Qd mz)) ^ 2 * (Hmat mz h).adjugate (Fin.last h) (Fin.last h) := by
-  set C' := (coefM h).map (algebraMap ℚ (Qd mz)[X]) with hC'
-  set one : Fin (h + 1) → (Qd mz)[X] := fun _ => 1 with hone
-  set e : Fin (h + 1) → (Qd mz)[X] := Pi.single (Fin.last h) 1 with he
+    ∑ a, ∑ b, (GramF az h).adjugate a b =
+      C (((coefM h).det : ℚ) : (Qd az)) ^ 2 * (Hmat az h).adjugate (Fin.last h) (Fin.last h) := by
+  set C' := (coefM h).map (algebraMap ℚ (Qd az)[X]) with hC'
+  set one : Fin (h + 1) → (Qd az)[X] := fun _ => 1 with hone
+  set e : Fin (h + 1) → (Qd az)[X] := Pi.single (Fin.last h) 1 with he
   have hcol : C'.mulVec e = one := by
     funext i
     simp only [he, hC', hone, Matrix.mulVec, dotProduct, Matrix.map_apply, Pi.single_apply, mul_ite, mul_one,
       mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, coefM_last, map_one]
   have hv : C'.adjugate.mulVec one = C'.det • e := by
     rw [← hcol, Matrix.mulVec_mulVec, Matrix.adjugate_mul, Matrix.smul_mulVec, Matrix.one_mulVec]
-  have hsum : ∀ M : Matrix (Fin (h + 1)) (Fin (h + 1)) (Qd mz)[X], ∑ a, ∑ b, M a b = one ⬝ᵥ M.mulVec one := by
+  have hsum : ∀ M : Matrix (Fin (h + 1)) (Fin (h + 1)) (Qd az)[X], ∑ a, ∑ b, M a b = one ⬝ᵥ M.mulVec one := by
     intro M
     simp [hone, dotProduct, Matrix.mulVec]
-  have hdet : C'.det = C (((coefM h).det : ℚ) : (Qd mz)) := by
+  have hdet : C'.det = C (((coefM h).det : ℚ) : (Qd az)) := by
     rw [hC', ← RingHom.mapMatrix_apply, ← RingHom.map_det, Polynomial.algebraMap_apply, eq_ratCast]
   rw [hsum, GramF_eq, ← hC', Matrix.adjugate_mul_distrib, Matrix.adjugate_mul_distrib,
     ← Matrix.adjugate_transpose, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec,
@@ -255,19 +255,19 @@ end LB
 open LB in
 /-- **Lemma B** (bordered identity). -/
 theorem lemmaB {h : ℕ} (hh : Even h) :
-    (Delta mz h).map (algebraMap ℚ (Qd mz)) * C (∏ i ∈ range (h + 1), ((dPrime h i : ℚ) : (Qd mz))) =
-      C ((-1) ^ ((h + 1) * h / 2)) * ∑ a, ∑ b, (GramF mz h).adjugate a b := by
+    (Delta az h).map (algebraMap ℚ (Qd az)) * C (∏ i ∈ range (h + 1), ((dPrime h i : ℚ) : (Qd az))) =
+      C ((-1) ^ ((h + 1) * h / 2)) * ∑ a, ∑ b, (GramF az h).adjugate a b := by
   rw [sum_adjugate_GramF, adjugate_last, Delta_map hh]
-  have hsub : (Hmat mz h).submatrix Fin.castSucc Fin.castSucc =
-      Matrix.of fun i j : Fin h => C (Afun mz h (X ^ ((i : ℕ) + j))) + X * C (Bfun mz h (X ^ ((i : ℕ) + j))) := by
+  have hsub : (Hmat az h).submatrix Fin.castSucc Fin.castSucc =
+      Matrix.of fun i j : Fin h => C (Afun az h (X ^ ((i : ℕ) + j))) + X * C (Bfun az h (X ^ ((i : ℕ) + j))) := by
     refine Matrix.ext (fun i j => ?_)
     simp [Hmat, LamX]
   rw [hsub]
-  have hsq : (((coefM h).det : ℚ) : (Qd mz)) ^ 2 =
-      (-1) ^ ((h + 1) * h / 2) * ∏ i ∈ range (h + 1), ((dPrime h i : ℚ) : (Qd mz)) := by
+  have hsq : (((coefM h).det : ℚ) : (Qd az)) ^ 2 =
+      (-1) ^ ((h + 1) * h / 2) * ∏ i ∈ range (h + 1), ((dPrime h i : ℚ) : (Qd az)) := by
     rw [← Rat.cast_pow, det_coefM_sq, Fin.prod_univ_eq_prod_range (fun i => dPrime h i)]
     push_cast; ring
-  have hs : ((-1 : (Qd mz)[X]) ^ ((h + 1) * h / 2)) * (-1) ^ ((h + 1) * h / 2) = 1 := by
+  have hs : ((-1 : (Qd az)[X]) ^ ((h + 1) * h / 2)) * (-1) ^ ((h + 1) * h / 2) = 1 := by
     rw [← mul_pow]; norm_num
   rw [← C_pow, hsq, C_mul, C_pow, C_neg, C_1, ← mul_assoc, ← mul_assoc, hs, one_mul, mul_comm]
 

@@ -1,8 +1,11 @@
-"""Theorem V port (stage B1): check the parametrised Lean definitions against pilot_V's machine and test the stage-B2
-stub statements of Chi2U/V/Interface.lean on exact Delta_h (python-flint, exact).
+"""Theorem V port (stage B1; trace parametrisation stage C0): check the Lean definitions, parametrised by the trace
+`az` (Chi2U/Field.lean: d = (az/2)^2 + 1, z = -az/2 + sqrt d, 1 - z^2 = az z), against pilot_V's machine (az = 2m)
+and pilot_za's (odd az), and test the statements of Chi2U/V/Interface.lean on exact Delta_h (python-flint, exact).
 
-* Smom (Lean recurrence with 1 - z^2 = 2m z) == umach_core.odd_moments, parity;
-* Lean Delta_h (tildeCoord with d * im) == pilot_V vlib.delta_poly for m = 3, 4, 6 (h = 2..8);
+* Smom (Lean recurrence with 1 - z^2 = az z) == umach_core.odd_moments, parity;
+* Lean Delta_h (tildeCoord with d * im) at az = 2m == pilot_V vlib.delta_poly for m = 3, 4, 6 (h = 2..8);
+* Lean Delta_h at odd az = 5 (d = 29/4) is a rational polynomial (Lemma R parity) and == pilot_za vodd.delta_poly
+  (coordinates in sqrt(az^2 + 4); the determinant is basis-independent) for h = 2..8;
 * lemma10nu: n_2(Delta_h) <= n2V m h (m = 1, 3, 4, 6, 8, 12; h = 2..16);
 * lemmaS: n_p <= sum_l AK(h, p^l) + v_p(m) (h/2 - 1)^2 for odd p | m (m = 3, 5, 6, 9, 15; h = 2..16);
 * padicNorm_Delta_odd (generic p not dividing 2m): n_p <= eOdd h p (m = 3, 4, 6; h = 8..16);
@@ -12,8 +15,12 @@ import sys, os
 from math import comb, factorial
 from itertools import combinations
 PV = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'schanuel', 'four_exp', 'strong4', 'pilot_V')
+PZA = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'handoff', 'log2log3', 'pilot_za')
 sys.path.insert(0, os.path.abspath(PV))
+sys.dont_write_bytecode = True
 import vlib
+sys.path.insert(0, os.path.abspath(PZA))
+import vodd
 from umach_core import Q2, pw, odd_moments, interp
 from flint import fmpq, fmpq_poly, fmpq_mat
 
@@ -34,18 +41,20 @@ def nlog2(n): return n.bit_length() - 1
 
 
 class Machine:
-    def __init__(self, m):
-        self.m, self.d = m, m * m + 1
+    """The Lean machine at the trace `az` (Chi2U/Field.lean: dQ az = (az/2)^2 + 1, zK az = <-az/2, 1>)."""
+    def __init__(self, az):
+        self.az, self.d = az, fmpq(az * az, 4) + 1
         Q2.d = self.d
-        self.z = Q2(-m, 1)
+        self.z = Q2(fmpq(-az, 2), 1)
         self.ONE, self.ZERO = Q2(1, 0), Q2(0, 0)
         self.S = self.smom(60)
 
     def smom(self, N):
+        Q2.d = self.d
         z = self.z
         S = []
         inv = (self.ONE - z * z).inv()
-        assert (self.ONE - z * z).u == fmpq(2 * self.m) * z.u and (self.ONE - z * z).v == fmpq(2 * self.m) * z.v
+        assert (self.ONE - z * z).u == fmpq(self.az) * z.u and (self.ONE - z * z).v == fmpq(self.az) * z.v
         for n in range(N + 1):
             acc = z * fmpq((-1) ** n)
             for k in range(n):
@@ -96,6 +105,7 @@ class Machine:
         return self.d * e.v if j % 2 == 0 else e.v
 
     def Delta(self, h):
+        Q2.d = self.d
         t = fmpq_poly([0, 1])
         A = [self.Afun(h, t ** k) for k in range(2 * h - 1)]
         B = [self.Bfun(h, t ** k) for k in range(2 * h - 1)]
@@ -146,18 +156,30 @@ def nexp(P, p):
 
 cache = {}
 def delta(m, h):
-    if (m, h) not in cache: cache[(m, h)] = Machine(m).Delta(h)
+    """Lean Delta_h of Theorem V's z_m, i.e. the machine at the trace az = 2m."""
+    if (m, h) not in cache: cache[(m, h)] = Machine(2 * m).Delta(h)
     return cache[(m, h)]
 
 
 for m in (3, 4, 6):
-    M = Machine(m)
+    M = Machine(2 * m)
     ref = odd_moments(M.z, 60)
     assert all(M.S[n].u == ref[n].u and M.S[n].v == ref[n].v for n in range(61)), ("Smom", m)
     for h in (2, 4, 6, 8):
         P, _ = vlib.delta_poly(m, h)
         assert P == delta(m, h), ("Delta", m, h)
-print("Smom == odd_moments (n <= 60) and Lean Delta == vlib.delta_poly (h = 2..8) for m = 3, 4, 6")
+print("Smom == odd_moments (n <= 60) and Lean Delta (trace 2m) == vlib.delta_poly (h = 2..8) for m = 3, 4, 6")
+
+for az in (5,):
+    M = Machine(az)
+    ref = odd_moments(M.z, 60)
+    assert all(M.S[n].u == ref[n].u and M.S[n].v == ref[n].v for n in range(61)), ("Smom odd", az)
+    for h in (2, 4, 6, 8):
+        P = M.Delta(h)                 # asserts the Lemma R parity, so the determinant is rational
+        R, _ = vodd.delta_poly(az, h)
+        assert P == R, ("Delta odd", az, h)
+    print("odd trace az=%d (d = %s): Smom == odd_moments (n <= 60); Lean Delta is rational and == vodd.delta_poly "
+          "(h = 2..8); deg Delta_8 = %d" % (az, M.d, P.degree()))
 
 for m in (1, 3, 4, 6, 8, 12):
     out = []

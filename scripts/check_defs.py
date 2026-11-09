@@ -6,9 +6,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "pap
 from umach_core import Q2, pw, odd_moments, build, poly_sym, interp
 from flint import fmpq, fmpq_poly, fmpq_mat, fmpz
 from math import comb, factorial, log2
+# Theorem U is the Lean machine at the trace az = 4 (Chi2U/Field.lean: dQ az = (az/2)^2 + 1, zK az = <-az/2, 1>,
+# 1 - z^2 = az z); below the field is hard-coded as d = 5, z = -2 + sqrt 5 after checking this.
+AZ = 4
+assert fmpq(AZ * AZ, 4) + 1 == 5
 Q2.d = 5
-z = Q2(-2, 1)
+z = Q2(fmpq(-AZ, 2), 1)
 ONE = Q2(1, 0); ZERO = Q2(0, 0)
+assert (ONE - z * z).u == AZ * z.u and (ONE - z * z).v == AZ * z.v
 
 def poleZ(h, m): return 2 * (m - h // 2)
 

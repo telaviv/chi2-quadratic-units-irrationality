@@ -27,7 +27,7 @@ open Polynomial Finset TwoAdicAux
 namespace TwoAdicAux
 
 /-- `Λ_X(g) = A(g) + X·B(g) ∈ ℚ(√5)[X]`. -/
-noncomputable def LamQ (h : ℕ) (g : ℚ[X]) : Q5[X] := C (Afun 2 h g) + X * C (Bfun 2 h g)
+noncomputable def LamQ (h : ℕ) (g : ℚ[X]) : Q5[X] := C (Afun 4 h g) + X * C (Bfun 4 h g)
 
 lemma LamQ_add (h : ℕ) (f g : ℚ[X]) : LamQ h (f + g) = LamQ h f + LamQ h g := by
   unfold LamQ; rw [Afun_add, Bfun_add, C_add, C_add]; ring
@@ -108,7 +108,7 @@ end TwoAdicAux
 /-- Rescaling and the unitriangular change of basis: `det G = 2^{3h} Δ_h`. -/
 theorem det_anchored {h : ℕ} (hh : Even h) :
     (Matrix.of fun i j : Fin h => C (GA h i j) + X * C (GB h i j)).det =
-      C ((2 : Q5) ^ (3 * h)) * (Delta 2 h).map (algebraMap ℚ Q5) := by
+      C ((2 : Q5) ^ (3 * h)) * (Delta 4 h).map (algebraMap ℚ Q5) := by
   set a : Fin h → ℚ[X] := fun i => (aAnch h i).comp (C (1 / 2) * X) with ha
   set b : Fin h → ℚ[X] := fun j => (bAnch h j).comp (C (1 / 2) * X) with hb
   have hA : ∀ i : Fin h, (a i).natDegree = i ∧ (a i).leadingCoeff = (1 / 2) ^ (i : ℕ) := fun i => by
@@ -124,7 +124,7 @@ theorem det_anchored {h : ℕ} (hh : Even h) :
     refine Matrix.ext fun i j => ?_
     simp only [Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, GA, GB, LamQ, ha, hb, mul_comp, C_mul]
     ring
-  have hH : (HQ h).det = (Delta 2 h).map (algebraMap ℚ Q5) := by
+  have hH : (HQ h).det = (Delta 4 h).map (algebraMap ℚ Q5) := by
     rw [Delta_map hh]; rfl
   rw [hM, Matrix.det_smul, Fintype.card_fin,
     gram_eq a b (fun i => by rw [(hA i).1]; exact i.isLt) (fun j => by rw [(hB j).1]; exact j.isLt),
@@ -210,7 +210,7 @@ end TwoAdicAux
 
 /-- **Lemma 10′**: `n₂ ≤ h⌊log₂ h⌋ + 3h`. -/
 theorem padicNorm_Delta_two {h : ℕ} (hh : Even h) (k : ℕ) :
-    padicNorm 2 ((Delta 2 h).coeff k) ≤ (2 : ℚ) ^ e2 h := by
+    padicNorm 2 ((Delta 4 h).coeff k) ≤ (2 : ℚ) ^ e2 h := by
   set L := Nat.log 2 h with hL
   set ρ : Fin h → ℤ := fun i => (h : ℤ) - 1 - L - i with hρ
   set κ : Fin h → ℤ := fun j => -(j : ℤ) with hκ
@@ -233,8 +233,8 @@ theorem padicNorm_Delta_two {h : ℕ} (hh : Even h) (k : ℕ) :
     push_cast
     linear_combination (-1 : ℤ) * h3
   rw [hsum, det_anchored hh] at hdet
-  have hinv : (Delta 2 h).map (algebraMap ℚ Q5) =
-      C ((((2 : ℚ) ^ (-((3 * h : ℕ) : ℤ))) : ℚ) : Q5) * (C ((2 : Q5) ^ (3 * h)) * (Delta 2 h).map (algebraMap ℚ Q5)) := by
+  have hinv : (Delta 4 h).map (algebraMap ℚ Q5) =
+      C ((((2 : ℚ) ^ (-((3 * h : ℕ) : ℤ))) : ℚ) : Q5) * (C ((2 : Q5) ^ (3 * h)) * (Delta 4 h).map (algebraMap ℚ Q5)) := by
     rw [← mul_assoc, ← C_mul]
     have : ((((2 : ℚ) ^ (-((3 * h : ℕ) : ℤ))) : ℚ) : Q5) * (2 : Q5) ^ (3 * h) = 1 := by
       rw [zpow_neg, zpow_natCast, Rat.cast_inv, Rat.cast_pow, Rat.cast_ofNat,

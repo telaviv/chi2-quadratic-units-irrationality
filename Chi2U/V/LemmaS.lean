@@ -1,9 +1,10 @@
 /-
-# Lemma S (PROOF_V §3.2): `n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + v_p(m)·(h/2 − 1)²` for odd `p`
+# Lemma S (PROOF_V §3.2): `n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + v_p(a)·(h/2 − 1)²` for odd `p`
 
-**Statement** (`lemmaS_proof`, the exact statement of `lemmaS` in `Interface.lean`): for an odd prime `p ∣ m` and even `h`, every
-coefficient of `Δ_h` satisfies `|c_k|_p ≤ p^{eS m h p}`. The proof never uses `p ∣ m`: for `p ∤ 2m` it is the general
-multi-level Lemma 8′ of PROOF_U (`e = 0`).
+**Statement** (`lemmaS_proof`, the exact statement of `lemmaS` in `Interface.lean`): at the trace `az` (any `az ≥ 1`;
+in this file the trace is the variable `m`), for an odd prime `p ∣ az` and even `h`, every coefficient of `Δ_h`
+satisfies `|c_k|_p ≤ p^{eSA az h p}` (`eSA (2m) h p = eS m h p`). The proof never uses `p ∣ az`: for `p ∤ az` it is
+the general multi-level Lemma 8′ of PROOF_U (`e = 0`).
 
 **Route.** PROOF_U's Lemma 7′ expands `Δ_h = det(𝒫 + Vᵀ diag(γ) V)` by Laplace and Cauchy–Binet. Here:
 * `det H = det [[𝒫, Vᵀ], [−diag(γ)V, 1]]` (Schur complement, `SHankel.det_HkM_eq_BlkM`) and the multilinear
@@ -11,7 +12,7 @@ multi-level Lemma 8′ of PROOF_U (`e = 0`).
 * `N_S = L Ñ_S Lᵀ`, `L = diag(1, E)`, with the Newton matrix `E` (`SNewton`), so `det N_S = Vand(x_S)²·det Ñ_S` and
   `Ñ_S = [[𝒫, W₂ᵀ], [−W₁, I_{S^c}]]` has integral entries outside `𝒫`;
 * `v_p(𝒫_{ij}) ≥ −e(i + j − K)₊ ≥ −e((i − J)₊ + (j − J − 1)₊)` (Mahler form, `SVal.vGe_muPoly_divD`), so by Leibniz with
-  row and column exponents `v_p(det Ñ_S) ≥ −e(J − 1)²` (`SCount.sum_trunc_sq`), `e = v_p(m)`, `J = h/2`;
+  row and column exponents `v_p(det Ñ_S) ≥ −e(J − 1)²` (`SCount.sum_trunc_sq`), `e = v_p(az)`, `J = h/2`;
 * `v_p(γ_a) ≥ −v_p(D′(x_a)) − wT(a)` (`SVal.vGe_Psum_levels`), and
   `Σ_{a∈S} v_p(D′(x_a)) − 2 v_p(Vand(x_S)) = Σ_{a∈S, l∉S} v_p(x_a − x_l)` (`SCount.sum_pairs_split`);
 * the class count `Σ_{a∈S, l∉S} v_p(x_a − x_l) + Σ_{a∈S} wT(a) ≤ Σ_l A_K(p^l)` (`SCount.cost_le`).
@@ -121,17 +122,15 @@ section Val
 
 variable {m : ℕ} [Fact (1 ≤ m)] {h : ℕ} {p : ℕ} [hpF : Fact p.Prime]
 
-/-- `e = v_p(2m)`. -/
-noncomputable abbrev eV (m p : ℕ) : ℤ := padicValRat p ((2 * m : ℕ) : ℚ)
+/-- `e = v_p(az)` (here `m` is the trace `az`). -/
+noncomputable abbrev eV (m p : ℕ) : ℤ := padicValRat p ((m : ℕ) : ℚ)
 
 lemma eV_nonneg : 0 ≤ eV m p := by unfold eV; rw [padicValRat.of_nat]; positivity
 
-lemma eV_eq (hp : p ≠ 2) : eV m p = padicValNat p m := by
-  have hm : m ≠ 0 := by have := (Fact.out : 1 ≤ m); omega
+omit [Fact (1 ≤ m)] hpF in
+lemma eV_eq : eV m p = padicValNat p m := by
   unfold eV
-  rw [padicValRat.of_nat, padicValNat.mul two_ne_zero hm,
-    padicValNat.eq_zero_of_not_dvd (fun hd => hp ((Nat.prime_dvd_prime_iff_eq hpF.out Nat.prime_two).mp hd))]
-  simp
+  rw [padicValRat.of_nat]
 
 /-- Row and column exponents of `Ñ_S`. -/
 noncomputable def rhoE (m h p : ℕ) : Fin h ⊕ Fin (h + 1) → ℤ :=
@@ -157,7 +156,7 @@ lemma vGeX_Ntil (hh : Even h) (S : Finset (Fin (h + 1))) (r c : Fin h ⊕ Fin (h
   rcases r with i | a <;> rcases c with j | b
   · -- the polynomial part
     simp only [NtilM, fromBlocks_apply₁₁, PmM, Matrix.of_apply, rhoE, kapE, Sum.elim_inl]
-    refine vGeX_C (vGe_mono ?_ (vGe_muPoly_divD (mz := m) (p := p) h ((i : ℕ) + j)))
+    refine vGeX_C (vGe_mono ?_ (vGe_muPoly_divD (az := m) (p := p) h ((i : ℕ) + j)))
     obtain ⟨J, hJ⟩ := hh
     have hJ2 : h / 2 = J := by omega
     rw [hJ2]
@@ -199,7 +198,7 @@ lemma vGeX_gamF (hh : Even h) {a : ℕ} (ha : a ≤ h) :
     vGeX p (-padicValRat p (dPrime h a) - wT h p a) (gamF m h a) := by
   unfold gamF
   have h1 : vGe p (-padicValRat p (dPrime h a)) ((((dPrime h a)⁻¹ : ℚ) : Qd m) * (zK m) ^ (poleZ h a)) := by
-    have := vGe_mul (vGe_ratCast (mz := m) (p := p) (dPrime h a)⁻¹) (vGe_zK_zpow (mz := m) (p := p) (poleZ h a))
+    have := vGe_mul (vGe_ratCast (az := m) (p := p) (dPrime h a)⁻¹) (vGe_zK_zpow (az := m) (p := p) (poleZ h a))
     rwa [padicValRat.inv, add_zero] at this
   have h2 : vGeX p (-(wT h p a : ℤ)) (C (Psum m (poleZ h a)) - X) := by
     rw [sub_eq_add_neg]
@@ -244,13 +243,13 @@ lemma filter_lt_map (S : Finset (Fin (h + 1))) (a : Fin (h + 1)) :
   congr 1
 
 lemma vGeX_iZ_val (z : ℤ) : vGeX p (padicValRat p (z : ℚ)) (iZ m z) := by
-  have := vGeX_C (vGe_ratCast (mz := m) (p := p) (z : ℚ))
+  have := vGeX_C (vGe_ratCast (az := m) (p := p) (z : ℚ))
   rw [show (((z : ℚ)) : Qd m) = (z : Qd m) from Rat.cast_intCast z, C_eq_intCast] at this
   exact this
 
 /-- The exponent of a term is at least `−eS`. -/
 lemma exponent_bound (hp : p ≠ 2) (S : Finset (Fin (h + 1))) :
-    -(eS m h p : ℤ) ≤ ∑ a ∈ S, (-padicValRat p (dPrime h a) - wT h p a) +
+    -(eSA m h p : ℤ) ≤ ∑ a ∈ S, (-padicValRat p (dPrime h a) - wT h p a) +
       (padicValRat p ((vandZ h S : ℤ) : ℚ) + -(eV m p * (((h / 2 - 1) ^ 2 : ℕ) : ℤ)) +
         padicValRat p ((vandZ h S : ℤ) : ℚ)) := by
   set Sn := S.map Fin.valEmbedding with hSn
@@ -272,8 +271,8 @@ lemma exponent_bound (hp : p ≠ 2) (S : Finset (Fin (h + 1))) :
     refine sum_congr rfl (fun a _ => ?_)
     rw [Fin.valEmbedding_apply, ← filter_lt_map, Nat.cast_sum, sum_map]
     rfl
-  rw [sum_sub_distrib, sum_neg_distrib, e1, e2, e3, eV_eq hp]
-  unfold eS
+  rw [sum_sub_distrib, sum_neg_distrib, e1, e2, e3, eV_eq]
+  unfold eSA
   have hsplit' := congrArg (fun n : ℕ => (n : ℤ)) hsplit
   have hcost' : (((∑ m ∈ Sn, ∑ l ∈ range (h + 1) \ Sn, vmult h p m l + ∑ m ∈ Sn, wT h p m : ℕ)) : ℤ) ≤
       ((∑ e ∈ levelsV h p, AK h (p ^ e) : ℕ) : ℤ) := by exact_mod_cast hcost
@@ -281,7 +280,7 @@ lemma exponent_bound (hp : p ≠ 2) (S : Finset (Fin (h + 1))) :
   linarith
 
 lemma term_bound (hp : p ≠ 2) (hh : Even h) {T : Finset (Fin h ⊕ Fin (h + 1))} (hT : T ∈ (botRows h).powerset) :
-    vGeX p (-(eS m h p : ℤ)) ((∏ r ∈ T, aRow m h r) * (NT m h T).det) := by
+    vGeX p (-(eSA m h p : ℤ)) ((∏ r ∈ T, aRow m h r) * (NT m h T).det) := by
   have hT' := mem_powerset.mp hT
   have hprod : ∏ r ∈ T, aRow m h r = ∏ a ∈ atomsOf h T, gamF m h a := by
     conv_lhs => rw [eq_map_atomsOf h hT']
@@ -298,13 +297,14 @@ end LS
 
 open LS Polynomial Finset
 
-/-- **Lemma S** (PROOF_V §3.2): for an odd prime `p ∣ m`, `n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + e(h/2 − 1)²`,
-`e = v_p(m)`. (The hypothesis `p ∣ m` is not used: for `p ∤ m` this is the multi-level Lemma 8′.) -/
-theorem lemmaS_proof (m : ℕ) [Fact (1 ≤ m)] {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) (hpm : p ∣ m) {h : ℕ} (hh : Even h)
-    (k : ℕ) : padicNorm p ((Delta m h).coeff k) ≤ (p : ℚ) ^ eS m h p := by
-  have hX : vGeX p (-(eS m h p : ℤ)) ((Delta m h).map (algebraMap ℚ (Qd m))) := by
+/-- **Lemma S** (PROOF_V §3.2), at the trace `az`: for an odd prime `p ∣ az`,
+`n_p ≤ Σ_{l ≥ 1, p^l ≤ h} A_K(p^l) + e(h/2 − 1)²`, `e = v_p(az)` (`= v_p(m)` for `az = 2m`). (The hypothesis `p ∣ az`
+is not used: for `p ∤ az` this is the multi-level Lemma 8′; odd `az` is allowed.) -/
+theorem lemmaS_proof (az : ℕ) [Fact (1 ≤ az)] {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) (hpa : p ∣ az) {h : ℕ}
+    (hh : Even h) (k : ℕ) : padicNorm p ((Delta az h).coeff k) ≤ (p : ℚ) ^ eSA az h p := by
+  have hX : vGeX p (-(eSA az h p : ℤ)) ((Delta az h).map (algebraMap ℚ (Qd az))) := by
     rw [Delta_map hh]
-    change vGeX p _ (HkM m h).det
+    change vGeX p _ (HkM az h).det
     rw [det_HkM_expand]
     exact vGeX_sum _ _ (fun T hT => term_bound hp hh hT)
   have := padicNorm_coeff_of_vGeX_map hX k

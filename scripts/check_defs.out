@@ -10,5 +10,3 @@ row claim holds (h = 8, 12; p = 3, 5, 7)
 Lemma 8A' (AK_eq, AK_eq_zero) holds, h = 10..40
 l=7: block/B statements violations 0; v_l(c0) = -42 (want -42); gap ok: True
 l=11: block/B statements violations 0; v_l(c0) = -66 (want -66); gap ok: True
-
-[exited with code 0]

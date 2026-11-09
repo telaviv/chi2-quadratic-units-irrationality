@@ -109,7 +109,7 @@ end Cert.DataU
 
 open Cert Cert.DataU in
 /-- A certificate with `Φ < −27/20` exists. -/
-theorem exists_certU : ∃ C : DualCertU 2, C.Phi < -27 / 20 := by
+theorem exists_certU : ∃ C : DualCertU 4, C.Phi < -27 / 20 := by
   refine ⟨CDataU.toCert valid, ?_⟩
   have h1 := CDataU.Phi_le valid
   have h2 : (data.PhiQ : ℝ) < -27 / 20 := by exact_mod_cast phiQ_lt
@@ -117,7 +117,7 @@ theorem exists_certU : ∃ C : DualCertU 2, C.Phi < -27 / 20 := by
 
 open Cert Cert.DataU in
 /-- A certificate with `Φ < −1.3538792` exists (the constant `Φ_L` of the Theorem V margins). -/
-theorem exists_certU' : ∃ C : DualCertU 2, C.Phi < -13538792 / 10000000 := by
+theorem exists_certU' : ∃ C : DualCertU 4, C.Phi < -13538792 / 10000000 := by
   refine ⟨CDataU.toCert valid, ?_⟩
   have h1 := CDataU.Phi_le valid
   have h2 : (data.PhiQ : ℝ) < -13538792 / 10000000 := by exact_mod_cast phiQ_lt'

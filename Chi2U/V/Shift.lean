@@ -1,10 +1,11 @@
 /-
 # Theorem V: the shift lemma (PROOF_V §5.2) in the certificate format of `Analytic/TheoremBU.lean`
 
-`shift_lemma_proof`: from a dual certificate `C` at `z₂` and `δ > 0`, a dual certificate `C'` at `z_m` (`m ≥ 2`) with
-`Φ(C') ≤ Φ(C) − L(m)/2 + δ` (used as `shift_lemma` in `Interface.lean`).
+`shift_lemma_proof`: from a dual certificate `C` at Theorem U's unit (trace `4`, `z = √5 − 2`) and `δ > 0`, a dual
+certificate `C'` at the unit of trace `az ≥ 4` with `Φ(C') ≤ Φ(C) − L/2 + δ`, `L = LshiftA az` (used as `shift_lemma`
+in `Interface.lean`; Theorem V takes `az = 2m`, `LshiftA (2m) = Lshift m`).
 
-Construction (PROOF_V §5.2, discretised): with `L = L(m) = log z₂ − log z_m ≥ 0`, `v_m(x) = v₂(x) − L·x`
+Construction (PROOF_V §5.2, discretised): with `L = log z₄ − log z_a ≥ 0`, `v_a(x) = v₄(x) − L·x`
 (`vU_shift`). Keep `μ` and `X`; `λ' = λ − L`; refine the grid by a factor `r` (`L' = rL`, `N = rL`) and put
 `S'_{k'} = S_{⌊k'/r⌋} − L·k'/N`: on `[k'/N, (k'+1)/N] ⊆ [k/L, (k+1)/L]` (`k = ⌊k'/r⌋`) the term `−L·x` is at most its
 left-endpoint value. Tails: `log z_m ≤ log z₂` and `X ≥ 4` (the second tail changes by `−(X − 1)L ≤ 0`). Excess:
@@ -69,43 +70,46 @@ lemma sum_range_mul_div (g : ℕ → ℝ) (r : ℕ) (hr : 0 < r) (n : ℕ) :
 
 /-! ## The shift of the external field -/
 
-/-- `v_m(x) = v₂(x) − L(m)·x`. -/
-lemma vU_shift (m : ℕ) [Fact (1 ≤ m)] (x : ℝ) : vU m x = vU 2 x - Lshift m * x := by
-  unfold vU Lshift; ring
+/-- `v_m(x) = v₂(x) − L·x` (machine at trace `az` versus Theorem U's trace `4`). -/
+lemma vU_shift (az : ℕ) [Fact (1 ≤ az)] (x : ℝ) : vU az x = vU 4 x - LshiftA az * x := by
+  unfold vU LshiftA; ring
 
-/-- `z_m ≤ z₂` for `m ≥ 2`. -/
-lemma zU_le_zU_two (m : ℕ) (hm : 2 ≤ m) : zU m ≤ zU 2 := by
-  have hm' : (2 : ℝ) ≤ m := by exact_mod_cast hm
-  set s := Real.sqrt ((m : ℝ) ^ 2 + 1) with hs
-  have hss : s * s = (m : ℝ) ^ 2 + 1 := Real.mul_self_sqrt (by positivity)
+/-- `z_a ≤ z₄ = √5 − 2` for traces `a ≥ 4`. -/
+lemma zU_le_zU_four (az : ℕ) (ha : 4 ≤ az) : zU az ≤ zU 4 := by
+  set c : ℝ := (az : ℝ) / 2 with hc
+  have hm' : (2 : ℝ) ≤ c := by
+    have : (4 : ℝ) ≤ az := by exact_mod_cast ha
+    rw [hc]; linarith
+  set s := Real.sqrt (c ^ 2 + 1) with hs
+  have hss : s * s = c ^ 2 + 1 := Real.mul_self_sqrt (by positivity)
   have h5 : Real.sqrt 5 * Real.sqrt 5 = 5 := Real.mul_self_sqrt (by norm_num)
   have hs5 : Real.sqrt 5 ≤ s := Real.sqrt_le_sqrt (by nlinarith)
   have h50 : 0 ≤ Real.sqrt 5 := Real.sqrt_nonneg 5
-  have hsm : (m : ℝ) < s := (Real.lt_sqrt (by positivity)).mpr (by linarith)
-  have hz : zU m = s - m := rfl
-  rw [hz, zU_two]
-  -- `(s − m)(s + m) = 1 = (√5 − 2)(√5 + 2)` and `s + m ≥ √5 + 2`
-  have e1 : (s - m) * (s + m) = 1 := by nlinarith
+  have hsm : c < s := (Real.lt_sqrt (by positivity)).mpr (by linarith)
+  have hz : zU az = s - c := rfl
+  rw [hz, zU_four]
+  -- `(s − c)(s + c) = 1 = (√5 − 2)(√5 + 2)` and `s + c ≥ √5 + 2`
+  have e1 : (s - c) * (s + c) = 1 := by nlinarith
   have e2 : (Real.sqrt 5 - 2) * (Real.sqrt 5 + 2) = 1 := by nlinarith
-  have hp : 0 < s - m := by linarith
+  have hp : 0 < s - c := by linarith
   have hq : 0 < Real.sqrt 5 - 2 := by
     have : (2 : ℝ) < Real.sqrt 5 := (Real.lt_sqrt (by norm_num)).mpr (by norm_num)
     linarith
-  nlinarith [mul_le_mul_of_nonneg_left (by linarith : Real.sqrt 5 + 2 ≤ s + m) (mul_pos hp hq).le]
+  nlinarith [mul_le_mul_of_nonneg_left (by linarith : Real.sqrt 5 + 2 ≤ s + c) (mul_pos hp hq).le]
 
-lemma Lshift_nonneg (m : ℕ) (hm : 2 ≤ m) : 0 ≤ Lshift m := by
-  have : Fact (1 ≤ m) := ⟨by omega⟩
-  unfold Lshift
-  have := Real.log_le_log zU_pos (zU_le_zU_two m hm)
+lemma LshiftA_nonneg (az : ℕ) (ha : 4 ≤ az) : 0 ≤ LshiftA az := by
+  have : Fact (1 ≤ az) := ⟨by omega⟩
+  unfold LshiftA
+  have := Real.log_le_log zU_pos (zU_le_zU_four az ha)
   linarith
 
 /-! ## The shift lemma -/
 
 /-- **Shift lemma** (PROOF_V §5.2), used as `shift_lemma`. -/
-theorem shift_lemma_proof (C : DualCertU 2) (m : ℕ) [Fact (1 ≤ m)] (hm : 2 ≤ m) {δ : ℝ} (hδ : 0 < δ) :
-    ∃ C' : DualCertU m, C'.Phi ≤ C.Phi - Lshift m / 2 + δ := by
-  set Lsh := Lshift m with hLsh
-  have hL0 : 0 ≤ Lsh := Lshift_nonneg m hm
+theorem shift_lemma_proof (C : DualCertU 4) (az : ℕ) [Fact (1 ≤ az)] (ha : 4 ≤ az) {δ : ℝ} (hδ : 0 < δ) :
+    ∃ C' : DualCertU az, C'.Phi ≤ C.Phi - LshiftA az / 2 + δ := by
+  set Lsh := LshiftA az with hLsh
+  have hL0 : 0 ≤ Lsh := LshiftA_nonneg az ha
   -- the refinement factor
   set r : ℕ := ⌈Lsh / δ⌉₊ + 1 with hr
   have hr0 : 0 < r := Nat.succ_pos _
@@ -119,7 +123,7 @@ theorem shift_lemma_proof (C : DualCertU 2) (m : ℕ) [Fact (1 ≤ m)] (hm : 2 �
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   have hLpos : (0 : ℝ) < C.L := by exact_mod_cast (show 0 < C.L by omega)
   have hr0' : (0 : ℝ) < r := by exact_mod_cast hr0
-  have hlogz : Real.log (zU m) ≤ Real.log (zU 2) := by unfold Lshift at hLsh; linarith
+  have hlogz : Real.log (zU az) ≤ Real.log (zU 4) := by unfold LshiftA at hLsh; linarith
   have hX4 : (4 : ℝ) ≤ C.X := by exact_mod_cast C.hX
   refine ⟨{
     μ := C.μ
@@ -154,16 +158,16 @@ theorem shift_lemma_proof (C : DualCertU 2) (m : ℕ) [Fact (1 ≤ m)] (hm : 2 �
     have hF := C.hF (k / r) hk' x hlo hhi
     have hxk : (k : ℝ) / N ≤ x := hx1
     have hmul : Lsh * ((k : ℝ) / N) ≤ Lsh * x := mul_le_mul_of_nonneg_left hxk hL0
-    rw [vU_shift m x, ← hLsh]
-    change 2 * C.μ.U x + (vU 2 x - Lsh * x) ≤ C.Sk (k / r) - Lsh * (k : ℝ) / N
+    rw [vU_shift az x, ← hLsh]
+    change 2 * C.μ.U x + (vU 4 x - Lsh * x) ≤ C.Sk (k / r) - Lsh * (k : ℝ) / N
     rw [mul_div_assoc]
     linarith
   · -- the second tail: it changes by `−(X − 1)·L ≤ 0`
     have h2 := C.htail2
     have hXL : 0 ≤ ((C.X : ℝ) - 1) * Lsh := mul_nonneg (by linarith) hL0
-    have e : (C.X : ℝ) * Real.log (zU m) = C.X * Real.log (zU 2) - C.X * Lsh := by
-      rw [hLsh]; unfold Lshift; ring
-    change 2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) + C.X * Real.log (zU m) - (C.lam - Lsh) < 0
+    have e : (C.X : ℝ) * Real.log (zU az) = C.X * Real.log (zU 4) - C.X * Lsh := by
+      rw [hLsh]; unfold LshiftA; ring
+    change 2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) + C.X * Real.log (zU az) - (C.lam - Lsh) < 0
     rw [e]
     nlinarith
   · -- the exponent

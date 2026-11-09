@@ -1,9 +1,9 @@
 /-
 # Theorem B′: the analytic bound from a dual certificate (PROOF_U §5; PROOF_V §5.1 for general `z`)
 
-Parametric: `DualCertU mz` is a certificate at `z = zU mz` and `DualCertU.analytic` holds for every `mz ≥ 1` (the
+Parametric: `DualCertU az` is a certificate at `z = zU az` and `DualCertU.analytic` holds for every `az ≥ 1` (the
 `U` suffixes are historical). The proof uses `z` only through `v` and the two tail conditions; the monotonicity of `v`
-(`vU_strictAntiOn`, needs `mz ≥ 2`) is not used.
+(`vU_strictAntiOn`, needs `az ≥ 4`) is not used.
 
 The constant: for densities `0 ≤ ρ ≤ 1` on `[0, ∞)` of mass 1, `J(ρ) = E(ρ) + ∫ v dρ` with the external field
 
@@ -36,7 +36,7 @@ import Chi2U.Analytic.TruncU
 
 namespace Chi2U
 
-variable {mz : ℕ} [Fact (1 ≤ mz)]
+variable {az : ℕ} [Fact (1 ≤ az)]
 
 open Finset Real Filter Polynomial
 
@@ -44,10 +44,10 @@ open Finset Real Filter Polynomial
 noncomputable def PsiU (x : ℝ) : ℝ := (psiF (x + 1) - psiF (x - 1)) / 2
 
 /-- The external field `v(x) = x log z − Ψ(x)`. -/
-noncomputable def vU (mz : ℕ) [Fact (1 ≤ mz)] (x : ℝ) : ℝ := x * Real.log (zU mz) - PsiU x
+noncomputable def vU (az : ℕ) [Fact (1 ≤ az)] (x : ℝ) : ℝ := x * Real.log (zU az) - PsiU x
 
 /-- §5.1: `v` is strictly decreasing on `[−1/2, ∞)` (in fact on `(−0.894, ∞)`). -/
-theorem vU_strictAntiOn (hm : 2 ≤ mz) : StrictAntiOn (vU mz) (Set.Ici (-1 / 2)) :=
+theorem vU_strictAntiOn (hm : 4 ≤ az) : StrictAntiOn (vU az) (Set.Ici (-1 / 2)) :=
   v_strictAntiOn hm
 
 /-- Step 4 (two-sided pole product, Jensen on the odd lattice): for odd `t ≥ 1`,
@@ -66,7 +66,7 @@ theorem abs_deriv_invD_le {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (s : ℕ) :
   exact abs_deriv_invD_le' J s
 
 /-- A dual certificate for Theorem B′. -/
-structure DualCertU (mz : ℕ) [Fact (1 ≤ mz)] where
+structure DualCertU (az : ℕ) [Fact (1 ≤ az)] where
   μ : StepData
   hc1 : ∀ j, μ.c j ≤ 1
   hsupp : μ.a μ.K ≤ 2
@@ -76,9 +76,9 @@ structure DualCertU (mz : ℕ) [Fact (1 ≤ mz)] where
   Sk : ℕ → ℝ
   hL : 1 ≤ L
   hX : 4 ≤ X
-  hF : ∀ k < X * L, ∀ x : ℝ, (k : ℝ) / L ≤ x → x ≤ ((k : ℝ) + 1) / L → 2 * μ.U x + vU mz x ≤ Sk k
-  htail1 : 1 / (X : ℝ) + Real.log (zU mz) < 0
-  htail2 : 2 * Real.log X - Real.log ((X : ℝ) - 1) + X * Real.log (zU mz) - lam < 0
+  hF : ∀ k < X * L, ∀ x : ℝ, (k : ℝ) / L ≤ x → x ≤ ((k : ℝ) + 1) / L → 2 * μ.U x + vU az x ≤ Sk k
+  htail1 : 1 / (X : ℝ) + Real.log (zU az) < 0
+  htail2 : 2 * Real.log X - Real.log ((X : ℝ) - 1) + X * Real.log (zU az) - lam < 0
 
 /-! ### The node weights (independent of the certificate) -/
 
@@ -94,19 +94,19 @@ lemma c1U_nonneg {h : ℕ} (hh : 1 ≤ h) : 0 ≤ c1U h := by
 
 /-- **The node weight bound**: `log b(τ) ≤ h v(τ/h) − (h+1) log h + c₁(h)` at odd `τ`. -/
 lemma log_bN_le {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (s : ℕ) :
-    Real.log (bN mz h (2 * s + 1)) ≤
-      h * vU mz (((2 * s + 1 : ℕ) : ℝ) / h) - ((h : ℝ) + 1) * Real.log h + c1U h := by
+    Real.log (bN az h (2 * s + 1)) ≤
+      h * vU az (((2 * s + 1 : ℕ) : ℝ) / h) - ((h : ℝ) + 1) * Real.log h + c1U h := by
   have hD := log_abs_Dpoly_ge hh h2 s
   have hne : aeval ((2 * s + 1 : ℕ) : ℝ) (Dpoly h) ≠ 0 := by
     obtain ⟨J, rfl⟩ := hh; exact aeval_Dpoly_ne J s
   have hA := two_add_log_ge_one h
-  have hz := zU_pos (mz := mz)
+  have hz := zU_pos (az := az)
   have hh0 : (h : ℝ) ≠ 0 := by exact_mod_cast (by omega : h ≠ 0)
   unfold bN phiU
   rw [Real.log_mul (by positivity) (by linarith), Real.log_mul (by positivity)
     (abs_pos.mpr (inv_ne_zero hne)).ne', Real.log_pow, abs_inv, Real.log_inv]
-  have e : (h : ℝ) * vU mz (((2 * s + 1 : ℕ) : ℝ) / h) =
-      ((2 * s + 1 : ℕ) : ℝ) * Real.log (zU mz) - h * PsiU (((2 * s + 1 : ℕ) : ℝ) / h) := by
+  have e : (h : ℝ) * vU az (((2 * s + 1 : ℕ) : ℝ) / h) =
+      ((2 * s + 1 : ℕ) : ℝ) * Real.log (zU az) - h * PsiU (((2 * s + 1 : ℕ) : ℝ) / h) := by
     unfold vU; rw [mul_sub, ← mul_assoc, mul_div_cancel₀ _ hh0]
   rw [e]
   unfold c1U
@@ -114,7 +114,7 @@ lemma log_bN_le {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (s : ℕ) :
 
 namespace DualCertU
 
-variable (C : DualCertU mz)
+variable (C : DualCertU az)
 
 /-- The excess `Σ_k (S_k − λ)₊`. -/
 noncomputable def σ : ℝ := ∑ k ∈ range (C.X * C.L), max (C.Sk k - C.lam) 0
@@ -130,13 +130,13 @@ lemma PsiU_ge_log {x : ℝ} (hx : 2 ≤ x) : Real.log (x - 1) ≤ PsiU x := by
   have e : (x + 1 - (x - 1)) * Real.log (x - 1) = 2 * Real.log (x - 1) := by ring
   rw [e] at this; linarith
 
-lemma vU_le_tail {x : ℝ} (hx : 2 ≤ x) : vU mz x ≤ x * Real.log (zU mz) - Real.log (x - 1) := by
+lemma vU_le_tail {x : ℝ} (hx : 2 ≤ x) : vU az x ≤ x * Real.log (zU az) - Real.log (x - 1) := by
   have := PsiU_ge_log hx; unfold vU; linarith
 
 /-- The decay rate beyond `X`. -/
 noncomputable def δ : ℝ :=
-  -max (1 / (C.X : ℝ) + Real.log (zU mz))
-    ((2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) + C.X * Real.log (zU mz) - C.lam) / C.X)
+  -max (1 / (C.X : ℝ) + Real.log (zU az))
+    ((2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) + C.X * Real.log (zU az) - C.lam) / C.X)
 
 lemma X_pos : (0 : ℝ) < C.X := by exact_mod_cast (by have := C.hX; omega : 0 < C.X)
 
@@ -144,7 +144,7 @@ lemma X_ge : (4 : ℝ) ≤ C.X := by exact_mod_cast C.hX
 
 lemma δ_pos : 0 < C.δ := by
   unfold δ
-  have h2 : (2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) + C.X * Real.log (zU mz) - C.lam) / C.X < 0 :=
+  have h2 : (2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) + C.X * Real.log (zU az) - C.lam) / C.X < 0 :=
     div_neg_of_neg_of_pos C.htail2 C.X_pos
   have := max_lt C.htail1 h2
   linarith
@@ -152,13 +152,13 @@ lemma δ_pos : 0 < C.δ := by
 lemma σ_nonneg : 0 ≤ C.σ := Finset.sum_nonneg (fun _ _ => le_max_right _ _)
 
 /-- **The tail:** `F(x) − λ ≤ −δx` for `x ≥ X`. -/
-lemma tail {x : ℝ} (hx : (C.X : ℝ) ≤ x) : 2 * C.μ.U x + vU mz x - C.lam ≤ -C.δ * x := by
+lemma tail {x : ℝ} (hx : (C.X : ℝ) ≤ x) : 2 * C.μ.U x + vU az x - C.lam ≤ -C.δ * x := by
   have hX0 := C.X_pos
   have hX4 := C.X_ge
   have hx0 : 0 < x := by linarith
   have hNX : C.μ.a C.μ.K ≤ x := by linarith [C.hsupp]
   have hU := C.μ.U_le_log hNX hx0
-  have hV := vU_le_tail (mz := mz) (show (2 : ℝ) ≤ x by linarith)
+  have hV := vU_le_tail (az := az) (show (2 : ℝ) ≤ x by linarith)
   have hlog : Real.log x ≤ Real.log C.X + x / C.X - 1 := by
     have := Real.log_le_sub_one_of_pos (div_pos hx0 hX0)
     rw [Real.log_div hx0.ne' hX0.ne'] at this
@@ -168,13 +168,13 @@ lemma tail {x : ℝ} (hx : (C.X : ℝ) ≤ x) : 2 * C.μ.U x + vU mz x - C.lam �
       Real.log_le_log (by nlinarith) (by nlinarith)
     rw [Real.log_mul hx0.ne' (by linarith), Real.log_mul hX0.ne' (by linarith)] at h1
     linarith
-  set c1 := 1 / (C.X : ℝ) + Real.log (zU mz)
-  set c2 := (2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) + C.X * Real.log (zU mz) - C.lam) / C.X
+  set c1 := 1 / (C.X : ℝ) + Real.log (zU az)
+  set c2 := (2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) + C.X * Real.log (zU az) - C.lam) / C.X
   have hδ : -C.δ = max c1 c2 := by unfold δ; ring
-  have e1 : c1 * x = x / C.X + x * Real.log (zU mz) := by simp only [c1]; ring
+  have e1 : c1 * x = x / C.X + x * Real.log (zU az) := by simp only [c1]; ring
   have e2 : (C.X : ℝ) * (c2 - c1) = 2 * Real.log C.X - Real.log ((C.X : ℝ) - 1) - C.lam - 1 := by
     simp only [c1, c2]; field_simp; ring
-  have hG : 2 * C.μ.U x + vU mz x - C.lam ≤ C.X * (c2 - c1) + c1 * x := by
+  have hG : 2 * C.μ.U x + vU az x - C.lam ≤ C.X * (c2 - c1) + c1 * x := by
     rw [e1, e2]; linarith
   rw [hδ]
   rcases le_total c1 c2 with h | h
@@ -209,15 +209,15 @@ lemma hS {h : ℕ} (hh : 1 ≤ h) : C.μ.a C.μ.K ≤ ((2 * h : ℕ) : ℝ) / h 
   push_cast; rw [mul_div_assoc, div_self hh0, mul_one]; exact C.hsupp
 
 /-- The node weight function of the certificate (threshold `hλ + h log h`). -/
-noncomputable def g (h M τ : ℕ) : ℝ := gD mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) τ
+noncomputable def g (h M τ : ℕ) : ℝ := gD az h M (C.μ.mref h) (h * C.lam + h * Real.log h) τ
 
 lemma g_le {h M : ℕ} (hh : Even h) (h2 : 2 ≤ h) (hM : 2 * h + 1 ≤ M) (s : ℕ) :
-    C.g h M (2 * s + 1) ≤ h * (2 * C.μ.U (((2 * s + 1 : ℕ) : ℝ) / h) + vU mz (((2 * s + 1 : ℕ) : ℝ) / h) - C.lam) +
+    C.g h M (2 * s + 1) ≤ h * (2 * C.μ.U (((2 * s + 1 : ℕ) : ℝ) / h) + vU az (((2 * s + 1 : ℕ) : ℝ) / h) - C.lam) +
       C.gerr h := by
   have hh1 : 1 ≤ h := by omega
   have hlogh : 0 ≤ Real.log h := Real.log_nonneg (by exact_mod_cast hh1)
   unfold g gD gerr errB
-  have h1 := log_bN_le (mz := mz) hh h2 s
+  have h1 := log_bN_le (az := az) hh h2 s
   have h2 := C.μ.Pm_le hh1 (C.hS hh1) hM (2 * s + 1)
   linarith
 
@@ -230,11 +230,11 @@ lemma near_le {h M J : ℕ} (hh : Even h) (h2 : 2 ≤ h) (hM : 2 * h + 1 ≤ M) 
   have hh0 : (0 : ℝ) < h := by exact_mod_cast (by omega : 0 < h)
   have hge := C.gerr_nonneg hh1
   set Fx : ℕ → ℝ := fun r => max (2 * C.μ.U (((2 * r + 1 : ℕ) : ℝ) / h) +
-    vU mz (((2 * r + 1 : ℕ) : ℝ) / h) - C.lam) 0 with hFx
+    vU az (((2 * r + 1 : ℕ) : ℝ) / h) - C.lam) 0 with hFx
   have hnode : ∀ r ∈ range (C.X * J), max (C.g h M (2 * r + 1)) 0 ≤ h * Fx r + C.gerr h := by
     intro r _
     have hg := C.g_le hh h2 hM r
-    have hmax : (h : ℝ) * (2 * C.μ.U (((2 * r + 1 : ℕ) : ℝ) / h) + vU mz (((2 * r + 1 : ℕ) : ℝ) / h) - C.lam) ≤
+    have hmax : (h : ℝ) * (2 * C.μ.U (((2 * r + 1 : ℕ) : ℝ) / h) + vU az (((2 * r + 1 : ℕ) : ℝ) / h) - C.lam) ≤
         h * Fx r := mul_le_mul_of_nonneg_left (le_max_left _ _) hh0.le
     have hFx0 : 0 ≤ (h : ℝ) * Fx r := mul_nonneg hh0.le (le_max_right _ _)
     exact max_le (by linarith) (by linarith)
@@ -275,7 +275,7 @@ lemma far_node {h M J : ℕ} (hh : Even h) (h2 : 2 ≤ h) (hM : 2 * h + 1 ≤ M)
       omega
     exact_mod_cast this
   have ht := C.tail hx
-  have ht' : (h : ℝ) * (2 * C.μ.U (((2 * s + 1 : ℕ) : ℝ) / h) + vU mz (((2 * s + 1 : ℕ) : ℝ) / h) - C.lam) ≤
+  have ht' : (h : ℝ) * (2 * C.μ.U (((2 * s + 1 : ℕ) : ℝ) / h) + vU az (((2 * s + 1 : ℕ) : ℝ) / h) - C.lam) ≤
       -C.δ * ((s : ℝ) + 1) := by
     have := mul_le_mul_of_nonneg_left ht hh0.le
     have e : (h : ℝ) * (-C.δ * (((2 * s + 1 : ℕ) : ℝ) / h)) = -C.δ * ((2 * s + 1 : ℕ) : ℝ) := by
@@ -289,7 +289,7 @@ lemma far_node {h M J : ℕ} (hh : Even h) (h2 : 2 ≤ h) (hM : 2 * h + 1 ≤ M)
         rw [Real.exp_add, ← Real.exp_nat_mul]; ring_nf
 
 lemma far_le {h T J : ℕ} (hh : Even h) (h2 : 2 ≤ h) (hJ : h = J + J) :
-    ∑ k : Fin T × Fin 3, zf mz h (2 * T + 2 * h + 1) (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k ≤
+    ∑ k : Fin T × Fin 3, zf az h (2 * T + 2 * h + 1) (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k ≤
       3 * ((C.X * J : ℕ) + C.Cf * Real.exp (C.gerr h)) := by
   have hδ := C.δ_pos
   set M := 2 * T + 2 * h + 1
@@ -301,7 +301,7 @@ lemma far_le {h T J : ℕ} (hh : Even h) (h2 : 2 ≤ h) (hJ : h = J + J) :
   have hCg0 : 0 ≤ Cg := (Real.exp_pos _).le
   set f : ℕ → ℝ := fun t => if t < C.X * J then 1 else Real.exp (C.g h M (2 * t + 1)) with hf
   have hzf : ∀ k : Fin T × Fin 3,
-      zf mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k = f k.1 := by
+      zf az h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k = f k.1 := by
     intro k; simp only [zf, tnode, hf]; rfl
   rw [Fintype.sum_prod_type]
   simp_rw [hzf]
@@ -338,7 +338,7 @@ lemma msum {h M : ℕ} (hh : 1 ≤ h) (hM : 2 * h + 1 ≤ M) : ∑ s ∈ range M
   exact C.μ.sum_mref_cells hh (C.hS hh)
 
 lemma Cd_le {h M : ℕ} (hh : 1 ≤ h) (hM : 2 * h + 1 ≤ M) :
-    Cd mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) ≤
+    Cd az h M (C.μ.mref h) (h * C.lam + h * Real.log h) ≤
       (h : ℝ) ^ 2 * (C.lam - C.μ.E) + 4 * h * Real.log (((2 * h : ℕ) : ℝ) + 1) + 8 * h * Real.log 2 := by
   have hh0 : (0 : ℝ) < h := by exact_mod_cast (by omega : 0 < h)
   have hE := C.μ.Em_ge hh (C.hS hh) hM
@@ -372,7 +372,7 @@ noncomputable def Rem (h : ℕ) : ℝ :=
 
 /-- **The truncated determinants, uniformly in `T`.** -/
 theorem det_bound {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (T : ℕ) :
-    |(HT mz h T).det| ≤ Real.exp (C.Phi * (h : ℝ) ^ 2 + C.Rem h) := by
+    |(HT az h T).det| ≤ Real.exp (C.Phi * (h : ℝ) ^ 2 + C.Rem h) := by
   obtain ⟨J, hJ⟩ := hh
   have hh1 : 1 ≤ h := by omega
   have hh0 : (0 : ℝ) < h := by exact_mod_cast (by omega : 0 < h)
@@ -380,7 +380,7 @@ theorem det_bound {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (T : ℕ) :
   have hM : 2 * h + 1 ≤ M := by omega
   have hTM : 2 * T < M := by omega
   have hmsum := C.msum hh1 hM
-  have hdual := abs_det_HT_le_dual (mz := mz) ⟨J, hJ⟩ h2 hTM (C.μ.mref h) hmsum (h * C.lam + h * Real.log h) (C.X * J)
+  have hdual := abs_det_HT_le_dual (az := az) ⟨J, hJ⟩ h2 hTM (C.μ.mref h) hmsum (h * C.lam + h * Real.log h) (C.X * J)
   -- the pieces
   have hfar := C.far_le (T := T) ⟨J, hJ⟩ h2 hJ
   have hnear := C.near_le ⟨J, hJ⟩ h2 hM hJ
@@ -394,27 +394,27 @@ theorem det_bound {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (T : ℕ) :
   have hXJ : ((C.X * J : ℕ) : ℝ) ≤ (C.X : ℝ) * h := by
     have : C.X * J ≤ C.X * h := Nat.mul_le_mul_left _ (by omega)
     exact_mod_cast this
-  have hfar' : ∑ k : Fin T × Fin 3, zf mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k ≤ C.Zb h := by
+  have hfar' : ∑ k : Fin T × Fin 3, zf az h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k ≤ C.Zb h := by
     refine hfar.trans ?_
     unfold Zb; linarith
-  have hzf0 : 0 ≤ ∑ k : Fin T × Fin 3, zf mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k :=
+  have hzf0 : 0 ≤ ∑ k : Fin T × Fin 3, zf az h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k :=
     Finset.sum_nonneg (fun k _ => by unfold zf; split_ifs <;> positivity)
-  have hpow : (∑ k : Fin T × Fin 3, zf mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k) ^ h ≤
+  have hpow : (∑ k : Fin T × Fin 3, zf az h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k) ^ h ≤
       C.Zb h ^ h := pow_le_pow_left₀ hzf0 hfar' h
   refine hdual.trans ?_
-  generalize hE1 : Cd mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) +
-    2 * ∑ r ∈ range (C.X * J), max (gD mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) (2 * r + 1)) 0 = E1
+  generalize hE1 : Cd az h M (C.μ.mref h) (h * C.lam + h * Real.log h) +
+    2 * ∑ r ∈ range (C.X * J), max (gD az h M (C.μ.mref h) (h * C.lam + h * Real.log h) (2 * r + 1)) 0 = E1
   have hstep : ((h.factorial : ℝ))⁻¹ * Kslot h ^ 2 * (Real.exp E1 *
-      (∑ k : Fin T × Fin 3, zf mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k) ^ h) ≤
+      (∑ k : Fin T × Fin 3, zf az h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k) ^ h) ≤
       Real.exp (Real.log (Kslot h ^ 2) + E1 + h * Real.log (C.Zb h)) := by
     calc ((h.factorial : ℝ))⁻¹ * Kslot h ^ 2 * (Real.exp E1 *
-          (∑ k : Fin T × Fin 3, zf mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k) ^ h)
+          (∑ k : Fin T × Fin 3, zf az h M (C.μ.mref h) (h * C.lam + h * Real.log h) (C.X * J) k) ^ h)
         ≤ 1 * Kslot h ^ 2 * (Real.exp E1 * C.Zb h ^ h) := by gcongr
       _ = _ := by
           rw [Real.exp_add, Real.exp_add, Real.exp_log hKpos, Real.exp_nat_mul, Real.exp_log hZ]; ring
   refine hstep.trans (Real.exp_le_exp.mpr ?_)
   -- the exponent
-  have hnear' : ∑ r ∈ range (C.X * J), max (gD mz h M (C.μ.mref h) (h * C.lam + h * Real.log h) (2 * r + 1)) 0 ≤
+  have hnear' : ∑ r ∈ range (C.X * J), max (gD az h M (C.μ.mref h) (h * C.lam + h * Real.log h) (2 * r + 1)) 0 ≤
       h * (((h : ℝ) / (2 * C.L) + 1) * C.σ) + (C.X * J : ℕ) * C.gerr h := hnear
   have hL0 : (0 : ℝ) < C.L := by exact_mod_cast (by have := C.hL; omega : 0 < C.L)
   have eΦ : C.Phi * (h : ℝ) ^ 2 = (h : ℝ) ^ 2 * (C.lam - C.μ.E) + 2 * (h * ((h : ℝ) / (2 * C.L) * C.σ)) := by
@@ -486,7 +486,7 @@ lemma Rem_le : ∃ a b c : ℝ, ∀ h : ℕ, 1 ≤ h → C.Rem h ≤ a * h * Rea
 
 /-- **Theorem B′.** -/
 theorem analytic : ∀ ε > 0, ∀ᶠ h : ℕ in atTop, Even h →
-    |aeval (TU mz) (Delta mz h)| ≤ Real.exp ((C.Phi + ε) * (h : ℝ) ^ 2) := by
+    |aeval (TU az) (Delta az h)| ≤ Real.exp ((C.Phi + ε) * (h : ℝ) ^ 2) := by
   intro ε hε
   obtain ⟨a, b, c, hR⟩ := C.Rem_le
   filter_upwards [eventually_small a b c ε hε, eventually_ge_atTop 2] with h hsmall hh heven

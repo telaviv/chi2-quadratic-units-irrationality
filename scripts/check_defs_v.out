@@ -1,4 +1,5 @@
-Smom == odd_moments (n <= 60) and Lean Delta == vlib.delta_poly (h = 2..8) for m = 3, 4, 6
+Smom == odd_moments (n <= 60) and Lean Delta (trace 2m) == vlib.delta_poly (h = 2..8) for m = 3, 4, 6
+odd trace az=5 (d = 29/4): Smom == odd_moments (n <= 60); Lean Delta is rational and == vodd.delta_poly (h = 2..8); deg Delta_8 = 8
 lemma10nu m=1 (nu=1): n2 <= n2V at h=2..16: 2<=6 7<=13 15<=22 22<=33 30<=46 41<=61 50<=78 62<=97
 lemma10nu m=3 (nu=1): n2 <= n2V at h=2..16: 2<=6 7<=13 15<=22 22<=33 30<=46 41<=61 50<=78 62<=97
 lemma10nu m=4 (nu=3): n2 <= n2V at h=2..16: 2<=10 6<=25 12<=40 23<=65 37<=86 54<=109 73<=134 94<=177

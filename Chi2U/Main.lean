@@ -6,7 +6,7 @@
 * `β = −27/20` (Theorem B′ with a certificate `Φ < −27/20`: `exists_certU`);
 * margin `4/3 − 27/20 = −1/60 < 0`;
 * nonvanishing along `h = 3ℓ − 1` (Lemma P′: `nonvan_frequently`).
-The machine is the `mz = 2` instance of the parametric one (`Field.lean`: `Qd 2 = ℚ(√5)`, `zU_two`).
+The machine is the `az = 4` instance of the parametric one (`Field.lean`: `Qd 4 = ℚ(√5)`, `zU_four`).
 -/
 import Chi2U.MainCond
 import Chi2U.Statement
@@ -39,6 +39,6 @@ noncomputable def boundsU : MachineBoundsU where
 theorem chi2_sqrt5_sub_two_irrational : TheoremU := by
   have := irrational_of_boundsU boundsU
   unfold TU at this
-  rwa [zU_two] at this
+  rwa [zU_four] at this
 
 end Chi2U
