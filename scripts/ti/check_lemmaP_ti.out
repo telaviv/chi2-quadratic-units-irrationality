@@ -1,0 +1,13 @@
+n=8 l=7 (split): B, L, P, sgn, G (block form mod l), S all passed
+n=4 l=7 (inert): B, L, P, sgn, G (block form mod l), S all passed
+n=5 l=7 (ramified): B, L, P, sgn, G (block form mod l), S all passed
+n=9 l=7 (ramified): B, L, P, sgn, G (block form mod l), S all passed
+n=12 l=7 (ramified): B, L, P, sgn, G (block form mod l), S all passed
+n=3 l=7 (inert): B, L, P, sgn, G (block form mod l), S all passed
+n=8 l=11 (split): B, L, P, sgn, G (block form mod l), S all passed
+n=4 l=11 (split): B, L, P, sgn, G (block form mod l), S all passed
+n=5 l=11 (inert): B, L, P, sgn, G (block form mod l), S all passed
+n=3 l=11 (split): B, L, P, sgn, G (block form mod l), S all passed
+n=10 l=13 (inert): B, L, P, sgn, G (block form mod l), S all passed
+n=5 l=13 (inert): B, L, P, sgn, G (block form mod l), S all passed
+ALL CHECKS PASSED
