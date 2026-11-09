@@ -70,8 +70,8 @@ noncomputable def LshiftT (n : ℕ) : ℝ := Real.log (zU 4) - Real.log (zT n)
 /-- The analytic constant from the shift lemma: `Φ_L − L(n)/2`. -/
 noncomputable def betaT (n : ℕ) : ℝ := V.PhiL - LshiftT n / 2
 
-/-- The exception set of the margin, as a predicate on `n ≥ 5`: even `n ∈ {6, 10, 14, 18, 30}`, odd `n ≤ 69`, or
-`n ∈ EOddI`. -/
+/-- The traces covered by the margin: `n ≥ 5` outside the exception set (even `n ∈ {6, 10, 14, 18, 30}`, odd `n ≤ 69`,
+and `n ∈ EOddI`). -/
 def marginOK (n : ℕ) : Prop :=
   5 ≤ n ∧ n ∉ ({6, 10, 14, 18, 30} : Finset ℕ) ∧ ¬ (n % 2 = 1 ∧ n ≤ 69) ∧ n ∉ EOddI
 

@@ -31,7 +31,12 @@ namespace Ti
 
 open Polynomial Filter Finset
 
-/-! ## The ingredients (stubs; each is proved as `<name>_proof` in its own file) -/
+/-! ## The ingredients
+
+Each is a one-line call to `<name>_proof`: `padicNorm_Delta_odd` in `Ti/OddExp.lean`, `lemmaS` in `Ti/LemmaS.lean`,
+`lemma10nu` in `Ti/Lemma10nu.lean`, `lemma10_0` in `Ti/TenZero.lean`, `lemmaP_n` in `Ti/NonVan.lean` (blocks in
+`Ti/NonVan/*`), `analytic_T` in `Ti/Analytic.lean` (Theorem B′ and the shift lemma in `Ti/Analytic/*`), `margin_Vi` in
+`Ti/Margin.lean`. -/
 
 /-- **Generic odd primes** (PROOF_V §3.1 verbatim, Lemmas 8′, 8A′, 9′ and the row claim): for an odd prime `p ∤ n`,
 `|coeff|_p ≤ p^{eOdd h p}`. The χ₂ version is `Chi2U.padicNorm_Delta_odd` (`Arith/OddExp`). -/
@@ -56,7 +61,10 @@ theorem lemma10_0 (n : ℕ) [Fact (3 ≤ n)] (hn : Odd n) {h : ℕ} (hh : Even h
     padicNorm 2 ((Delta n h).coeff k) ≤ (2 : ℚ) ^ VOdd.n2O h :=
   lemma10_0_proof n hn hh h2 k
 
-/-- **Lemma P′_n** (PROOF_TI2 §4). The χ₂ version is `Chi2U.V.lemmaP_m`. -/
+/-- **Lemma P′_n** (PROOF_TI2 §4). The χ₂ version is `Chi2U.V.lemmaP_m`. The hypothesis `¬ ℓ ∣ n * (n ^ 2 - 4)`
+uses truncated subtraction in `ℕ`, which equals `n² − 4` since `n ≥ 3`. The condition `ℓ ∤ n² − 4` goes beyond the
+paper's `ℓ ∤ n` and is not used by the proof (`Ti/NonVan.lean`); infinitely many primes `ℓ` remain
+(`nonvan_frequently_T`). -/
 theorem lemmaP_n (n : ℕ) [Fact (3 ≤ n)] {ℓ : ℕ} [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (hℓn : ¬ ℓ ∣ n * (n ^ 2 - 4))
     (a : ℤ) {b : ℕ} (hb : 0 < b) (hb2 : ¬ ℓ ^ 2 ∣ b) : (Delta n (3 * ℓ - 1)).eval ((a : ℚ) / b) ≠ 0 :=
   lemmaP_n_proof n hℓ hℓn a hb hb2

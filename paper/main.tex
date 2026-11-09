@@ -18,6 +18,9 @@
 % in ext_checks/. Backup of the text before this revision: old_U_only/main_before_ext.tex.
 % Revision of 2026-11-09: Theorem V_odd is formalised in Lean (lean_chi2u, Chi2U.VOdd.theoremVOdd, standard axioms);
 % abstract, Section 1, Section 8 and the Lean section updated (fix R3 of lean_chi2u/FIDELITY_REFEREE_VODD.md).
+% Revision of 2026-11-09 (later): Theorem V_i is formalised in Lean (lean_chi2u, Chi2U.Ti.theoremVi, standard axioms);
+% abstract, Section 1, Section 8, the acknowledgements and the Lean section updated (fix R4 of
+% lean_chi2u/FIDELITY_REFEREE_VI.md). Backup of the text before this revision: old_U_only/main_before_vi.tex.
 % ---------------------------------------------------------------------------
 
 % ---------------------------------------------------------------------------
@@ -104,8 +107,8 @@ With one new $2$-adic lemma the method extends to the units $(\sqrt{a^2+4}-a)/2$
 $\chi_2(\eps)\notin\QQ$ for every unit $\eps\in(0,1)$ of norm $-1$ of a real quadratic field outside an explicit set of
 $47$ units; through an identity that turns the $\chi_4$-twisted machine at $z$ into the machine above at $iz$, it also
 shows that the inverse tangent integral $\Ti_2(m-\sqrt{m^2-1})$ is irrational for $m\ge4$, $m\notin\{5,7,9,15\}$, and
-likewise $\Ti_2$ at the units of norm $+1$ with odd trace $n\ge71$ outside $17$ values. The extension to odd $a$ is
-also formalised in Lean, with the same three axioms; the extension to $\Ti_2$ is not formalised.
+likewise $\Ti_2$ at the units of norm $+1$ with odd trace $n\ge71$ outside $17$ values. Both extensions are also
+formalised in Lean, with the same three axioms.
 We also prove a two-point statement at units of a family of biquadratic fields: for
 $n\in\{730,740,750,760,800,1000\}$, either $\chi_2(z)+\chi_2(w)\notin\QQ$ or $\chi_2(z)-\chi_2(w)\notin\sqrt{n^2-16}\,\QQ$,
 where $z>w$ are the two roots in $(0,1)$ of $X^4+nX^3+2X^2-nX+1$. This two-point result is computer-assisted and not
@@ -162,7 +165,8 @@ which follows from Landen's identity
 $\chi_2\bigl(\tfrac{1-x}{1+x}\bigr)+\chi_2(x)=\tfrac{\pi^2}{8}+\tfrac12\log x\,\log\tfrac{1+x}{1-x}$
 \cite[App.~A.2.1, (24)]{Lewin1981} at $x=\sqrt5-2=\varphi^{-3}$, for which $(1-x)/(1+x)=\varphi^{-1}$, together with the
 classical value $\chi_2(\varphi^{-1})=\pi^2/12-\frac34\log^2\varphi$. Theorem~\ref{thm:V}, Corollary~\ref{thm:U} and the identity
-\eqref{eq:closedform} are formalised in Lean (Section~\ref{sec:lean}), and so is Theorem~\ref{thm:Vodd} below.
+\eqref{eq:closedform} are formalised in Lean (Section~\ref{sec:lean}), and so are Theorems~\ref{thm:Vodd}
+and~\ref{thm:Vi} below.
 
 Theorem~\ref{thm:V} covers every even $m\ge2$ and every odd $m\ge11$ except $15$. For example,
 \[
@@ -231,9 +235,10 @@ $+1$ of a real quadratic field.
 
 As for Theorem~\ref{thm:V}, the criterion of \cite{DHK2022b} gives stronger conclusions far out, for $a\ge8\,692\,474$
 and for $n\gtrsim8.69\cdot10^6$ (Section~\ref{sec:closed-ext}). Each extension was checked by one AI referee.
-Theorem~\ref{thm:Vodd} is formalised in Lean, with only Lean's three standard axioms (Section~\ref{sec:lean}), so with
-Theorem~\ref{thm:V} every unit covered by Corollary~\ref{cor:normminus} is covered by a formal statement; the corollary
-itself is not stated in Lean. Theorem~\ref{thm:Vi} is not formalised.
+Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} are formalised in Lean, with only Lean's three standard axioms
+(Section~\ref{sec:lean}). So, with Theorem~\ref{thm:V}, every unit covered by Corollary~\ref{cor:normminus}, and every
+unit of norm $+1$ outside the $57$ just mentioned, is covered by a formal statement; the corollary and the statement on
+units of norm $+1$ are not themselves stated in Lean.
 
 \subsection{Context}\label{sec:context}
 % Related work for m = 2 from schanuel/four_exp/strong4/pilot_U/novelty/NOVELTY.md (finished version, Sections 2--5, read
@@ -385,9 +390,10 @@ axioms (\lean{propext}, \lean{Classical.choice}, \lean{Quot.sound}); there is no
 \lean{native\_decide}. The formal proof of the analytic bound follows the lattice-energy route of \cite{Chi2Paper}, not
 the route of Section~\ref{sec:analytic}, and uses its own, coarser certificate; Section~\ref{sec:lean} describes both
 differences. For general $m$ the formal proof transports this certificate by the shift lemma; the exception set is
-the same $\cE$. Theorem~\ref{thm:Vodd} is formalised as well (\lean{Chi2U.VOdd.theoremVOdd}, with the same three
-axioms), with the same exception set $\cE_{\mathrm{odd}}$ but with eleven direct certificates of its own instead of ten.
-Corollary~\ref{cor:normminus} is not stated in Lean, and Theorem~\ref{thm:Vi} is not formalised.
+the same $\cE$. Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} are formalised as well (\lean{Chi2U.VOdd.theoremVOdd} and
+\lean{Chi2U.Ti.theoremVi}, with the same three axioms), with the same exception sets $\cE_{\mathrm{odd}}$ and $\cE_i$:
+Theorem~\ref{thm:Vodd} with eleven direct certificates of its own instead of ten, Theorem~\ref{thm:Vi} with the
+certificate of Corollary~\ref{thm:U} and the shift lemma alone. Corollary~\ref{cor:normminus} is not stated in Lean.
 
 \subsection{Two points}
 Section~\ref{sec:M1} transposes the proof once more, to units of the biquadratic fields $\QQ(z)$ where $z$ is a root of
@@ -1722,7 +1728,7 @@ which reduced the exceptions for $\chi_2$ at odd $a$ from $49$ to $39$, have not
 mentioned after Theorem~\ref{thm:Vodd} is proved; any of them would shrink $\cE_i$.
 
 \subsection{Status of the extensions}
-Theorem~\ref{thm:Vodd} is formalised in Lean (Section~\ref{sec:lean}); Theorem~\ref{thm:Vi} is not. Each was checked by
+Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} are formalised in Lean (Section~\ref{sec:lean}). Each was checked by
 one AI referee at a single gate,
 with code independent of the code used to find the results (Lemma~\ref{lem:tenzero}, the transferred lemmas on exact
 data, the exception sets by independent interval arithmetic, and for Theorem~\ref{thm:Vi} the identity of
@@ -2120,24 +2126,30 @@ We state the limits of Theorem~\ref{thm:M1} explicitly.
 % ===========================================================================
 
 \subsection{What is formalised}
-The Lean project \cite{PiTwoRepo} proves Theorem~\ref{thm:V}, Theorem~\ref{thm:Vodd}, Corollary~\ref{thm:U} and the
-identity \eqref{eq:closedform} in Lean~4 \cite{LeanFour} (version v4.35.0) with Mathlib \cite{Mathlib} (version v4.35.0
+The Lean project \cite{PiTwoRepo} proves Theorem~\ref{thm:V}, Theorem~\ref{thm:Vodd}, Theorem~\ref{thm:Vi},
+Corollary~\ref{thm:U} and the identity \eqref{eq:closedform} in Lean~4 \cite{LeanFour} (version v4.35.0) with Mathlib \cite{Mathlib} (version v4.35.0
 \cite{Mathlib4}). The machine is formalised once, with the trace $a$ of the unit $\alpha_a=(\sqrt{a^2+4}-a)/2$ as a
 parameter, so that Corollary~\ref{thm:U} is the case $a=4$, Theorem~\ref{thm:V} the case $a=2m$ and
 Theorem~\ref{thm:Vodd} the case of odd $a$. Theorem~U was proved first; Theorem~V adds the ingredients that depend on
 $m$: Lemma~\ref{lem:tennu}, Lemma~\ref{lem:S}, the shift lemma, the margins, and Lemma~\ref{lem:P} for every $m$;
-Theorem~\ref{thm:Vodd} adds Lemma~\ref{lem:tenzero}, eleven direct certificates and the margins at odd $a$. The project
-has 95 modules under \lean{Chi2U\slash{}}, with about $23{,}400$ lines, of which about $7{,}800$ are ported verbatim from
+Theorem~\ref{thm:Vodd} adds Lemma~\ref{lem:tenzero}, eleven direct certificates and the margins at odd $a$.
+Theorem~\ref{thm:Vi} uses a copy of the machine with the sign fixed, in the folder \lean{Ti\slash{}} (namespace
+\lean{Chi2U.Ti}, $35$ modules), with the trace $n$ of $\beta_n$ as parameter; no file of the other theorems is changed.
+The project has $130$ modules under \lean{Chi2U\slash{}}, with about $30{,}600$ lines, of which about $7{,}800$ are ported
+verbatim from
 the formalisation of \cite{Chi2Paper} \cite{Chi2Repo}: the prime number theorem, the interval arithmetic, the generic
 analytic files, the criterion and the definition of $\chi_2$. All declarations are in the namespace \lean{Chi2U}. The
 project is available at \url{https://github.com/telaviv/chi2-quadratic-units-irrationality} \cite{PiTwoRepo}, together with
-a copy of this paper and the scripts of Section~\ref{sec:comp}. Theorem~\ref{thm:M1} is not formalised, and neither is
-Theorem~\ref{thm:Vi}: nothing in the Lean project concerns the inverse tangent integral. Corollary~\ref{cor:normminus} is
-not stated in Lean; it follows from the two formal theorems as explained after its statement.
+a copy of this paper and the scripts of Section~\ref{sec:comp}. Theorem~\ref{thm:M1} is not formalised.
+Corollary~\ref{cor:normminus} and the statement on the units of norm $+1$ after Theorem~\ref{thm:Vi} are not stated in
+Lean; the first follows from Theorems~\ref{thm:V} and~\ref{thm:Vodd} as explained after its statement, the second from
+Theorem~\ref{thm:Vi}, since every unit of norm $+1$ in $(0,1)$ is some $\beta_n$. Lewin's Clausen form of
+Theorem~\ref{thm:Vi} is not formalised either.
 
 \subsection{The statement}
 The definitions that the reader has to check are in \lean{Defs.lean}, \lean{Statement.lean},
-\lean{V\slash{}Defs.lean}, \lean{VOdd\slash{}Defs.lean} and \lean{Golden\slash{}Corollary.lean}:
+\lean{V\slash{}Defs.lean}, \lean{VOdd\slash{}Defs.lean}, \lean{Ti\slash{}Defs.lean} and
+\lean{Golden\slash{}Corollary.lean}:
 \begin{quote}\ttfamily\footnotesize
 noncomputable def chi2Term (z : $\mathbb{R}$) (n : $\mathbb{N}$) : $\mathbb{R}$ :=\\
 \hspace*{2em}z \^{} (2 * n + 1) / (2 * (n : $\mathbb{R}$) + 1) \^{} 2\\[2pt]
@@ -2151,6 +2163,20 @@ def VOdd.EOdd : Finset $\mathbb{N}$ := \char123 5, 7, 9, 11, 13, 15, 17, 19, 21,
 def VOdd.TheoremVOdd : Prop := $\forall$ a : $\mathbb{N}$, Odd a $\to$ 5 $\le$ a $\to$ a $\notin$ EOdd $\to$\\
 \hspace*{2em}Irrational (chi2 ((Real.sqrt ((a : $\mathbb{R}$) \^{} 2 + 4) - a) / 2))\\[2pt]
 theorem VOdd.theoremVOdd : VOdd.TheoremVOdd\\[2pt]
+noncomputable def Ti.ti2Term (z : $\mathbb{R}$) (k : $\mathbb{N}$) : $\mathbb{R}$ :=\\
+\hspace*{2em}(-1) \^{} k * z \^{} (2 * k + 1) / (2 * (k : $\mathbb{R}$) + 1) \^{} 2\\[2pt]
+noncomputable def Ti.Ti2 (z : $\mathbb{R}$) : $\mathbb{R}$ :=\\
+\hspace*{2em}$\sum$' k : $\mathbb{N}$, ti2Term z k\\[2pt]
+def Ti.EOddI : Finset $\mathbb{N}$ := \char123 75, 77, 81, 85, 87, 91, 93,\\
+\hspace*{2em}95, 99, 105, 111, 117, 123, 135, 147, 165, 195\char125\\[2pt]
+def Ti.TheoremVi : Prop :=\\
+\hspace*{2em}($\forall$ m : $\mathbb{N}$, 4 $\le$ m $\to$ m $\notin$ (\char123 5, 7, 9, 15\char125{} : Finset $\mathbb{N}$) $\to$\\
+\hspace*{3em}Irrational (Ti2\\
+\hspace*{4em}(m - Real.sqrt ((m : $\mathbb{R}$) \^{} 2 - 1)))) $\wedge$\\
+\hspace*{2em}($\forall$ n : $\mathbb{N}$, Odd n $\to$ 71 $\le$ n $\to$ n $\notin$ EOddI $\to$\\
+\hspace*{3em}Irrational (Ti2\\
+\hspace*{4em}((n - Real.sqrt ((n : $\mathbb{R}$) \^{} 2 - 4)) / 2)))\\[2pt]
+theorem Ti.theoremVi : Ti.TheoremVi\\[2pt]
 def TheoremU : Prop := Irrational (chi2 (Real.sqrt 5 - 2))\\[2pt]
 theorem chi2\_sqrt5\_sub\_two\_irrational : TheoremU\\
 theorem chi2\_sqrt5\_sub\_two\_eq :\\
@@ -2160,12 +2186,18 @@ theorem golden\_irrational' :\\
 \end{quote}
 \lean{V.TheoremV} and \lean{V.theoremV} are in \lean{V\slash{}Defs.lean} and \lean{V\slash{}Interface.lean}, and
 \lean{VOdd.EOdd}, \lean{VOdd.TheoremVOdd} and \lean{VOdd.theoremVOdd} in \lean{VOdd\slash{}Defs.lean} and
-\lean{VOdd\slash{}Interface.lean}; \lean{EOdd} is the set $\cE_{\mathrm{odd}}$ written out. Of the
+\lean{VOdd\slash{}Interface.lean}; \lean{EOdd} is the set $\cE_{\mathrm{odd}}$ written out. \lean{Ti.Ti2},
+\lean{Ti.EOddI}, \lean{Ti.TheoremVi} and \lean{Ti.theoremVi} are in \lean{Ti\slash{}Defs.lean} and
+\lean{Ti\slash{}Interface.lean}; \lean{Ti2} is the inverse tangent integral, it does not depend on \lean{chi2}, and
+\lean{EOddI} is the set $\cE_i$ written out. Of the
 other three theorems, the first is in \lean{Main.lean}, the second in \lean{Golden\slash{}ClosedForm.lean}, the third in
 \lean{Golden\slash{}Corollary.lean}. The definition of $\chi_2$ is identical to that of \cite{Chi2Repo}, and
 \lean{Defs.lean} proves summability for $|z|\le1$, so \lean{chi2 (Real.sqrt 5 - 2)} and, since
 $0<\sqrt{m^2+1}-m<1$ and $0<(\sqrt{a^2+4}-a)/2<1$, the values of \lean{chi2} in \lean{V.TheoremV} and
-\lean{VOdd.TheoremVOdd} are the genuine sums of the series.
+\lean{VOdd.TheoremVOdd} are the genuine sums of the series. Likewise \lean{Ti\slash{}PoleExpansion.lean} proves
+summability of the series of \lean{Ti2} for $|z|\le1$, and $0<\beta_n<1$, so the values of \lean{Ti2} in
+\lean{Ti.TheoremVi} are the genuine sums. The internal point \lean{zT n} $=n/2-\sqrt{(n/2)^2-1}$ is rewritten into the
+forms of the statement by proved lemmas.
 \lean{goldenRatio} is Mathlib's $(1+\sqrt5)/2$ and \lean{Irrational} is Mathlib's predicate $x\notin\QQ$. The identity
 \eqref{eq:closedform} is proved from Landen's identity for $\chi_2$, Euler's reflection formula and Landen's identity for
 $\Li_2$ (\lean{Golden\slash{}Landen.lean}, \lean{Golden\slash{}Dilog.lean}), so the golden-ratio form is not a separate
@@ -2176,6 +2208,8 @@ The command \lean{lake env lean Axioms.lean} prints, among its other lines,
 'Chi2U.V.theoremV' depends on axioms:\\
 \hspace*{2em}[propext, Classical.choice, Quot.sound]\\
 'Chi2U.VOdd.theoremVOdd' depends on axioms:\\
+\hspace*{2em}[propext, Classical.choice, Quot.sound]\\
+'Chi2U.Ti.theoremVi' depends on axioms:\\
 \hspace*{2em}[propext, Classical.choice, Quot.sound]\\
 'Chi2U.chi2\_sqrt5\_sub\_two\_irrational' depends on axioms:\\
 \hspace*{2em}[propext, Classical.choice, Quot.sound]\\
@@ -2190,7 +2224,9 @@ These are Lean's three standard axioms. The development contains no \lean{sorry}
 Table~\ref{tab:lean} lists the main formal counterparts. Paths are relative to \lean{Chi2U\slash{}}. The machine files
 take the trace $a$ as a parameter, called \lean{az} there (\lean{Qd az} $=$ \lean{QuadraticAlgebra} $\QQ$
 $((a/2)^2+1)$ $0$, \lean{zK az}, \lean{Delta az h}); Theorem~\ref{thm:V} uses $a=2m$, and the entries marked $m=2$ are
-used only for Corollary~\ref{thm:U}.
+used only for Corollary~\ref{thm:U}. The files of Theorem~\ref{thm:Vi} take the trace $n$ of $\beta_n$ as a parameter
+(\lean{Qt n} $=$ \lean{QuadraticAlgebra} $\QQ$ $((n/2)^2-1)$ $0$, \lean{zK n}, \lean{Delta n h}, in the namespace
+\lean{Chi2U.Ti}); most of their declarations have the names of their $\chi_2$ counterparts.
 
 \begin{table}[ht]
 \centering\small
@@ -2221,6 +2257,14 @@ Lemma~\ref{lem:tenzero} & \lean{lemma10\_0\_proof} (\lean{VOdd\slash{}TenZero});
 Table~\ref{tab:certodd} (own values) & \lean{exists\_certOdd\_proof} (\lean{VOdd\slash{}CertOdd}); data \lean{VOdd\slash{}CertData\slash{}A$a$} for $11$ values of $a$\\
 Prop.~\ref{prop:marginsodd} (``if'' part) & \lean{margin\_VOdd\_proof} (\lean{VOdd\slash{}Margin})\\
 proof of Thm.~\ref{thm:Vodd} & \lean{denO0\_int}, \lean{log\_denO\_le}, \lean{exists\_boundsO}, \lean{theoremVOdd} (\lean{VOdd\slash{}Interface})\\
+\midrule
+$\Ti_2$, $\KK$, $\beta_n$, $\sigma$ & \lean{Ti2} (\lean{Ti\slash{}Defs}); \lean{Qt}, \lean{zK}, \lean{sig}, \lean{emb}, \lean{zT} (\lean{Ti\slash{}Field})\\
+Lemma~\ref{lem:identity} (not used) & the $\chi_4$ machine directly: \lean{Ti\slash{}Machine}, \lean{Ti\slash{}LemmaR}; \lean{aeval\_Ti2\_Delta} (\lean{Ti\slash{}PoleExpansion})\\
+valuations, Section~\ref{sec:Ti2} & \lean{padicNorm\_Delta\_odd\_proof} (\lean{Ti\slash{}OddExp}); \lean{lemmaS\_proof} (\lean{Ti\slash{}LemmaS}); \lean{lemma10nu\_proof} (\lean{Ti\slash{}Lemma10nu}); \lean{lemma10\_0\_proof} (\lean{Ti\slash{}TenZero})\\
+size, Section~\ref{sec:Ti2} & \lean{DualCertT}, \lean{DualCertT.analytic} (\lean{Ti\slash{}Analytic\slash{}TheoremBT}); \lean{shift\_lemma\_proof} (\lean{Ti\slash{}Analytic\slash{}ShiftT}); \lean{analytic\_T\_proof} (\lean{Ti\slash{}Analytic})\\
+Lemma~\ref{lem:Pti} & \lean{lemmaP\_n\_proof} (\lean{Ti\slash{}NonVan}, \lean{Ti\slash{}NonVan\slash{}*}); \lean{nonvan\_frequently\_T} (\lean{Ti\slash{}Interface})\\
+Prop.~\ref{prop:marginsti} (``if'' part) & \lean{margin\_Vi\_proof} (\lean{Ti\slash{}Margin})\\
+proof of Thm.~\ref{thm:Vi} & \lean{MachineBoundsT}, \lean{irrational\_of\_boundsT} (\lean{Ti\slash{}MainCond}); \lean{exists\_boundsT}, \lean{theoremVi} (\lean{Ti\slash{}Interface})\\
 \bottomrule
 \end{tabular}
 \caption{Formal counterparts of the main steps.}\label{tab:lean}
@@ -2306,6 +2350,31 @@ The formal proof establishes what the endgame needs, and in several places it ta
   part is not needed for Theorem~\ref{thm:Vodd}.
 \item \emph{Nonvanishing at odd $a$} uses \lean{lemmaP\_m} with $\ell\ge7$, $\ell\nmid a(a^2+4)$, along $h=3\ell-1$,
   instead of the set $\mathcal H$ of Section~\ref{sec:odd-a} with $\ell\ge37$; infinitely many $\ell$ remain.
+\item \emph{Theorem~\ref{thm:Vi}: a copy of the machine.} Lemma~\ref{lem:identity} is not used. The $\chi_4$-twisted
+  machine is defined directly over $\KK=\QQ(\sqrt{(n/2)^2-1})$ with the weights $\chi_4(t)\beta^t$, i.e.\ with $y=-\beta^2$,
+  $1-y=n\beta$ and $\sigma(\beta)=1/\beta$, by a copy of the files of the $\chi_2$ machine with the sign fixed; each copied
+  file names its original. Lemma~\ref{lem:R}, Corollary~\ref{cor:R}, the valuation lemmas and Lemma~\ref{lem:Pti} are
+  proved again for this machine, with the proofs of the $\chi_2$ files and the departures listed above (Lemma~$8'$,
+  Lemmas~$10_\nu$ and~$10_0$, Lemma~P$'$); the signs $\chi_4(t)=\pm1$ are units and do not change any bound. A sign
+  parameter in the shared files would have touched every proof that unfolds a weight.
+\item \emph{The prime $2$ at even $n$.} The valuations are taken in the order $\ZZ_{(2)}[\sqrt{d}]$, $d=(n/2)^2-1$,
+  which is not the maximal order when $n\equiv2\bmod4$. Every bound is obtained from rational powers of $2$ times
+  elements of this order, so it is a valid lower bound for the valuation at the prime above $2$.
+\item \emph{Lemma P$'_n$} is stated for primes $\ell\ge7$ with $\ell\nmid n(n^2-4)$, as \lean{lemmaP\_m} for odd $a$,
+  and used along $h=3\ell-1$ instead of the set $\mathcal H$ of Section~\ref{sec:Ti2}; the proof uses only $\ell\nmid n$,
+  and infinitely many $\ell$ remain. It is read in $\KK$, in a residue field at a prime above $\ell$, so no case split by
+  the Frobenius class of $\ell$ is needed.
+\item \emph{The analytic constant for Theorem~\ref{thm:Vi}.} The formal Theorem~B$'$ above holds at $\beta_n$ with the
+  signed weights, since only $|\chi_4(t)\beta^t|=\beta^t$ enters (\lean{DualCertT.analytic}). A copy of the shift lemma
+  moves the formal certificate of Corollary~\ref{thm:U} to $\beta_n$, so the formal analytic constant is
+  $\Phi_L-\frac12L_i(n)+\delta$ for any $\delta>0$. No further certificate is needed.
+\item \emph{The margins of Theorem~\ref{thm:Vi}} are proved with $\Phi_L$, which is $0.0053$ weaker than $\Phi_U$; the
+  exception set is still exactly that of Proposition~\ref{prop:marginsti}. The thinnest formal margins are at $n=115$,
+  about $-0.00213$ (against $-0.007466$), and $n=71$, about $-0.0025$ (against $-0.007838$). Instead of the uniform tail
+  and the Arb table for $n\le20\,000$, the formal proof uses the sharper bound $-\log\beta_n\ge\log n-1/(n-1)^2$, three
+  closed forms, negative for $n\equiv0\bmod4$ with $n\ge8$, for $n\equiv2\bmod4$ with $n\ge138$ and for odd $n\ge275$,
+  and checks the remaining $113$ values of $n$ ($28$ with $n\equiv2\bmod4$ and $85$ odd) one by one, with rational
+  enclosures of the logarithms. Only the ``if'' part of Proposition~\ref{prop:marginsti} is formalised.
 \end{itemize}
 
 \subsection{How the certificates are checked}
@@ -2317,31 +2386,35 @@ trusted: every check is a decidable statement about the rational data, proved by
 Corollary~\ref{thm:U} these are the $160$ grid cells in $4$ chunks of $40$, the energy bound, the tail and the enclosure
 of $\log z$ (\lean{Cert\slash{}DataU.lean}), together with a table of $1004$ logarithm enclosures
 (\lean{Cert\slash{}LogTab.lean}) shared with the certificates at odd $a$. The dyadic enclosure of $\log2$ used by the
-table, and the logarithm enclosures in the finite cases of the margins at odd $a$ (\lean{VOdd\slash{}Margin.lean}), are
-also checked by \lean{decide +kernel}. A wrong value would make the build fail but
+table, and the logarithm enclosures in the finite cases of the margins at odd $a$ (\lean{VOdd\slash{}Margin.lean}) and
+of Theorem~\ref{thm:Vi} (\lean{Ti\slash{}Margin.lean}, generated by \lean{scripts\slash{}ti\slash{}margin\_ti\_cases.py}),
+are also checked by \lean{decide +kernel}. Theorem~\ref{thm:Vi} uses no certificate of its own. A wrong value would make the build fail but
 could not make a false statement provable.
 
 \subsection{Cost}
 The kernel check of the certificate of Corollary~\ref{thm:U}, with the logarithm table, takes about $71$ seconds. A build
 of a fresh clone of the repository, with Mathlib's prebuilt cache and at most four parallel Lean processes, took
 $9$ minutes $35$ seconds ($9110$ jobs, no errors) on a Windows~11 desktop with $32$ logical processors and $31.7$\,GB of
-RAM, before the files for general $m$ and for odd $a$ were added; the complete project has $9143$ jobs, and
+RAM, before the files for general $m$, for odd $a$ and for $\Ti_2$ were added; the complete project has $9178$ jobs, and
 \lean{Axioms.lean} reports only the three standard axioms.
 
 \subsection{What has to be trusted}
 Beyond the Lean kernel and the three axioms, the reader has to trust that the definitions displayed above express
-Theorem~\ref{thm:V}, Theorem~\ref{thm:Vodd} and Corollary~\ref{thm:U}, and the Mathlib definitions they use (real
+Theorem~\ref{thm:V}, Theorem~\ref{thm:Vodd}, Theorem~\ref{thm:Vi} and Corollary~\ref{thm:U}, and the Mathlib
+definitions they use (real
 numbers, \lean{tsum}, \lean{Real.sqrt}, \lean{Real.log}, \lean{Real.pi}, \lean{goldenRatio}, \lean{Irrational},
 \lean{Odd}, \lean{Finset}). Nothing else, in particular no numerical data and no generating script, needs to be trusted.
-To avoid trusting the elaborator's handling of the environment, every declaration of all $95$ project modules was
+To avoid trusting the elaborator's handling of the environment, every declaration of all $130$ project modules was
 replayed through the kernel with \lean{leanchecker} (shipped with the Lean toolchain), each module against the compiled
-environment of its imports, on 9 November 2026; all modules passed, in about $2$ hours $40$ minutes in total.
-Mathlib itself was not replayed from scratch (\lean{--fresh}). Three AI referees, for Corollary~\ref{thm:U},
-Theorem~\ref{thm:V} and Theorem~\ref{thm:Vodd}, checked the fidelity of the statements (the definitions above, traced to
-Mathlib, and the absence of hypotheses, custom axioms and compiler trust) and found them faithful; the second also
-confirmed the exception set $\cE$ independently in interval arithmetic for $m\le3000$, and the third compared
-\lean{EOdd} with $\cE_{\mathrm{odd}}$ element by element and recomputed the exception set for the odd $a\le6001$, with the
-formal constants and with those of Section~\ref{sec:odd-a}. Apart from the check by the Lean kernel, all verification of
+environment of its imports, on 9 November 2026; all modules passed, in about $56$ minutes in total.
+Mathlib itself was not replayed from scratch (\lean{--fresh}). Four AI referees, for Corollary~\ref{thm:U},
+Theorem~\ref{thm:V}, Theorem~\ref{thm:Vodd} and Theorem~\ref{thm:Vi}, checked the fidelity of the statements (the
+definitions above, traced to Mathlib, and the absence of hypotheses, custom axioms and compiler trust) and found them
+faithful; the second also confirmed the exception set $\cE$ independently in interval arithmetic for $m\le3000$, the
+third compared \lean{EOdd} with $\cE_{\mathrm{odd}}$ element by element and recomputed the exception set for the odd
+$a\le6001$, with the formal constants and with those of Section~\ref{sec:odd-a}, and the fourth compared \lean{EOddI}
+with $\cE_i$ element by element and recomputed the exception set for $5\le n\le5000$, with the formal constants and with
+those of Section~\ref{sec:Ti2}. Apart from the check by the Lean kernel, all verification of
 the formalisation so far was carried out by AI systems; no human expert has yet reviewed the Lean code.
 
 % ===========================================================================
@@ -2481,9 +2554,8 @@ referees, was carried out by AI systems. The proof of Theorem~\ref{thm:V} for ge
 at a single gate, with an independent implementation of the machine, and it is formalised in Lean
 (Section~\ref{sec:lean}). No MathSciNet search or expert query has been made for it. The text of this revision, which
 adds Theorem~\ref{thm:V}, was reviewed as a whole by one further AI referee. The extensions of Section~\ref{sec:ext}
-(Theorems~\ref{thm:Vodd} and~\ref{thm:Vi}) were each checked by one AI gate referee, with independent code;
-Theorem~\ref{thm:Vodd} is formalised in Lean (Section~\ref{sec:lean}) and Theorem~\ref{thm:Vi} is not; no human has
-checked them, and no MathSciNet search or expert query has been made for them. The text of the
+(Theorems~\ref{thm:Vodd} and~\ref{thm:Vi}) were each checked by one AI gate referee, with independent code, and both
+are formalised in Lean (Section~\ref{sec:lean}); no human has checked them, and no MathSciNet search or expert query has been made for them. The text of the
 present revision, which adds these extensions, was reviewed as a whole by one further AI referee. No human expert has yet reviewed the mathematics or the Lean code; we would be grateful for corrections. The
 prime number theorem in the formalisation is ported from the PrimeNumberTheoremAnd project of A.~Kontorovich, T.~Tao and
 collaborators \cite{PNTplus}, through the \lean{zeta5} repository of C\'esar Del Solar \cite{zeta5} and the formalisation

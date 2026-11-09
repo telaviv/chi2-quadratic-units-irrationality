@@ -1,9 +1,11 @@
-# Irrationality of χ₂ at units of real quadratic fields of norm −1: a Lean 4 proof
+# Irrationality of χ₂ and Ti₂ at units of real quadratic fields: a Lean 4 proof
 
 This repository contains a complete, machine-checked proof in [Lean 4](https://lean-lang.org/) and
 [Mathlib](https://github.com/leanprover-community/mathlib4) of the theorems below. Theorem V (even trace) and Theorem
 V_odd (odd trace) together show that χ₂(ε) is irrational for every unit ε ∈ (0, 1) of norm −1 of a real quadratic
-field, except 47 units. The case ε = √5 − 2 is the golden-ratio statement: **π² − 18 log²φ is irrational.**
+field, except 47 units. The case ε = √5 − 2 is the golden-ratio statement: **π² − 18 log²φ is irrational.** Theorem
+V_i shows that the inverse tangent integral Ti₂(ε) is irrational for every unit ε ∈ (0, 1) of norm +1 of a real
+quadratic field, except 57 units.
 
 Here χ₂(z) = Σ_{n≥0} z^{2n+1}/(2n+1)² is Legendre's chi function. Every unit ε ∈ (0, 1) of norm −1 is
 ε = (√(a² + 4) − a)/2 with trace a = ε⁻¹ − ε ∈ {1, 2, 3, …}; for even a = 2m this is √(m² + 1) − m.
@@ -18,10 +20,22 @@ Here χ₂(z) = Σ_{n≥0} z^{2n+1}/(2n+1)² is Legendre's chi function. Every u
 > a ∉ {1, 3} ∪ 𝓔_odd ∪ {2, 6, 10, 14, 18, 30}, then χ₂(ε) is irrational. The 47 excluded traces are 41 odd ones (a = 1, 3
 > and the 39 of 𝓔_odd) and 6 even ones (a = 2m with m = 1 or m ∈ {3, 5, 7, 9, 15}).
 
+> **Theorem V_i (Ti₂ at the units of norm +1).** Let Ti₂(x) = Σ_{k≥0} (−1)^k x^{2k+1}/(2k+1)² be the inverse tangent
+> integral and 𝓔_i = {75, 77, 81, 85, 87, 91, 93, 95, 99, 105, 111, 117, 123, 135, 147, 165, 195} (17 values).
+>
+> (a) For every integer m ≥ 4 with m ∉ {5, 7, 9, 15}, the number Ti₂(m − √(m² − 1)) is irrational.
+>
+> (b) For every odd integer n ≥ 71 with n ∉ 𝓔_i, the number Ti₂((n − √(n² − 4))/2) is irrational.
+
+> **Corollary (units of norm +1).** Every unit ε ∈ (0, 1) of norm +1 is ε = (n − √(n² − 4))/2 with trace
+> n = ε + ε⁻¹ ∈ {3, 4, 5, …}; for even n = 2m this is m − √(m² − 1). If n ∉ {3, 4, 6, 10, 14, 18, 30} ∪
+> {5, 7, 9, …, 69} ∪ 𝓔_i, then Ti₂(ε) is irrational. The excluded set consists of 57 units (7 + 33 + 17).
+
 > **Corollary (Theorem U, m = 2). Let φ = (1 + √5)/2 be the golden ratio. Then π² − 18 log²φ = 5.70143763069985955388…
 > is irrational.** Equivalently, χ₂(√5 − 2) = π²/24 − ¾ log²φ = 0.23755990127916081474… is irrational.
 
-The norm −1 corollary is not a separate Lean statement: it is Theorems V and V_odd together, as stated above. In Lean:
+The two corollaries on units are not separate Lean statements: the norm −1 corollary is Theorems V and V_odd together,
+and the norm +1 corollary is Theorem V_i, as stated above. In Lean:
 
 ```lean
 -- Chi2U/V/Defs.lean, Chi2U/V/Interface.lean
@@ -36,6 +50,16 @@ def Chi2U.VOdd.EOdd : Finset ℕ :=
 def Chi2U.VOdd.TheoremVOdd : Prop :=
   ∀ a : ℕ, Odd a → 5 ≤ a → a ∉ EOdd → Irrational (chi2 ((Real.sqrt ((a : ℝ) ^ 2 + 4) - a) / 2))
 theorem Chi2U.VOdd.theoremVOdd : Chi2U.VOdd.TheoremVOdd
+
+-- Chi2U/Ti/Defs.lean, Chi2U/Ti/Interface.lean
+noncomputable def Chi2U.Ti.ti2Term (z : ℝ) (k : ℕ) : ℝ := (-1) ^ k * z ^ (2 * k + 1) / (2 * (k : ℝ) + 1) ^ 2
+noncomputable def Chi2U.Ti.Ti2 (z : ℝ) : ℝ := ∑' k : ℕ, ti2Term z k
+def Chi2U.Ti.EOddI : Finset ℕ :=
+  {75, 77, 81, 85, 87, 91, 93, 95, 99, 105, 111, 117, 123, 135, 147, 165, 195}
+def Chi2U.Ti.TheoremVi : Prop :=
+  (∀ m : ℕ, 4 ≤ m → m ∉ ({5, 7, 9, 15} : Finset ℕ) → Irrational (Ti2 (m - Real.sqrt ((m : ℝ) ^ 2 - 1)))) ∧
+  (∀ n : ℕ, Odd n → 71 ≤ n → n ∉ EOddI → Irrational (Ti2 ((n - Real.sqrt ((n : ℝ) ^ 2 - 4)) / 2)))
+theorem Chi2U.Ti.theoremVi : Chi2U.Ti.TheoremVi
 
 -- Chi2U/Golden/Corollary.lean
 theorem Chi2U.golden_irrational' : Irrational (Real.pi ^ 2 - 18 * Real.log goldenRatio ^ 2)
@@ -56,6 +80,7 @@ theorem Chi2U.chi2_sqrt5_sub_two_eq :
 ```
 'Chi2U.V.theoremV' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Chi2U.VOdd.theoremVOdd' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Chi2U.Ti.theoremVi' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Chi2U.chi2_sqrt5_sub_two_irrational' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Chi2U.golden_irrational'' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
@@ -70,11 +95,13 @@ The paper, "Irrationality of χ₂ and Ti₂ at units of real quadratic fields",
 
 ## Context
 
-We have not found Theorem V, Theorem V_odd, Theorem U, or the irrationality of any number π² + c log²φ with
-c ∈ ℚ \ {0}, in the literature. For m ≥ 3 the values χ₂(√(m² + 1) − m) have no expression through π² and logarithms by
-symbol-preserving dilogarithm identities (paper, Proposition on the symbol); only m = 1, 2 have a Landen closed form.
+We have not found Theorem V, Theorem V_odd, Theorem V_i, Theorem U, or the irrationality of any number π² + c log²φ
+with c ∈ ℚ \ {0}, in the literature. For m ≥ 3 the values χ₂(√(m² + 1) − m) have no expression through π² and
+logarithms by symbol-preserving dilogarithm identities (paper, Proposition on the symbol); only m = 1, 2 have a Landen closed form.
 Explicit linear independence criteria at algebraic points (David–Hirata-Kohno–Kawashima) cover χ₂(√(m² + 1) − m) only
-for m ≥ 4 346 237, and χ₂((√(a² + 4) − a)/2) for odd a only for a ≥ 8 692 474, by our evaluation.
+for m ≥ 4 346 237, χ₂((√(a² + 4) − a)/2) for odd a only for a ≥ 8 692 474, and Ti₂ at the units of norm +1 only for
+traces n ≳ 8.69·10⁶, by our evaluation. Through Lewin's formula, Theorem V_i is a statement about Clausen values at the
+angles arcsin(2/n), which for n ≥ 5 are not rational multiples of π (paper, section on closed forms).
 
 - **Other golden-ratio values.** The classical dilogarithm evaluations Li₂(φ⁻²), Li₂(φ⁻¹), Li₂(−φ⁻¹), Li₂(−φ) all lie
   in ℚπ² + ℚ log²φ, but with c = −15, −10, −15/2 and +10 in the form π² + c log²φ; Theorem U has c = −18. The
@@ -89,14 +116,15 @@ for m ≥ 4 346 237, and χ₂((√(a² + 4) − a)/2) for odd a only for a ≥ 
   ([Li2Rational](https://github.com/siqiliu-tsinghua/Li2Rational)); both unrefereed.
 
 Our searches covered the web, arXiv, zbMATH Open, OpenAlex, Crossref, Semantic Scholar (partly), the Hexagon repository
-and recent Lean repositories, but not MathSciNet or Google Scholar; for odd a they were much shorter (our notes and the
-web). Please tell us if you know of prior work.
+and recent Lean repositories, but not MathSciNet or Google Scholar; for odd a and for Ti₂ they were much shorter (our
+notes and the web, and for Ti₂ an earlier arXiv sweep). Please tell us if you know of prior work.
 
 ## Outline of the proof
 
 The machine is formalised once, with the trace a of the unit as a parameter (`az` in the files: z = `zU az` =
 (√(a² + 4) − a)/2, `Qd az` = ℚ(√(a² + 4)) as `QuadraticAlgebra ℚ ((a/2)² + 1) 0`, `zK az`, `Delta az h`). Theorem U is
-a = 4, Theorem V is a = 2m, Theorem V_odd is odd a. We describe it at a = 4; the changes for other traces follow the
+a = 4, Theorem V is a = 2m, Theorem V_odd is odd a. Theorem V_i (Ti₂ at the units of norm +1) uses a copy of the machine
+with the sign fixed (`Ti/`, item 8). We describe the machine at a = 4; the changes for other traces and for Ti₂ follow the
 outline. The proof transposes the proof of [chi2-irrationality](https://github.com/telaviv/chi2-irrationality)
 (χ₂(1/3), χ₂(1/5) ∉ ℚ) to the point z = √5 − 2 = φ⁻³, a unit of norm −1 in ℚ(√5). For even h take the K = h + 1 poles
 x_m = 2(m − h/2) (the even integers in [−h, h]), put D(t) = Π_m (t − x_m), and consider
@@ -156,14 +184,40 @@ X = T of Δ_h(X) = det(A(t^{i+j}) + X·B(t^{i+j})).
    - Margins: a closed form for odd a ≥ 275 (the primes 3, 5, 7 are split off), and the 96 odd a < 275 outside 𝓔_odd
      one by one. File: `VOdd/Margin.lean`.
    - Assembly: `VOdd/Interface.lean`.
-8. **Golden-ratio form.** χ₂(√5 − 2) = π²/24 − ¾ log²φ from Landen's identity for χ₂ at x = √5 − 2 (where
+8. **Ti₂ at the units of norm +1 (Theorem V_i), files `Ti/`.** z_n = (n − √(n² − 4))/2 with trace n ≥ 3, so
+   z² − nz + 1 = 0 and σz = z⁻¹ (norm +1). Ti₂(z) = Σ χ₄(t) z^t/t² over odd t, so the machine has the weights χ₄(t) z^t,
+   i.e. y = −z² in place of z², and 1 − y = 1 + z² = n·z. With the sign of the norm and the parity of χ₄ both flipped,
+   the reflection again gives Δ_h ∈ ℚ[X].
+   - **A copy, not a parameter.** `Ti/` (35 modules, namespace `Chi2U.Ti`, parameter n with `[Fact (3 ≤ n)]`, field
+     `Qt n` = ℚ(√((n/2)² − 1)), point `zT n`) copies the χ₂ machine files with the sign fixed; each copied file names its
+     original, and no file of Theorems U, V, V_odd is edited. Files: `Ti/Field.lean`, `Ti/Moments.lean`,
+     `Ti/MomentSeries.lean`, `Ti/Mahler.lean`, `Ti/Machine.lean`, `Ti/LemmaR.lean`, `Ti/PoleExpansion.lean`
+     (T = Ti₂(z_n), with `summable_ti2Term`), `Ti/MainCond.lean` (`irrational_of_boundsT`), collected in `Ti/Core.lean`.
+   - Odd p ∤ n (Theorem A′) and odd p | n (Lemma S, e = v_p(n)): `Ti/LemmaB.lean`, `Ti/OddPrimes.lean`,
+     `Ti/Lemma8One.lean`, `Ti/OddExp.lean`, `Ti/LemmaS.lean`, `Ti/SHankel.lean`, `Ti/SVal.lean`.
+   - p = 2: Lemma 10_ν at even n (ν = v₂(n), cost |ν − 2|·log 2/4), Lemma 10_0 at odd n (2 inert, cost ½ log 2), with the
+     same constants as for χ₂. For even n the valuations are taken in ℤ₍₂₎[√d], which is not the maximal order when
+     n ≡ 2 mod 4; every bound is a lower bound for the true valuation, so this is harmless. Files: `Ti/VGe.lean`,
+     `Ti/TwoAdicNu.lean`, `Ti/Lemma10nu.lean`, `Ti/TenZero.lean`.
+   - Lemma P′_n: stated for primes ℓ ≥ 7 with ℓ ∤ n(n² − 4) (the proof uses only ℓ ∤ n). Files: `Ti/NonVan.lean`,
+     `Ti/NonVan/`.
+   - Analytic part: Theorem B′ at z_n with the signed weights (only |χ₄(t) z^t| = z^t enters; `DualCertT n`,
+     `Ti/Analytic/TheoremBT.lean`, `Ti/Analytic/NodesT.lean`), and a copy of the shift lemma that moves Theorem U's
+     certificate to z_n with the constant Φ_L = −1.3538792 (`Ti/Analytic/ShiftT.lean`). No new certificate is needed.
+     File: `Ti/Analytic.lean`.
+   - Margins: with Φ_L the exception set is exactly the paper's (even n ∈ {6, 10, 14, 18, 30}, odd n ≤ 69, 𝓔_i). Three
+     closed forms (n ≡ 0 mod 4 with n ≥ 8; n ≡ 2 mod 4 with n ≥ 138; odd n ≥ 275) and the 113 remaining n one by one
+     (28 with n ≡ 2 mod 4, 85 odd), with the sharper bound −log z_n ≥ log n − 1/(n − 1)². The paper uses a uniform tail
+     and an interval table up to n = 20 000 instead. File: `Ti/Margin.lean`.
+   - Assembly: `Ti/Interface.lean`.
+9. **Golden-ratio form.** χ₂(√5 − 2) = π²/24 − ¾ log²φ from Landen's identity for χ₂ at x = √5 − 2 (where
    (1 − x)/(1 + x) = φ⁻¹) and the value of χ₂(φ⁻¹), itself derived from Euler's reflection and Landen's identity for
    Li₂. Files: `Golden/`.
 
-The paper also proves an extension that is **not** formalised here: Ti₂(m − √(m² − 1)) ∉ ℚ for m ≥ 4,
-m ∉ {5, 7, 9, 15}, and Ti₂ at the units of norm +1 with odd trace n ≥ 71 outside 17 values (Theorem V_i, checked by one
-AI referee). Its two-point statement at units of biquadratic fields (Theorem M1) is computer-assisted and is not
-formalised either.
+All the theorems on χ₂ and Ti₂ at units of real quadratic fields (the paper's title) are formalised here. Not formalised
+are the paper's two-point statement at units of biquadratic fields (Theorem M1, computer-assisted), the explicit
+thresholds (effective h₀, the error term E_an(h)), the "only if" halves of the margin propositions (which the theorems
+do not need), and Lewin's Clausen form of Theorem V_i.
 
 ## Building and checking
 
@@ -172,7 +226,7 @@ You need [elan](https://github.com/leanprover/elan). The toolchain (Lean v4.35.0
 
 ```sh
 lake exe cache get                 # download prebuilt Mathlib
-LEAN_NUM_THREADS=4 lake build      # about 10 minutes once Mathlib is cached (9143 jobs)
+LEAN_NUM_THREADS=4 lake build      # 9178 jobs; timings in TRUST.md
 lake env lean Axioms.lean          # print the axioms of the main theorems and their ingredients
 ```
 
@@ -192,9 +246,15 @@ The generated files (Python with numpy, mpmath and gmpy2; see TRUST.md) are repr
   recomputes the margins of Theorem V_odd with the Lean constants (60 digits, odd a ≤ 5001) and checks that the set of
   odd a with a nonnegative margin is exactly 𝓔_odd.
 - `scripts/margins_lean.py` and `scripts/margin_v_cases.py` evaluate the margins of Theorem V with the Lean constants.
+- `python scripts/ti/margin_ti_cases.py --gen` (python-flint, sympy) writes the case section of `Chi2U/Ti/Margin.lean`
+  (the 113 cases); without `--gen` it recomputes the margins of Theorem V_i with the Lean constants (Arb, 200 bits,
+  5 ≤ n ≤ 20 000) and checks that the set of n with a nonnegative margin is exactly the complement of `marginOK`. Its
+  output is `scripts/ti/margin_ti_cases.out`.
 - `scripts/check_defs.py` (python-flint) re-implements the Lean definitions and compares them with the paper's machine;
   its output is `scripts/check_defs.out` (`scripts/check_defs_v.py`, `scripts/check_defs_v.out` for other traces,
-  including the odd trace a = 5).
+  including the odd trace a = 5). For Theorem V_i, `scripts/ti/check_defs_ti.py` compares the Ti₂ machine with direct
+  summation, and `scripts/ti/check_arith_ti.py`, `check_twoadic_ti.py`, `check_lemmaP_ti.py` check the arithmetic lemmas
+  on exact data (outputs `*.out` next to them).
 
 The computations of the paper are in [`scripts/paper/`](scripts/paper/README.md).
 
@@ -206,6 +266,7 @@ Paths are relative to `Chi2U/`.
 |---|---|
 | `Defs.lean`, `Statement.lean` | χ₂ and Theorem U |
 | `V/` | Theorem V: `Defs` (statement, constants), Lemma 10_ν, Lemma S, shift lemma, margins, Lemma P′_m, `Interface` (assembly) |
+| `Ti/` | Theorem V_i: `Defs` (Ti₂, statement, 𝓔_i, constants), a copy of the machine with the sign fixed (`Field`, `VGe`, `Moments`, `MomentSeries`, `Mahler`, `Machine`, `LemmaR`, `PoleExpansion`, `MainCond`, collected in `Core`), odd primes and Lemma S (`LemmaB`, `OddPrimes`, `Lemma8One`, `OddExp`, `LemmaS`, `SHankel`, `SVal`), Lemmas 10_ν and 10_0 (`TwoAdicNu`, `Lemma10nu`, `TenZero`), Lemma P′_n (`NonVan`, `NonVan/`), Theorem B′ and the shift lemma (`Analytic`, `Analytic/`), `Margin` (margins), `Interface` (assembly) |
 | `VOdd/` | Theorem V_odd: `Defs` (statement, 𝓔_odd, constants), `TenZero` (Lemma 10_0), `CertOdd` and `CertData/A*.lean` (the 11 direct certificates), `Margin` (margins), `Interface` (assembly) |
 | `Golden/` | the closed form π²/24 − ¾ log²φ (Landen, dilogarithm identities) and the golden-ratio corollaries |
 | `Field.lean` | ℚ(√(a² + 4)) = `QuadraticAlgebra ℚ ((a/2)² + 1) 0`, z = (√(a² + 4) − a)/2, conjugation, real embedding |
@@ -223,16 +284,18 @@ Paths are relative to `Chi2U/`.
 | `Main.lean` | assembly of Theorem U |
 | `../scripts/gen_cert_u.py`, `../scripts/gen_cert_lin.py` | generators of the certificate data (untrusted; see TRUST.md) |
 | `../scripts/margin_vodd_cases.py` | generator of the margin cases of Theorem V_odd and the margin recomputation |
+| `../scripts/ti/` | generator of the margin cases of Theorem V_i (`margin_ti_cases.py`) and the checks of the Ti₂ machine; `referee/` holds the fidelity referee's independent margin recomputation |
 | `../scripts/check_defs.py` | exact check of the definitions against the paper's machine |
-| `../scripts/leanchecker.log`, `../scripts/leanchecker_v.log`, `../scripts/leanchecker_vodd.log` | per-module results of the `leanchecker` replays |
+| `../scripts/leanchecker.log`, `../scripts/leanchecker_v.log`, `../scripts/leanchecker_vodd.log`, `../scripts/leanchecker_vi.log` | per-module results of the `leanchecker` replays |
 | `../scripts/paper/` | the computation scripts of the paper |
 | `../Axioms.lean` | axiom audit |
-| `../FIDELITY_REFEREE.md`, `../FIDELITY_REFEREE_V.md`, `../FIDELITY_REFEREE_VODD.md` | AI referee reports on the fidelity of the statements (U, V, V_odd) |
+| `../FIDELITY_REFEREE.md`, `../FIDELITY_REFEREE_V.md`, `../FIDELITY_REFEREE_VODD.md`, `../FIDELITY_REFEREE_VI.md` | AI referee reports on the fidelity of the statements (U, V, V_odd, V_i) |
 
-Every Lean file starts with a docstring saying what it proves and how. The docstrings cite `PROOF_U §n`, `PROOF_V §n` and
-`PROOF_VODD §n`, the working proof notes that the paper was written from. The sections of `PROOF_U` correspond to the
+Every Lean file starts with a docstring saying what it proves and how. The docstrings cite `PROOF_U §n`, `PROOF_V §n`,
+`PROOF_VODD §n` and `PROOF_TI2 §n`, the working proof notes that the paper was written from. The sections of `PROOF_U` correspond to the
 paper's: §1–§2 (machine, reflection, endgame) → paper §2, and §3–§7 → paper §3–§7 (subsection numbers can differ);
-`PROOF_V` corresponds to the parts of §3–§7 for general m, and `PROOF_VODD` to the paper's section on odd a. These
+`PROOF_V` corresponds to the parts of §3–§7 for general m, and `PROOF_VODD` and `PROOF_TI2` to the paper's subsections
+on odd a and on the inverse tangent integral. These
 notes, the planning files they mention (`notes/…`) and the project name `lean_chi2u` used in some provenance headers
 belong to the development history and are not part of this repository.
 
@@ -246,11 +309,12 @@ belong to the development history and are not part of this repository.
   verification so far has been done by AI systems.
 - The formal margins are thin: −1/60 per h² at m = 2; about −0.0126 at m = 11 and −0.001 of slack in the closed form
   at m = 69; for odd traces −0.00025 at a = 135 and −0.0014 at a = 59 (both with direct certificates) and −0.0022 at
-  a = 115 (shift lemma). They are certified, not estimated.
+  a = 115 (shift lemma); for Theorem V_i −0.00213 at n = 115 and −0.00250 at n = 71 (shift lemma, constant Φ_L). They
+  are certified, not estimated.
 
 ## Acknowledgements
 
-- The architecture, and about 7,800 of the roughly 23,400 lines (95 modules), come from
+- The architecture, and about 7,800 of the roughly 30,600 lines (130 modules), come from
   [chi2-irrationality](https://github.com/telaviv/chi2-irrationality), the author's Lean proof that χ₂(1/3) and χ₂(1/5)
   are irrational: the definition of χ₂, the criterion, the generic analytic files, `PNT/` and `Interval/`.
 - `PNT/` and `Interval/` were ported there from [beta-irrationality](https://github.com/telaviv/beta-irrationality),
