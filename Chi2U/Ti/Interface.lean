@@ -24,6 +24,7 @@ import Chi2U.Ti.Lemma10nu
 import Chi2U.Ti.TenZero
 import Chi2U.Ti.OddExp
 import Chi2U.Ti.LemmaS
+import Chi2U.Ti.NonVan
 
 namespace Chi2U
 namespace Ti
@@ -57,8 +58,8 @@ theorem lemma10_0 (n : ℕ) [Fact (3 ≤ n)] (hn : Odd n) {h : ℕ} (hh : Even h
 
 /-- **Lemma P′_n** (PROOF_TI2 §4). The χ₂ version is `Chi2U.V.lemmaP_m`. -/
 theorem lemmaP_n (n : ℕ) [Fact (3 ≤ n)] {ℓ : ℕ} [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (hℓn : ¬ ℓ ∣ n * (n ^ 2 - 4))
-    (a : ℤ) {b : ℕ} (hb : 0 < b) (hb2 : ¬ ℓ ^ 2 ∣ b) : (Delta n (3 * ℓ - 1)).eval ((a : ℚ) / b) ≠ 0 := by
-  sorry
+    (a : ℤ) {b : ℕ} (hb : 0 < b) (hb2 : ¬ ℓ ^ 2 ∣ b) : (Delta n (3 * ℓ - 1)).eval ((a : ℚ) / b) ≠ 0 :=
+  lemmaP_n_proof n hℓ hℓn a hb hb2
 
 /-- **The analytic bound** (Theorem B′ at `z = zT n` with the signed weights `χ₄(t) z^t`, from Theorem U's certificate
 `exists_certU'` moved by the shift lemma; PROOF_TI2 §2, PROOF_V §5). -/
