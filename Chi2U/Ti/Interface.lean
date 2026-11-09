@@ -19,6 +19,7 @@ import Chi2U.Ti.Core
 import Chi2U.Ti.Margin
 import Chi2U.VOdd.Defs
 import Chi2U.V.Interface
+import Chi2U.Ti.Analytic
 
 namespace Chi2U
 namespace Ti
@@ -58,8 +59,8 @@ theorem lemmaP_n (n : ℕ) [Fact (3 ≤ n)] {ℓ : ℕ} [Fact ℓ.Prime] (hℓ :
 /-- **The analytic bound** (Theorem B′ at `z = zT n` with the signed weights `χ₄(t) z^t`, from Theorem U's certificate
 `exists_certU'` moved by the shift lemma; PROOF_TI2 §2, PROOF_V §5). -/
 theorem analytic_T (n : ℕ) [Fact (3 ≤ n)] (h5 : 5 ≤ n) {δ : ℝ} (hδ : 0 < δ) : ∀ ε > 0, ∀ᶠ h : ℕ in atTop,
-    Even h → |aeval (TT n) (Delta n h)| ≤ Real.exp ((betaT n + δ + ε) * (h : ℝ) ^ 2) := by
-  sorry
+    Even h → |aeval (TT n) (Delta n h)| ≤ Real.exp ((betaT n + δ + ε) * (h : ℝ) ^ 2) :=
+  analytic_T_proof n h5 hδ
 
 /-- **The margin inequality** (PROOF_TI2 §6) with Lean's constant `Φ_L`. -/
 theorem margin_Vi {n : ℕ} (hn : marginOK n) : alphaT n + betaT n < 0 := margin_Vi_proof hn
