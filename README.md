@@ -44,7 +44,8 @@ identity for χ₂ and Euler's reflection and Landen's identity for the dilogari
 separate assumption. The proof uses only Lean's three standard axioms. There is no `sorry`, no added `axiom` and no
 `native_decide`: the numerical certificate is evaluated by the Lean kernel. See [TRUST.md](TRUST.md).
 
-The paper is [`paper/chi2-quadratic-units-irrationality.pdf`](paper/chi2-quadratic-units-irrationality.pdf) (source `paper/main.tex`).
+The paper, "Irrationality of χ₂ and Ti₂ at units of real quadratic fields", is
+[`paper/chi2-quadratic-units-irrationality.pdf`](paper/chi2-quadratic-units-irrationality.pdf) (source `paper/main.tex`).
 
 ## Context
 
