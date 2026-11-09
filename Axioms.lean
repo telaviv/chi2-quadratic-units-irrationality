@@ -35,3 +35,12 @@ import Chi2U
 #print axioms Chi2U.VOdd.exists_certOdd
 #print axioms Chi2U.VOdd.margin_VOdd
 #print axioms Chi2U.exists_certU
+#print axioms Chi2U.Ti.theoremVi
+#print axioms Chi2U.Ti.irrational_of_boundsT
+#print axioms Chi2U.Ti.margin_Vi
+#print axioms Chi2U.Ti.analytic_T
+#print axioms Chi2U.Ti.lemmaP_n
+#print axioms Chi2U.Ti.padicNorm_Delta_odd
+#print axioms Chi2U.Ti.lemmaS
+#print axioms Chi2U.Ti.lemma10nu
+#print axioms Chi2U.Ti.lemma10_0
