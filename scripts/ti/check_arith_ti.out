@@ -1,0 +1,13 @@
+n=5 done
+n=6 done
+n=7 done
+n=9 done
+n=11 done
+n=12 done
+n=15 done
+n=21 done
+n=25 done
+n=27 done
+n=45 done
+checked: {'R': 34237, 'C': 33269, 'P': 4963, 'M': 7931, 'E': 665} tight E cases: 154
+ALL ARITH CHECKS PASSED
