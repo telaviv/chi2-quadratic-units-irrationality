@@ -1,0 +1,12 @@
+5 <= n <= 20000: undecided balls: []
+exceptions == complement of marginOK: True []
+thinnest Arb margins (upper endpoints): [(115, -0.002129), (71, -0.002501), (129, -0.007363), (73, -0.009778), (22, -0.010505), (42, -0.014456), (119, -0.021552), (153, -0.028147)]
+PROOF_TI2 §6 tail with PhiL, P = 13: negative from n0 = 613 (value at n0: [-0.000119529 +/- 2.26e-10], at n0-1: [0.000258572 +/- 9.28e-11])
+PROOF_TI2 §6 tail with PhiL, P = 17: negative from n0 = 654 (value at n0: [-0.000177671 +/- 1.57e-10], at n0-1: [0.000183554 +/- 2.95e-10])
+KUP = 0.7012718735785284  LSHI - log(sqrt5+2) = 5.3115796575067235e-09
+finite cases: 113 (odd 85, nu = 1: 28); all Lean bounds < 0: True
+thinnest Lean bounds: [(42, -0.014442), (22, -0.010408), (73, -0.009776), (129, -0.007362), (71, -0.002499), (115, -0.002129)]
+tail odd bound: -0.013274  negative: True
+tail nu1 bound: -0.001252  negative: True
+tail nu2 bound: -0.068315  negative: True
+wrote the generated section of Chi2U/Ti/Margin.lean
