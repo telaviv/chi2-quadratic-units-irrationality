@@ -1,0 +1,23 @@
+n=3 h=2 deg Delta=2 Delta(T)=-0.0139734664690794 det Lambda=-0.0139734664690794
+n=3 h=4 deg Delta=4 Delta(T)=2.95078431898817e-9 det Lambda=2.95078431898817e-9
+n=3 h=6 deg Delta=6 Delta(T)=6.36939733252931e-20 det Lambda=6.36939733252931e-20
+n=4 h=2 deg Delta=2 Delta(T)=-0.00742908533724519 det Lambda=-0.00742908533724519
+n=4 h=4 deg Delta=4 Delta(T)=2.29208080655035e-10 det Lambda=2.29208080655035e-10
+n=4 h=6 deg Delta=6 Delta(T)=5.38193693761193e-23 det Lambda=5.38193693761193e-23
+n=5 h=2 deg Delta=2 Delta(T)=-0.00463729380888974 det Lambda=-0.00463729380888974
+n=5 h=4 deg Delta=4 Delta(T)=3.46899593289646e-11 det Lambda=3.46899593289646e-11
+n=5 h=6 deg Delta=6 Delta(T)=1.04445948095803e-25 det Lambda=1.04445948095803e-25
+n=8 h=2 deg Delta=2 Delta(T)=-0.00176463699944849 det Lambda=-0.00176463699944849
+n=8 h=4 deg Delta=4 Delta(T)=7.27951333735453e-13 det Lambda=7.27951333735453e-13
+n=8 h=6 deg Delta=6 Delta(T)=-7.75444984912626e-29 det Lambda=-7.75444984912626e-29
+n=9 h=2 deg Delta=2 Delta(T)=-0.00138947701506644 det Lambda=-0.00138947701506644
+n=9 h=4 deg Delta=4 Delta(T)=2.79924343752799e-13 det Lambda=2.79924343752799e-13
+n=9 h=6 deg Delta=6 Delta(T)=-1.03251795689282e-29 det Lambda=-1.03251795689282e-29
+n=12 h=2 deg Delta=2 Delta(T)=-0.000777178316896426 det Lambda=-0.000777178316896426
+n=12 h=4 deg Delta=4 Delta(T)=2.74169981296263e-14 det Lambda=2.74169981296263e-14
+n=12 h=6 deg Delta=6 Delta(T)=-6.63933045367585e-32 det Lambda=-6.63933045367585e-32
+exact checks (rec1, parity, Mahler, Lemma R, Delta_map over K): all passed
+max rel. error mom: 1.9903e-108
+max rel. error lam: 1.113e-100
+max rel. error det: 7.8558e-81
+ALL CHECKS PASSED
