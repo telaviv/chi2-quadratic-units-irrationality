@@ -20,6 +20,8 @@ import Chi2U.Ti.Margin
 import Chi2U.VOdd.Defs
 import Chi2U.V.Interface
 import Chi2U.Ti.Analytic
+import Chi2U.Ti.Lemma10nu
+import Chi2U.Ti.TenZero
 
 namespace Chi2U
 namespace Ti
@@ -42,14 +44,14 @@ theorem lemmaS (n : ℕ) [Fact (3 ≤ n)] {p : ℕ} [Fact p.Prime] (hp : p ≠ 2
 
 /-- **Lemma 10_ν** (PROOF_V §4) at an even trace `n` (`ν = v₂(n) ≥ 1`). The χ₂ version is `Chi2U.V.lemma10nu`. -/
 theorem lemma10nu (n : ℕ) [Fact (3 ≤ n)] (hn : Even n) {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (k : ℕ) :
-    padicNorm 2 ((Delta n h).coeff k) ≤ (2 : ℚ) ^ V.n2A n h := by
-  sorry
+    padicNorm 2 ((Delta n h).coeff k) ≤ (2 : ℚ) ^ V.n2A n h :=
+  lemma10nu_proof n hn hh h2 k
 
 /-- **Lemma 10_0** (PROOF_VODD §2) at an odd trace `n` (`2` inert in `ℚ(√(n² − 4))`). The χ₂ version is
 `Chi2U.VOdd.lemma10_0`. -/
 theorem lemma10_0 (n : ℕ) [Fact (3 ≤ n)] (hn : Odd n) {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (k : ℕ) :
-    padicNorm 2 ((Delta n h).coeff k) ≤ (2 : ℚ) ^ VOdd.n2O h := by
-  sorry
+    padicNorm 2 ((Delta n h).coeff k) ≤ (2 : ℚ) ^ VOdd.n2O h :=
+  lemma10_0_proof n hn hh h2 k
 
 /-- **Lemma P′_n** (PROOF_TI2 §4). The χ₂ version is `Chi2U.V.lemmaP_m`. -/
 theorem lemmaP_n (n : ℕ) [Fact (3 ≤ n)] {ℓ : ℕ} [Fact ℓ.Prime] (hℓ : 7 ≤ ℓ) (hℓn : ¬ ℓ ∣ n * (n ^ 2 - 4))
