@@ -117,8 +117,10 @@ X = T of Δ_h(X) = det(A(t^{i+j}) + X·B(t^{i+j})).
    (1 − x)/(1 + x) = φ⁻¹) and the value of χ₂(φ⁻¹), itself derived from Euler's reflection and Landen's identity for
    Li₂. Files: `Golden/`.
 
-The paper also proves a two-point statement at units of biquadratic fields (Theorem M1); it is computer-assisted and is
-**not** formalised here.
+The paper also proves two extensions that are **not** formalised here: χ₂ is irrational at the norm −1 units
+(√(a² + 4) − a)/2 for odd a ≥ 5 outside 39 values (so, with Theorem V, at every quadratic unit of norm −1 in (0, 1) outside
+47 units), and Ti₂(m − √(m² − 1)) ∉ ℚ for m ≥ 4, m ∉ {5, 7, 9, 15} (plus odd traces), each checked by one AI referee.
+Its two-point statement at units of biquadratic fields (Theorem M1) is computer-assisted and is not formalised either.
 
 ## Building and checking
 

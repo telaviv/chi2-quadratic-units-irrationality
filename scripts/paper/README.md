@@ -59,6 +59,31 @@ the machine for general m). Run them from inside `v/`.
 The Lean margins (with the Lean constant Φ = −1.3538792) are evaluated by `scripts/margins_lean.py` and
 `scripts/margin_v_cases.py` at the top level of the repository.
 
+## Extensions: odd traces and the Ti₂ family (`scripts/paper/ext/`)
+
+Not formalised in Lean. Run each script from inside its folder.
+
+`ext/vodd/` — Theorem 1.3 (χ₂ at the norm −1 units (√(a²+4) − a)/2, odd a) and Corollary 1.4:
+
+| script | paper | command |
+|---|---|---|
+| `margins_odd.py` | proof input: the margins and the exception set for odd a ≤ 5001 (reads `runs/cert_za.jsonl`) | `python margins_odd.py 5001 direct` |
+| `cert_za.py` | proof input: the Arb certificates (load-bearing at a = 59, 61, 67, 91, 95, 111, 117, 135, 147, 195) | see its docstring |
+| `vodd.py` | checks of Lemma 10_0, Lemma S and the generic primes on exact data (imports `../../v/vlib.py`) | see its docstring |
+| `sharpS_check.py` | a numerical test of a sharper special-prime bound (not used by the proof; needs `oddp_check.jsonl` from `../../v/oddp_check.py S`) | `python sharpS_check.py` |
+
+`ext/ti2/` — Theorem 1.5 (the Ti₂ family):
+
+| script | paper | command |
+|---|---|---|
+| `margins_ti2.py` | proof input: margins, exception sets, and the uniform tail from n₀ = 599 | `python margins_ti2.py` |
+| `margins_ti.py` | the earlier margin table (superseded by `margins_ti2.py`) | `python margins_ti.py` |
+| `step1_parity.py` | the exact check of the sign rule for the reflection lemma | `python step1_parity.py` |
+| `lemmaP_ti.py` | Lemma P′_n on exact data | `python lemmaP_ti.py` |
+| `wprofile.py`, `wlib.py`, `energy.py`, `umach_core.py` | profiles and scores of the χ₄ machine, the energy model (checks; `wprofile.py` uses `../../fastcontent.py`) | see docstrings |
+
+`runs/` in each folder holds the outputs quoted in the paper.
+
 ## Rigour
 
 The certificates (`cert_U.py`, `dual_ref.py`, `dualcert_arb2.py`) and `facts_M1.py` feed the proofs: floating point is

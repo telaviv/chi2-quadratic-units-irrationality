@@ -12,6 +12,10 @@
 % {3,5,7,9,15}); Theorem U (m = 2, the golden-ratio form) is Corollary 1.2. Source of the new material:
 % schanuel/four_exp/strong4/pilot_V/PROOF_V.md (after its gate referee REFEREE_V and change log). The U-only version
 % is kept in old_U_only/.
+% Revision of 2026-11-08 (extensions): Theorem V_odd (odd a, all norm -1 units outside 47) and Theorem V_i (Ti_2 at
+% norm +1 units), new Section 8. Sources: handoff/log2log3/pilot_za/PROOF_VODD.md (gate referee REFEREE_VODD) and
+% schanuel/four_exp/strong4/pilot_w3/PROOF_TI2.md (gate referee REFEREE_TI2), with their change logs. Numbers recomputed
+% in ext_checks/. Backup of the text before this revision: old_U_only/main_before_ext.tex.
 % ---------------------------------------------------------------------------
 
 % ---------------------------------------------------------------------------
@@ -57,6 +61,8 @@
 \newcommand{\Vand}{\operatorname{Vand}}
 \newcommand{\artanh}{\operatorname{artanh}}
 \newcommand{\ccell}{c_{\mathrm{cell}}}
+\newcommand{\Ti}{\operatorname{Ti}}
+\newcommand{\Cl}{\operatorname{Cl}}
 \newcommand{\lean}[1]{{\def\_{\textunderscore\allowbreak}\texttt{#1}}}
 
 \begin{document}
@@ -64,14 +70,17 @@
 % Title: the owner's final choice (2026-11-07). Theorem V is the headline (the title's m >= 16 is a clean subrange of
 % {m >= 2} minus {3,5,7,9,15}); the golden-ratio statement is the headline corollary. The title states what is proved,
 % not a novelty claim: the tail m >= 4 346 237 is due to DHK 2022 (stronger conclusion).
+% TITLE: after the 2026-11-08 extensions (Section 8) a broader title is possible, e.g. "chi_2 is irrational at all but 47
+% units of norm -1 of real quadratic fields" (or one that also mentions Ti_2 at units of norm +1). Kept unchanged: the
+% title decision is the owner's.
 \title[$\chi_2(\sqrt{m^2+1}-m)$ is irrational for every $m\ge16$]{\texorpdfstring{$\chi_2\bigl(\sqrt{m^2+1}-m\bigr)$
 is irrational for every $m\ge16$}{chi\_2(sqrt(m\textasciicircum 2+1) - m) is irrational for every m >= 16}}
 
 \author{Shawn Krisman}
 
 \subjclass[2020]{Primary 11J72; Secondary 33B30, 11R27, 31A15, 41A21, 68V20}
-\keywords{golden ratio, Legendre chi function, dilogarithm, irrationality, Hankel determinants, units of real quadratic
-fields, logarithmic potential theory, formal verification, Lean}
+\keywords{golden ratio, Legendre chi function, dilogarithm, inverse tangent integral, Clausen function, irrationality,
+Hankel determinants, units of real quadratic fields, logarithmic potential theory, formal verification, Lean}
 
 \date{\today}
 
@@ -92,9 +101,15 @@ most $4/3$ per $h^2$; the odd primes dividing $m$ and the prime $2$ cost explici
 bounded by a discrete log-gas argument against a dual certificate checked in interval arithmetic at $m=2$, and a shift
 lemma carries this bound to every $m$. Nonvanishing comes from a reduction modulo a prime $\ell=(h+1)/3$. The theorem,
 for every $m$, is formalised in Lean~4 with Mathlib, using only Lean's three standard axioms.
+With one new $2$-adic lemma the method extends to the units $(\sqrt{a^2+4}-a)/2$ with $a$ odd, and so shows that
+$\chi_2(\eps)\notin\QQ$ for every unit $\eps\in(0,1)$ of norm $-1$ of a real quadratic field outside an explicit set of
+$47$ units; through an identity that turns the $\chi_4$-twisted machine at $z$ into the machine above at $iz$, it also
+shows that the inverse tangent integral $\Ti_2(m-\sqrt{m^2-1})$ is irrational for $m\ge4$, $m\notin\{5,7,9,15\}$, and
+likewise $\Ti_2$ at the units of norm $+1$ with odd trace $n\ge71$ outside $17$ values; these two extensions are not
+formalised.
 We also prove a two-point statement at units of a family of biquadratic fields: for
 $n\in\{730,740,750,760,800,1000\}$, either $\chi_2(z)+\chi_2(w)\notin\QQ$ or $\chi_2(z)-\chi_2(w)\notin\sqrt{n^2-16}\,\QQ$,
-where $z>w$ are the two roots in $(0,1)$ of $X^4+nX^3+2X^2-nX+1$. This second result is computer-assisted and not
+where $z>w$ are the two roots in $(0,1)$ of $X^4+nX^3+2X^2-nX+1$. This two-point result is computer-assisted and not
 formalised.
 \end{abstract}
 
@@ -159,6 +174,66 @@ products of logarithms by dilogarithm identities that preserve the symbol (Propo
 $m=2$ have a Landen closed form. The method does not reach $m=1$, where
 $\chi_2(\sqrt2-1)=\pi^2/16-\frac14\log^2(1+\sqrt2)$, nor $m\in\cE$ (Section~\ref{sec:margins}).
 
+\emph{Extensions.} Every unit $\eps\in(0,1)$ of norm $-1$ of a real quadratic field is
+\[
+  \alpha_a:=\frac{\sqrt{a^2+4}-a}2,\qquad a:=\eps^{-1}-\eps\in\ZZ_{\ge1},
+\]
+since $\eps$ and $-1/\eps$ are the roots of $X^2+aX-1$; and $\alpha_{2m}=z_m$. So Theorem~\ref{thm:V} is the case of
+even $a$. For odd $a$ the prime $2$ is inert in $\QQ(\sqrt{a^2+4})$ and $1-\alpha_a^2=a\alpha_a$ is a $2$-adic unit;
+one new lemma at the prime $2$ (Lemma~\ref{lem:tenzero}) and ten further dual certificates give the following
+(Section~\ref{sec:odd-a}). Let $\cE_{\mathrm{odd}}$ be the following set of $39$ odd numbers:
+\[
+  \cE_{\mathrm{odd}}:=\{5,7,9,\dots,57\}\cup\{63,65,69,75,77,81,85,87,93,99,105,165\}
+\]
+
+\begin{theorem}[Theorem V$_{\mathrm{odd}}$]\label{thm:Vodd}
+For every odd integer $a\ge5$ with $a\notin\cE_{\mathrm{odd}}$, the number $\chi_2\bigl((\sqrt{a^2+4}-a)/2\bigr)$ is
+irrational.
+\end{theorem}
+
+\begin{corollary}[units of norm $-1$]\label{cor:normminus}
+Let $\eps\in(0,1)$ be a unit of norm $-1$ of a real quadratic field, and $a:=\eps^{-1}-\eps$. If
+$a\notin\{1,3\}\cup\cE_{\mathrm{odd}}\cup\{2,6,10,14,18,30\}$, then $\chi_2(\eps)\notin\QQ$. The excluded set consists of
+$47$ units.
+\end{corollary}
+
+The corollary is Theorems~\ref{thm:V} and~\ref{thm:Vodd} together ($a=2m$ with $m\in\{1\}\cup\cE$ gives the six even
+exceptions). The first odd $a$ covered are $59,61,67,71,73,79,83,89,91,95,\dots$, and every odd $a>165$ is covered; for
+example $\chi_2\bigl((\sqrt{3485}-59)/2\bigr)\notin\QQ$.
+
+The same machine with the odd character $\chi_4$ modulo $4$ on the atoms reaches the units of norm $+1$. Let
+$\Ti_2(x):=\sum_{k\ge0}(-1)^kx^{2k+1}/(2k+1)^2$ be the inverse tangent integral \cite[Ch.~2]{Lewin1981}, and let $\cE_i$ be the following set of $17$ numbers:
+\[
+  \cE_i:=\{75,77,81,85,87,91,93,95,99,105,111,117,123,135,147,165,195\}.
+\]
+
+\begin{theorem}[Theorem V$_i$]\label{thm:Vi}
+\begin{enumerate}
+\item[(a)] For every integer $m\ge4$ with $m\notin\{5,7,9,15\}$, the number $\Ti_2(m-\sqrt{m^2-1})$ is irrational.
+\item[(b)] For every odd integer $n\ge71$ with $n\notin\cE_i$, the number $\Ti_2\bigl((n-\sqrt{n^2-4})/2\bigr)$ is
+  irrational. In particular this holds for every odd $n\ge197$.
+\end{enumerate}
+\end{theorem}
+
+The points are the units $\beta_n:=(n-\sqrt{n^2-4})/2\in(0,1)$ of norm $+1$, with trace $n$ ($n=2m$ in (a)); every unit
+of norm $+1$ in $(0,1)$ is one of them. With $\theta:=\arctan\beta_n$ one has $\sin2\theta=2/n$ and Lewin's formula
+\[
+  \Ti_2(\tan\theta)=\theta\log\tan\theta+\tfrac12\bigl(\Cl_2(2\theta)+\Cl_2(\pi-2\theta)\bigr),
+\]
+so Theorem~\ref{thm:Vi}
+concerns Clausen values at the angles $2\theta=\arcsin(2/n)$, which for $n\ge5$ are not rational multiples of $\pi$
+(Section~\ref{sec:closed-ext}). An example is $\Ti_2(4-\sqrt{15})\notin\QQ$ ($\sin2\theta=\frac14$). The proof rests on
+the identity $\chi_4(t)=-i\cdot i^t$ for odd $t$: the $\chi_4$-twisted machine at $\beta_n$ is $-i$ times the machine of
+Theorem~\ref{thm:V} at the complex point $i\beta_n$, which the conjugation fixing $i$ sends to $-1/(i\beta_n)$
+(Section~\ref{sec:Ti2}). Not covered are $n=3$, $n=4$ (where
+$\Ti_2(2-\sqrt3)=\frac23G-\frac\pi{12}\log(2+\sqrt3)$ is classical, $G$ Catalan's constant), $n=6,10,14,18,30$ and the
+odd $n\le69$. So, outside an explicit set of $57$ units, $\Ti_2(\eps)\notin\QQ$ for every unit $\eps\in(0,1)$ of norm
+$+1$ of a real quadratic field.
+
+As for Theorem~\ref{thm:V}, the criterion of \cite{DHK2022b} gives stronger conclusions far out, for $a\ge8\,692\,474$
+and for $n\gtrsim8.69\cdot10^6$ (Section~\ref{sec:closed-ext}). Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} and
+Corollary~\ref{cor:normminus} are not formalised; each extension was checked by one AI referee.
+
 \subsection{Context}\label{sec:context}
 % Related work for m = 2 from schanuel/four_exp/strong4/pilot_U/novelty/NOVELTY.md (finished version, Sections 2--5, read
 % 2026-11-07 by the whole-chain referee of the U-only version). For general m: pilot_V/PROOF_V.md Section 10 and
@@ -169,6 +244,12 @@ criterion (Section~\ref{sec:lit}). So the infinite part of Theorem~\ref{thm:V} i
 result that covers any $m$ with $2\le m\le4\,346\,236$. For $m\ge3$ that search was short: our own notes, two web
 searches, and a reading of the criteria listed in Section~\ref{sec:lit}; it did not cover MathSciNet, and no expert has
 been consulted. Our method also covers the range of \cite{DHK2022b} independently, with the weaker conclusion.
+
+\emph{The extensions.} For Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} the searches were of the same limited kind (our own
+notes, two web searches for each, and for $\Ti_2$ an earlier sweep of arXiv for irrationality results on related
+values); they found closed-form identities but no irrationality result for $\chi_2$ at the units $\alpha_a$ with odd
+$a$, or for $\Ti_2$ or $\Cl_2$ at the points $\beta_n$, below the thresholds of \cite{DHK2022b}
+(Section~\ref{sec:closed-ext}).
 
 \emph{The case $m=2$.} We have not found Corollary~\ref{thm:U}, or the irrationality of any number
 $\pi^2+c\log^2\varphi$ with $c\in\QQ\setminus\{0\}$, in the literature, and as far as we can see it does not follow
@@ -303,7 +384,7 @@ axioms (\lean{propext}, \lean{Classical.choice}, \lean{Quot.sound}); there is no
 \lean{native\_decide}. The formal proof of the analytic bound follows the lattice-energy route of \cite{Chi2Paper}, not
 the route of Section~\ref{sec:analytic}, and uses its own, coarser certificate; Section~\ref{sec:lean} describes both
 differences. For general $m$ the formal proof transports this certificate by the shift lemma; the exception set is
-the same $\cE$.
+the same $\cE$. Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} and Corollary~\ref{cor:normminus} are not formalised.
 
 \subsection{Two points}
 Section~\ref{sec:M1} transposes the proof once more, to units of the biquadratic fields $\QQ(z)$ where $z$ is a root of
@@ -329,12 +410,14 @@ Sections~\ref{sec:equil}--\ref{sec:cert} and Section~\ref{sec:nonvan} are that v
 only $\sigma(z)=-1/z$ and that $z$, $y$, $1-y$ are units at the primes concerned, and they hold verbatim for every $m$
 except where the text says otherwise. New in this version are Lemma~S (Section~\ref{sec:special}), Lemma~$10_\nu$
 (Section~\ref{sec:two}), the shift lemma (Section~\ref{sec:shift}), the hypothesis $\ell\nmid m$ in Lemma~P$'$, and the
-margins (Section~\ref{sec:margins}).
+margins (Section~\ref{sec:margins}). The latest revision adds Section~\ref{sec:ext} (Theorems~\ref{thm:Vodd}
+and~\ref{thm:Vi}) and Section~\ref{sec:closed-ext}; it changes no statement about Theorem~\ref{thm:V},
+Corollary~\ref{thm:U} or Theorem~\ref{thm:M1}.
 
 Section~\ref{sec:construction} sets up the functional, proves the pole expansion and the reflection, and states the
 criterion. Sections~\ref{sec:odd} and~\ref{sec:two} bound the denominators, Section~\ref{sec:analytic} bounds the size,
 Section~\ref{sec:nonvan} proves nonvanishing, and Section~\ref{sec:proof} assembles the proof and computes the margins.
-Section~\ref{sec:closed} discusses closed forms and compares Theorem~\ref{thm:V} with known criteria.
+Section~\ref{sec:ext} proves the two extensions as deltas to this proof. Section~\ref{sec:closed} discusses closed forms and compares Theorem~\ref{thm:V} with known criteria.
 Section~\ref{sec:M1} treats two points, Section~\ref{sec:lean} describes the formalisation, and Section~\ref{sec:comp}
 lists the computations and the numerical evidence.
 
@@ -1293,6 +1376,355 @@ Theorem~\ref{thm:V} does not need.
 \end{remark}
 
 % ===========================================================================
+\section{Extensions: the other units of norm \texorpdfstring{$-1$}{-1}, and the inverse tangent integral}\label{sec:ext}
+% ===========================================================================
+% Sources: pilot_za/PROOF_VODD.md (Sections 0-4, change log) and pilot_w3/PROOF_TI2.md (Sections 0-8, change log).
+% Every number below was recomputed in ext_checks/ (ext_numbers.py, side_conditions.py, karamata_check.py, and a
+% re-run of the ten load-bearing certificates with a verbatim copy of cert_za.py).
+
+Both extensions are deltas to the proof of Theorem~\ref{thm:V}: every lemma of
+Sections~\ref{sec:construction}--\ref{sec:nonvan} not named below holds verbatim, with the data indicated. We extend the
+notation $c_2(\nu):=|\nu-2|\frac{\log2}4$ to $\nu=0$, so $c_2(0)=\frac12\log2$.
+
+\subsection{Odd \texorpdfstring{$a$}{a}: Theorem V\texorpdfstring{$_{\mathrm{odd}}$}{\_odd}}\label{sec:odd-a}
+\emph{Data.} Let $a\ge1$ be odd, $d:=a^2+4$, $\KK:=\QQ(\sqrt d)$ and $z:=\alpha_a=(\sqrt d-a)/2$. Then
+\[
+  z^2+az-1=0,\qquad\sigma(z)=-1/z,\qquad y:=z^2,\qquad 1-y=az .
+\]
+Here $z\in\cO_\KK$ but $z\notin\ZZ[\sqrt d]$; as in Section~\ref{sec:nonvan}, every valuation is taken in $\cO_\KK$. Since
+$d\equiv5\bmod8$, writing $d=f^2d_0$ with $d_0$ squarefree gives $f$ odd and $d_0\equiv5\bmod8$, so \emph{$2$ is inert in
+$\KK$}. Since $\gcd(a,a^2+4)=1$, at every odd prime $p\nmid a$ (including the primes dividing $d$) the elements $z$, $y$,
+$1-y$ are units, and at an odd prime $p\mid a$ we have $v_p(1-y)=v_p(a)$. At the prime above $2$, $z$ and $1-y=az$ are
+units: $\nu=0$.
+
+\emph{What holds verbatim} (with $2m$ replaced by $a$): Lemma~\ref{lem:pole}, Lemma~\ref{lem:R} and
+Corollary~\ref{cor:R} (they use only $\sigma(z)=-1/z$), so $\Delta_h\in\QQ[X]$; Lemmas~\ref{lem:atom}--\ref{lem:nine}
+and Theorem~\ref{thm:A} at odd $p\nmid a$; Lemma~\ref{lem:S} at odd $p\mid a$ with $e:=v_p(a)$ (its proof uses only
+$v_p(1-y)=e$); Theorem~\ref{thm:B} and the shift lemma, since $\alpha_a\le\alpha_5=0.1925\ldots<\sqrt5-2$ for $a\ge5$,
+with
+\[
+  L(a):=\log\frac{\sqrt5-2}{\alpha_a}=\log\frac{a+\sqrt{a^2+4}}{4+\sqrt{20}},
+\]
+so that $\Phi\le\Phi_U-\frac12L(a)$ at $z=\alpha_a$, with $\ccell=5.38+1.01L(a)$; and Lemma~\ref{lem:P} for primes
+$\ell\ge7$ with $\ell\nmid a$. In the setting of Lemma~\ref{lem:P} the units are now $1-y=az$ and $1-z^{-2}=-a/z$, which
+are $\fl$-units if and only if $\ell\nmid a$; for $\ell\mid d$ we have $\sqrt d\equiv0$, $z\equiv-a/2$, $z^2\equiv-1$
+and $1-z^{\pm2}\equiv2$ modulo $\fl$, also at the primes dividing the index of $\ZZ[\sqrt d]$ (for example $a=29$,
+$\ell=13$, $d=5\cdot13^2$). The only new ingredient is the prime $2$ at $\nu=0$.
+
+\begin{lemma}[Lemma~$10_0$]\label{lem:tenzero}
+Let $a$ be odd, $\fP$ the prime of $\KK$ above $2$ and $v:=v_\fP$ with $v(2)=1$. In the notation of
+Section~\ref{sec:two} (rescaling, anchored basis, $G_{ij}=\tilde\Lambda_X(a_ib_j)$), for $i,j<h$:
+\begin{enumerate}
+\item[(L)] if $\pi=i+j-K\ge1$, then $v(G_{ij})\ge1-\pi$; if $\pi=0$, then $G_{ij}=0$;
+\item[(U)] if $N_0=K-1-i-j\ge1$, then $v(G_{ij})\ge2-N_0+s_2(N_0)$; if $N_0=0$, then $v(G_{ij})=2$.
+\end{enumerate}
+Consequently $n_2\le h^2/2+h$ for every even $h$, so the prime $2$ costs at most $c_2(0)=\frac12\log2$ per $h^2$.
+\end{lemma}
+
+\begin{proof}
+The rescaling $\Delta_h=2^{-3h}\tilde\Delta_h$ and the anchored basis do not involve $z$. Since $2$ is inert, $v$ is
+integer-valued and restricts to $v_2$ on $\QQ$, so $n_2=-v_2(\Delta_h)=3h-v(\tilde\Delta_h)$ for the rational polynomial
+$\Delta_h$. In the proof of Lemma~\ref{lem:tennu} the quantity $\nu$ enters only through $v(y^b/(1-y)^{b+1})=-\nu(b+1)$
+in (L) and $v(\eta)=\nu$ for $\eta=y-1$ in (U). The other inputs are independent of $z$ and of $\nu$: the Newton
+coefficients of $s\mapsto(2s+1)^c$ have valuation $\ge2b-s_2(b)$; $S(\zeta)$ has odd denominators and powers of the
+unit $z$, so $v(S(\zeta))\ge0$; the Newton coefficients $\gamma_r$ of $g$ (called $\gamma_a$ there) satisfy
+$v_2(\gamma_r)\ge2r-s_2(r)$; and $v_2(N_0!)=N_0-s_2(N_0)$. Here $y$ and $1-y=az$ are
+$2$-adic units, so the proof applies with $\nu=0$ (it never used $\nu\ge1$), and the bounds of Lemma~\ref{lem:tennu} at
+$\nu=0$ read: in (L), $1-\pi+\min_{b<\pi}(2b-s_2(b))=1-\pi$ (at $b=0$); in (U),
+$\min\{2-N_0+s_2(N_0),\ 2-N_0+s_2(N_0)+\min_{r<N_0}(2r-s_2(r))\}=2-N_0+s_2(N_0)$. The cases $\pi=0$ and $N_0=0$ are as
+there.
+
+\emph{The content.} Put $g(s):=\min(s-K+3,\,K+1-s)$, a concave function. Then $v(G_{ij})\ge g(i+j)$ for all $i,j<h$: for
+$s=i+j\le K-2$, (U) gives at least $2-N_0+1=s-K+4>g(s)$ (as $s_2(N_0)\ge1$); for $s=K-1$ the valuation is $2=g(s)$; for
+$s=K$ the entry is $0$; for $s\ge K+1$, (L) gives $K+1-s=g(s)$. For a permutation $\sigma$ of $\{0,\dots,h-1\}$ the vector
+$(i+\sigma(i))_i$ is majorised by $(2i)_i$ (proof of Proposition~\ref{prop:ntwo}), so Karamata's inequality gives
+$\sum_ig(i+\sigma(i))\ge\sum_ig(2i)$. With $K=h+1$, $g(2i)=2i-h+2$ for $2i\le h$ and $g(2i)=h+2-2i$ for $2i\ge h+2$, so
+\[
+  \sum_{i<h}g(2i)=\bigl(\tfrac h2+1\bigr)\bigl(2-\tfrac h2\bigr)+\bigl(\tfrac h2-1\bigr)\bigl(2-\tfrac h2\bigr)=2h-\tfrac{h^2}2 .
+\]
+By the Leibniz expansion $v(\tilde\Delta_h)\ge2h-h^2/2$, hence $n_2\le h^2/2+h$.
+\end{proof}
+
+The minorant is a tent around $s=K$, with slopes $+1$ and $-1$, instead of the monotone $\hat g$ of
+Proposition~\ref{prop:ntwo}; diagonal rescalings cannot improve a Leibniz bound of this kind. With $c_2(0)=\frac12\log2$
+the formula $c_2(\nu)=|\nu-2|\frac{\log2}4$ of Proposition~\ref{prop:ntwo} holds for every $\nu\ge0$.
+
+\emph{Checks.} The bounds (L), (U) were checked on the exact Gram matrices at $a=1,3,5,11$ for $h=8,16,24,32$, and by an
+independent implementation at $a\in\{1,3,5,11,59,135,165\}$ for $h\in\{8,16,\dots,48\}$, with no violation and with
+equality attained in both. The exact $n_2$ depends only on $\nu$: for every odd $a$ tested, $n_2=104,352,737,1248$ at
+$h=16,32,48,64$, against the bound $144,544,1200,2112$. The share $n_2\log2/h^2$ falls from $0.282$ to $0.211$ over
+this range, and to $0.195$ at $h=128$ (a proved lower bound for $n_2$); a three-term fit suggests the limit
+$\frac14\log2$, half the proved constant. We have not proved this. Lemma~\ref{lem:S} and Lemma~\ref{lem:P} were checked
+on exact data at odd $a$ (for example $a=3,9,15,21$ for Lemma~\ref{lem:S}, and Lemma~\ref{lem:P} at $a=1,3,5,7,9,11,29,59,135$,
+including ramified $\ell$ and the index prime $\ell=13$ at $a=29$), with no violation; at $a=7$, $\ell=7$ (so $\ell\mid a$)
+Lemma~\ref{lem:P} fails, as it must. For $p\ge K$ dividing $a$ (for example $p=59$ at $a=59$) the exact values are
+$n_p=(h-2)^2/4$, so the term $e(h-2)^2/4$ of Lemma~\ref{lem:S} is attained.
+
+\emph{The margins.} The proof of Section~\ref{sec:proof}, with $\mathcal H:=\{3\ell-1:\ell\ge37\text{ prime},\ \ell\nmid
+a,\ \ell^2\nmid b\}$, Lemma~\ref{lem:tenzero} at $p=2$ and $\Phi(a)$ an admissible analytic bound at $z=\alpha_a$, gives
+\begin{equation}\label{eq:Modd}
+  \limsup_{h\in\mathcal H}\frac1{h^2}\log|F_h(T)|\le M_{\mathrm{odd}}(a):=\Phi(a)+\tfrac43+\tfrac12\log2
+  +\sum_{p^e\parallel a}c_p(e),
+\end{equation}
+where $\Phi(a)$ is either $\Phi_U-\frac12L(a)$ (shift lemma) or the value of a direct certificate at $\alpha_a$.
+
+\begin{proposition}\label{prop:marginsodd}
+For odd $a\ge5$, with the shift lemma and the ten certificates of Table~\ref{tab:certodd}, $M_{\mathrm{odd}}(a)<0$ if and
+only if $a\notin\cE_{\mathrm{odd}}$.
+\end{proposition}
+
+\begin{proof}
+Since $a+\sqrt{a^2+4}>2a$, $-\frac12L(a)<-\frac12\log2-\frac12\log a+\frac12\log(4+\sqrt{20})$, and $c_2(0)=\frac12\log2$
+cancels the $-\frac12\log2$. For odd $p$, $\frac1{4(p-1)}\le\frac18\le\frac e8$, so $\sum_{p^e\parallel a}c_p(e)\le
+\frac38\log a$. Hence
+\[
+  M_{\mathrm{odd}}(a)<C_0-\tfrac18\log a,\quad C_0:=\Phi_U+\tfrac43+\tfrac12\log(4+\sqrt{20})=1.0425084777\ldots,
+\]
+which is negative for $a>e^{8C_0}=4188.3737\ldots$. For the odd $a$ with $5\le a\le5001$ we evaluate $M_{\mathrm{odd}}(a)$
+in Arb at $200$ bits. With the shift lemma alone there are $49$ values with $M_{\mathrm{odd}}(a)\ge0$, the largest $195$.
+Ten of them have negative margins with the certificates of Table~\ref{tab:certodd}; the remaining $39$ are
+$\cE_{\mathrm{odd}}$, where the margins are positive, also with the further certificates we computed there (for
+example $+0.0088$ at $a=165$ and $+0.4580$ at $a=11$, where $\alpha_{11}=\varphi^{-5}$, both with a direct certificate).
+\end{proof}
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}rcccc@{}}
+\toprule
+$a$ & $M_{\mathrm{odd}}(a)$, shift lemma & certified $\Phi(a)\le$ & $M_{\mathrm{odd}}(a)\le$ & $\ccell\le$\\
+\midrule
+59 & $+0.0406$ & $-2.730260$ & $-0.013393$ & $8.21$\\
+61 & $+0.0318$ & $-2.746986$ & $-0.022232$ & $8.24$\\
+67 & $+0.0072$ & $-2.794044$ & $-0.047037$ & $8.34$\\
+91 & $+0.0492$ & $-2.947508$ & $-0.005370$ & $8.65$\\
+95 & $+0.0455$ & $-2.969059$ & $-0.009198$ & $8.69$\\
+111 & $+0.0275$ & $-3.047021$ & $-0.027329$ & $8.85$\\
+117 & $+0.0427$ & $-3.073383$ & $-0.012169$ & $8.90$\\
+135 & $+0.0541$ & $-3.145029$ & $-0.000887$ & $9.05$\\
+147 & $+0.0133$ & $-3.187657$ & $-0.041735$ & $9.13$\\
+195 & $+0.0156$ & $-3.329068$ & $-0.039558$ & $9.42$\\
+\bottomrule
+\end{tabular}
+\caption{The ten certificates on which Theorem~\ref{thm:Vodd} depends ($N=1600$, $r=32$; upper endpoints of Arb
+balls, rounded up). The second column is the margin with the shift lemma alone, rounded; it is positive, so these $a$
+need their certificate. The last column is the cell constant of Theorem~\ref{thm:B}(ii) for $h\ge100$.}\label{tab:certodd}
+\end{table}
+
+\emph{The certificates.} They are produced by the program of Section~\ref{sec:cert} with only $z$ changed to $\alpha_a$;
+at $a=4$ it reproduces the value $\Phi_U$ of Theorem~\ref{thm:cert} bit for bit. For this paper all ten were re-run, and
+they reproduced the stored upper endpoints bit for bit; the AI referee of Theorem~\ref{thm:Vodd} had re-run four of them
+($a=59,91,135,195$) with the same result, and an independent floating-point primal computation lies below every
+certified value, by about $2.7\cdot10^{-4}$. The side conditions of Theorem~\ref{thm:B} hold for each of the ten: at
+$x=4$, $F_\mu-\lambda\le-8.87$ (required: $-1.13$), the slope of the tail bound is at most $-3.57$ (required: $-0.94$),
+and on $[-1/h,0]$, $h\ge100$, $F_\mu-\lambda\le2\log(2+1/h)+1+|\log z|/h-\lambda\le\ccell$ with $\ccell$ as in
+Table~\ref{tab:certodd}; $\ccell$ enters only the $O(h)$ term $E_{\mathrm{an}}(h)$. The other covered $a$ need only
+the shift lemma, for instance $M_{\mathrm{odd}}(101)\le-0.099782$. The margins at $a=135$ and $a=91$ are rigorous but thin,
+so the effective $h_0$ there is large; $a=123$ has $M_{\mathrm{odd}}(123)\le-0.000034$ with the shift lemma alone.
+
+\begin{proof}[Proof of Theorem~\ref{thm:Vodd}]
+Let $a\ge5$ be odd with $a\notin\cE_{\mathrm{odd}}$, and suppose $T=\chi_2(\alpha_a)=a'/b$. For $h\in\mathcal H$,
+Lemma~\ref{lem:P} with $\ell\nmid a$ gives $F_h(a'/b)\ne0$. Along $\mathcal H$ the odd primes $p\nmid a$ contribute at
+most $\frac43$ (Theorem~\ref{thm:A}), the odd $p\mid a$ at most $c_p(v_p(a))$ (Lemma~\ref{lem:S}), the prime $2$ at most
+$\frac12\log2$ (Lemma~\ref{lem:tenzero}), and the size at most $\Phi(a)$ (Theorem~\ref{thm:B} with the shift lemma, or
+with the certificate of Table~\ref{tab:certodd}). So the $\limsup$ is at most $M_{\mathrm{odd}}(a)<0$
+(Proposition~\ref{prop:marginsodd}), contradicting Proposition~\ref{prop:criterion}.
+\end{proof}
+
+\begin{remark}
+The cases $a=1$ ($\varphi^{-1}$) and $a=3$ are not covered: there $\alpha_a>\sqrt5-2$, so the shift lemma does not apply,
+and numerically the margins are positive. Two improvements, neither proved, are suggested by the data: the $2$-adic
+constant $c_2(0)=\frac14\log2$, and the removal of the term $\frac1{4(p-1)}\log p$ from $c_p(e)$ (cf.\
+Remark~\ref{rem:closeE}); for the latter the bound $n_p\le2h\lev(p)+v_p(h!)+e(h-2)^2/4$ at special primes held in every
+one of $39$ exact data points. Each would shrink $\cE_{\mathrm{odd}}$; $a=11$ ($\varphi^{-5}$) seems out of reach of this
+machine even with both.
+\end{remark}
+
+\subsection{The inverse tangent integral: Theorem V\texorpdfstring{$_i$}{\_i}}\label{sec:Ti2}
+\emph{Data.} Let $n\ge3$, $\KK:=\QQ(\sqrt{n^2-4})$, $\beta:=\beta_n=(n-\sqrt{n^2-4})/2$ and $u_n:=1/\beta_n=(n+\sqrt{n^2-4})/2$.
+Then $\beta^2-n\beta+1=0$ and $\sigma(\beta)=1/\beta$, so $\beta$ is a unit of norm $+1$; $\beta_{2m}=m-\sqrt{m^2-1}$. Let
+$\chi_4$ be the nontrivial character modulo $4$, so that $\Ti_2(x)=\sum_{t\text{ odd}\ge1}\chi_4(t)x^t/t^2$, and define the
+$\chi_4$-twisted machine with the poles and atoms of Section~\ref{sec:data}:
+\[
+  \cM^\natural(f):=\sum_{t\text{ odd}\ge1}\chi_4(t)\beta^tf'(t),\qquad\Lambda^\natural(g):=\cM^\natural(g/D),\qquad
+  T^\natural:=\Ti_2(\beta).
+\]
+Put $w:=i\beta$, $\cF:=\KK(i)$, and let $\cM_w$, $\Lambda_w$, $A_w$, $B_w$, $P_w$, $\Delta_{h,w}$ be the objects of
+Section~\ref{sec:construction} with $z$ replaced by $w$ (the series converge absolutely since $|w|=\beta<1$, and
+Lemma~\ref{lem:pole} holds at $w$ with the same proof, with $T$ replaced by $\chi_2(w)$). Then
+\[
+  y:=w^2=-\beta^2,\qquad 1-y=1+\beta^2=n\beta .
+\]
+This is the only change of data: in Theorem~\ref{thm:V}, $1-y=2mz$.
+
+\begin{lemma}[the identity]\label{lem:identity}
+For every rational function $f$ in the span of Section~\ref{sec:construction}, $\cM^\natural(f)=-i\,\cM_w(f)$. Hence
+$\Lambda^\natural=A^\natural+T^\natural B^\natural$ with $A^\natural:=-iA_w$ and $B^\natural:=B_w$, both with values in
+$\KK$, and
+\[
+  \Delta^\natural_h(X):=\det\bigl(A^\natural(t^{i+j})+XB^\natural(t^{i+j})\bigr)_{i,j<h}=(-i)^h\,\Delta_{h,w}(iX)\in\QQ[X].
+\]
+\end{lemma}
+
+\begin{proof}
+For odd $t$, $\chi_4(t)=i^{t-1}=-i\cdot i^t$, so $\chi_4(t)\beta^t=-i\,w^t$, which gives the first claim. Also
+$\chi_2(w)=\sum_{t\text{ odd}}i^t\beta^t/t^2=i\,\Ti_2(\beta)$, so $-i\Lambda_w=-iA_w+\Ti_2(\beta)B_w$. For even $x$,
+$w^x=(-1)^{x/2}\beta^x\in\KK$; so $B_w$ takes values in $\KK$, and so does $A^\natural$: by the computation of
+Lemma~\ref{lem:pole} applied to $\cM^\natural$ directly (using $\chi_4(n+x)=i^x\chi_4(n)$ for even $x$), its pole part
+consists of $(-1)^{x/2}\beta^x$ times partial sums $\sum\chi_4(n)\beta^n/n^2$, and its polynomial part
+$\sum_{t\text{ odd}}\chi_4(t)\beta^tR'(t)$ is a rational function of $\beta$ with rational coefficients. The determinant
+identity follows from $A^\natural+XB^\natural=-i(A_w+iXB_w)$.
+
+\emph{Reflection.} Extend $\sigma$ to $\cF$ by $\sigma(i)=i$. Then $\sigma(w)=i/\beta=-1/w$. The proofs of
+Lemma~\ref{lem:R} and Corollary~\ref{cor:R} use only $\sigma(z)=-1/z$ and that the coefficients are rational functions of
+$z$ with rational coefficients (they are algebraic identities, so $|\sigma(w)|>1$ is irrelevant). Hence
+$\Delta_{h,w}\in\cF^\sigma[X]=\QQ(i)[X]$, so $\Delta^\natural_h\in\QQ(i)[X]$. Its coefficients also lie in $\KK$, and
+$\KK\cap\QQ(i)=\QQ$.
+\end{proof}
+
+\begin{remark}[the sign rule]\label{rem:signrule}
+More generally, for weight $k$, atoms carrying a periodic character $\chi$ with parity $s_\chi:=\chi(-t)/\chi(t)$, and a
+unit $z$ of norm $N(z)$, the analogue of Lemma~\ref{lem:R} reads $\sigma(a(f))=\eta\,a(\tilde f)$,
+$\sigma(b(f))=-b(\tilde f)$ with $\eta:=N(z)\,s_\chi(-1)^k$, and the Hankel determinant polynomial lies in $\QQ[X]$ when
+$\eta=-1$; when $\eta=+1$ it has the form $G(\sqrt d\,X)$ with $G\in\QQ[Y]$ and the method proves only $T\notin\sqrt d\,\QQ$.
+(Sketch: for the polynomial part, $S_r(q):=\sum_{t\ge1}\chi(t)q^tt^r$ is rational and $S_r(1/q)=-s_\chi(-1)^rS_r(q)$; for
+the pole part substitute $n\mapsto-n$ in the partial sums.) Theorem~\ref{thm:V} has $(N,s_\chi,k)=(-1,+1,2)$ and
+Theorem~\ref{thm:Vi} has $(+1,-1,2)$, both with $\eta=-1$; for the latter Lemma~\ref{lem:identity} gives a complete
+proof, and only that case is used. The general rule was checked exactly in $64$ cases ($k\le4$, two characters, eight
+units, $h=6$), and in $8$ more for a variant with even atoms.
+\end{remark}
+
+\emph{Valuations.} The coefficients of $\Delta^\natural_h$ and of $\Delta_{h,w}$ differ by powers of $i$, so at every prime
+of $\cF$ their Gauss valuations agree, and since $\Delta^\natural_h\in\QQ[X]$ the common value is the rational one. After
+the factor $-i$, every formula of Sections~\ref{sec:construction}--\ref{sec:nonvan} involves $w$ only through $y=w^2$,
+even powers $w^{2\xi}=(-1)^\xi\beta^{2\xi}$, and $-iw=\beta$; so each lemma may be read at $w$ over $\cF$, or directly in
+$\KK$ with $y=-\beta^2$. We now list what transfers.
+\begin{itemize}
+\item \emph{Odd $p\nmid n$.} $\beta$, $y$ and $1-y=n\beta$ are $p$-units, also for $p\mid n^2-4$ (as $\gcd(n,n^2-4)\mid4$).
+  Lemmas~\ref{lem:atom}--\ref{lem:nine} and Theorem~\ref{thm:A} hold verbatim: at most $\frac43$ per $h^2$.
+\item \emph{Odd $p\mid n$.} Lemma~\ref{lem:S} with $e:=v_p(n)$, since $v_p(1-y)=v_p(n)$.
+\item \emph{The prime $2$.} $\nu:=v(1-y)=v_2(n)$. For even $n=2m$, $\nu=1+v_2(m)\ge1$, and Lemma~\ref{lem:tennu} and
+  Proposition~\ref{prop:ntwo} hold verbatim (at any prime of $\KK$ above $2$, normalised by $v(2)=1$). For odd $n$,
+  $n^2-4\equiv5\bmod8$, so $2$ is inert in $\KK$ and $\nu=0$; Lemma~\ref{lem:tenzero} holds verbatim, read in $\KK$ with
+  $y=-\beta^2$: its proof uses only that $y$ and $1-y$ are $2$-adic units, and $z$-free facts, and the signs
+  $\chi_4(t)=\pm1$ in the partial sums $S(\zeta)$ do not affect their $2$-integrality. In all cases the cost is at most
+  $c_2(v_2(n))$.
+\item \emph{Size.} In the proof of Theorem~\ref{thm:B} the weights enter only through step~2, $|\det\mathbb
+  M_{S,S'}|\le\prod_t(|\chi_4(t)\beta^t|\,\omega_t)^{n_t}$, so the signs never enter, and Theorem~\ref{thm:B} holds for
+  $T^\natural$ at every $0<\beta\le\sqrt5-2$, i.e.\ for $n\ge5$ ($\beta_5=0.2087\ldots$). The shift lemma gives
+  $\Phi\le\Phi_U-\frac12L_i(n)$ with $L_i(n):=\log(u_n/(2+\sqrt5))=\log((\sqrt5-2)/\beta_n)>0$.
+\item \emph{Nonvanishing.} See Lemma~\ref{lem:Pti}.
+\end{itemize}
+
+\begin{lemma}[Lemma~P$'_n$]\label{lem:Pti}
+Let $\ell\ge7$ be prime with $\ell\nmid n$, $h=3\ell-1$, and $c_j:=[X^j]\Delta^\natural_h$. Then $v_\ell(c_0)=-2K$ and
+$v_\ell(c_j)\ge-2K+2j$ for all $j$; hence $\Delta^\natural_h(a'/b)\ne0$ whenever $v_\ell(b)\le1$.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:identity}, $v_\ell(c_j)$ is the valuation of the $j$-th coefficient of $\Delta_{h,w}$ at a prime $\fl$
+of $\cF$ above $\ell$ (normalised by $v_\fl(\ell)=1$). We run the proof of Lemma~\ref{lem:P} at $w$, with
+$\zeta:=w^\ell\bmod\fl$. Since the conjugates of $w$ are $\pm w$ and $\pm1/w$, $\zeta\in\{w,-1/w,-w,1/w\}$ (according to
+the splitting of $\ell$ in $\KK$ and $\ell\bmod4$; for $\ell\mid n^2-4$, $\beta\equiv1/\beta$ and $\zeta=\pm w$), and in
+all cases $\zeta^2\in\{w^2,w^{-2}\}$. So $1-\zeta^{\pm2}$ and $1-w^{\pm2\ell}$ reduce to $1-w^{\pm2}$, and $1-w^2=n\beta$,
+$1-w^{-2}=n/\beta$ are $\fl$-units exactly when $\ell\nmid n$; with $w$, $y$, $1-y$ also units, steps~1--3 of
+Lemma~\ref{lem:P} go through. In steps~4--5 every quantity is a unit for each choice of $\zeta$: $c=\zeta^3/(1-\zeta^2)$,
+$\det M=-64c\zeta^4$, $\one^{\mathsf T}\adj(M)\one=-64\zeta^4$, $U_\gamma\equiv-1$ (independent of the point), and
+$\sum_{\gamma<\ell}w^{-2\gamma}=(1-w^{-2\ell})/(1-w^{-2})\equiv1$ or $-w^2$. Step~6 is unchanged. Index primes are
+handled in $\cO_\cF$ as in Section~\ref{sec:nonvan}.
+\end{proof}
+
+The conclusion of Lemma~\ref{lem:Pti} was checked on the exact $\Delta^\natural_h$ for $\ell=7,11,13$ at $n=4,8,12$,
+and, independently, for one to four primes $\ell\le17$ each at $n=5,9,10,15,21,22,197,199$, covering the four Frobenius classes and ramified $\ell$; at $\ell\mid n$
+($n=21$, $\ell=7$; $n=22$, $\ell=11$; $n=7$, $\ell=7$) it fails, as it must. The identity of Lemma~\ref{lem:identity} was
+checked exactly ($A^\natural=-iA_w$ and $B^\natural=\pm B_w$, the sign depending only on the normalisation of $T$) at five
+pairs $(n,h)$ by an implementation independent of the one used for the profiles; Lemma~\ref{lem:tenzero} was checked
+entrywise on the $\chi_4$ machine at $n=3,5,9,15,197$, with no violation and equality attained, and with
+$n_2=104,352,737,1248$ at $h=16,32,48,64$ for every odd $n$ tested, the same values as for odd $a$.
+
+\emph{The margins.} The proof of Section~\ref{sec:proof}, with $\mathcal H:=\{3\ell-1:\ell\ge37\text{ prime},\ \ell\nmid
+n,\ \ell^2\nmid b\}$ and Lemma~\ref{lem:Pti}, gives the bound
+\begin{equation}\label{eq:Mti}
+  M_i(n):=\Phi_U-\tfrac12L_i(n)+\tfrac43+c_2(v_2(n))+\sum_{p^e\parallel n,\ p\text{ odd}}c_p(e)\qquad(n\ge5).
+\end{equation}
+For even $n=2m$ the arithmetic is that of Theorem~\ref{thm:V} term by term ($\nu=1+v_2(m)$, and the odd primes of $n$ are
+those of $m$, with the same $e$), so
+\[
+  M_i(2m)=M(m)+\tfrac12\log\frac{m+\sqrt{m^2+1}}{m+\sqrt{m^2-1}},
+\]
+with $M(m)$ as in \eqref{eq:budget}. The correction is positive and at most
+$\frac12(\sqrt{m^2+1}-\sqrt{m^2-1})/(m+\sqrt{m^2-1})\le\frac1{4(m^2-1)}$; its largest value for $m\ge3$ is $0.027850$
+(at $m=3$). For odd $n$ there is no counterpart in Theorem~\ref{thm:V}: $\nu=0$, every odd prime factor of $n$ is special,
+and the shift is from $\sqrt5-2$ to $\beta_n$ directly.
+
+\begin{proposition}\label{prop:marginsti}
+Let $n\ge5$. Then $M_i(n)<0$ if and only if $n$ is not one of $6,10,14,18,30$, not an odd number $\le69$, and not in
+$\cE_i$.
+\end{proposition}
+
+\begin{proof}
+\emph{Uniform tail.} For $n\ge5$ we have $u_n\ge n-1$, $\sum_{p^e\parallel n,\,p\text{ odd}}\frac e4\log p=\frac14\log
+n-\frac\nu4\log2$, $c_2(\nu)-\frac\nu4\log2=(|\nu-2|-\nu)\frac{\log2}4\le\frac{\log2}2$, and, for any $P\ge3$, the primes
+$p>P$ dividing $n$ contribute at most $\frac{\log n}{4P}$ to the terms $\frac{\log p}{4(p-1)}$. Hence
+\[
+  M_i(n)\le A+\tfrac12\log2+\tfrac14S_P+\tfrac12\log\frac n{n-1}-\tfrac14\bigl(1-\tfrac1P\bigr)\log n,
+\]
+with $A:=\Phi_U+\frac12\log(2+\sqrt5)+\frac43=0.6959348874\ldots$ and $S_P:=\sum_{3\le p\le P}\frac{\log p}{p-1}$. The right
+side decreases in $n$. For $P=13$, $S_{13}=1.7295192876\ldots$, and at $n=599$ the right side is
+$-0.000105877\ldots<0$ (Arb). So $M_i(n)<0$ for every $n\ge599$.
+
+\emph{Table.} For $5\le n\le20\,000$ we evaluate $M_i(n)$ in Arb at $200$ bits; no ball contains $0$. The even $n$ with
+$M_i(n)>0$ are exactly $6,10,14,18,30$, and the odd ones are the odd $n\le69$ and the $17$ elements of $\cE_i$, the largest
+$195$ (with $M_i(195)\ge+0.0156$).
+\end{proof}
+
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{@{}rlccc|rlc@{}}
+\toprule
+$n$ & $\beta_n$ & $\sin2\theta$ & $\nu$ & $M_i(n)\le$ & $n$ & & $M_i(n)\le$\\
+\midrule
+8 & $4-\sqrt{15}$ & $1/4$ & 3 & $-0.162496$ & 115 & & $-0.007466$\\
+12 & $6-\sqrt{35}$ & $1/6$ & 2 & $-0.131029$ & 71 & & $-0.007838$\\
+16 & $8-\sqrt{63}$ & $1/8$ & 4 & $-0.341821$ & 129 & & $-0.012699$\\
+22 & $11-\sqrt{120}$ & $1/11$ & 1 & $-0.015842$ & 73 & & $-0.015115$\\
+197 & $(197-\sqrt{38805})/2$ & $2/197$ & 0 & $-0.271540$ & 42 & & $-0.019792$\\
+\midrule
+6 & $3-2\sqrt2$ & $1/3$ & 1 & $\ge+0.3998$ & 119 & & $-0.026888$\\
+195 & & $2/195$ & 0 & $\ge+0.0156$ & & & \\
+\bottomrule
+\end{tabular}
+\caption{Margins \eqref{eq:Mti} for Theorem~\ref{thm:Vi} (Arb; upper bounds rounded up, and lower bounds for the two
+exceptions below the line). The right half and $n=22$ are all covered $n$ with $M_i(n)>-0.03$.}\label{tab:marginsti}
+\end{table}
+
+All values in Table~\ref{tab:marginsti} rest only on proved constants and on the certified endpoint $\Phi_U$. The
+tightest cases $n=71$ and $n=115$ use the constant $c_2(0)=\frac12\log2$ of Lemma~\ref{lem:tenzero} exactly.
+
+\begin{proof}[Proof of Theorem~\ref{thm:Vi}]
+Let $n$ be as in the theorem ($n=2m$ in part (a)), so $n\ge8$ and, by Proposition~\ref{prop:marginsti}, $M_i(n)<0$.
+Suppose $\Ti_2(\beta_n)=a'/b$. For $h\in\mathcal H$, Lemma~\ref{lem:Pti} gives $F_h(a'/b)\ne0$, where $F_h$ is the
+primitive part of $\Delta^\natural_h$. Along $\mathcal H$ the arithmetic is bounded by the items above and the size by
+$\Phi_U-\frac12L_i(n)$, so $\limsup_{h\in\mathcal H}h^{-2}\log|F_h(\Ti_2(\beta_n))|\le M_i(n)<0$, contradicting
+Proposition~\ref{prop:criterion}.
+\end{proof}
+
+\emph{Evidence and limits.} At $n=8$ the exact finite-$h$ scores (Arb analytic part, exact contents) are $-0.528$,
+$-0.379$, $-0.336$, $-0.308$ at $h=16,32,48,64$, and $F_h(T^\natural)\ne0$ in every computed case. At $n=2m$ the exact
+per-prime profiles agree with those of Theorem~\ref{thm:V} at $m$ up to a few units. The case $n=4$, i.e.\
+$\Ti_2(2-\sqrt3)$, is out of reach: $\beta_4>\sqrt5-2$, so the shift lemma points the wrong way, and a numerical solution of
+the equilibrium problem suggests that the method misses by about $0.04$ per $h^2$. Direct certificates at odd $\beta_n$,
+which reduced the exceptions for $\chi_2$ at odd $a$ from $49$ to $39$, have not been computed, and neither improvement
+mentioned after Theorem~\ref{thm:Vodd} is proved; any of them would shrink $\cE_i$.
+
+\subsection{Status of the extensions}
+Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} are not formalised in Lean. Each was checked by one AI referee at a single gate,
+with code independent of the code used to find the results (Lemma~\ref{lem:tenzero}, the transferred lemmas on exact
+data, the exception sets by independent interval arithmetic, and for Theorem~\ref{thm:Vi} the identity of
+Lemma~\ref{lem:identity}); both referees asked for minor fixes, which were applied. For Theorem~\ref{thm:Vi} the referee
+reviewed the first write-up, and the detailed delta proof written afterwards to apply the fixes has not been re-read by a
+referee. No human has read either proof.
+
+% ===========================================================================
 \section{Closed forms and known results}\label{sec:closed}
 % ===========================================================================
 
@@ -1366,6 +1798,81 @@ its range. So the infinite tail of Theorem~\ref{thm:V} is due to \cite{DHK2022b}
 the range $2\le m\le4\,346\,236$ with $m\notin\cE$, by one argument for all $m$. As far as our searches show, no result in
 the literature covers any $m$ in this range; for $m\ge3$ the searches were limited (Section~\ref{sec:context}), and a
 MathSciNet search and an expert query are still owed.
+
+\subsection{The extensions}\label{sec:closed-ext}
+\emph{Odd $a$.} Proposition~\ref{prop:symbol} extends to every $a$.
+
+\begin{proposition}\label{prop:symbolodd}
+Let $a\ge1$, $\alpha=\alpha_a$ and $w:=(1-\alpha)/(1+\alpha)$. Then $aw^2+4w-a=0$, so $w$ is an algebraic integer if and
+only if $a\mid4$. For $a\notin\{1,2,4\}$, in particular for every odd $a\ge3$, $\alpha\wedge w\ne0$ in
+$\Lambda^2(\KK^\times)\otimes\QQ$.
+\end{proposition}
+
+\begin{proof}
+From $\alpha^2+a\alpha-1=0$, $(1+\alpha)^2(aw^2+4w-a)=a(1-\alpha)^2+4(1-\alpha^2)-a(1+\alpha)^2=-4(\alpha^2+a\alpha-1)=0$.
+The monic polynomial $X^2+(4/a)X-1$ has integer coefficients iff $a\mid4$, and its roots have product $-1$. If $w$ is not
+integral, $v_\fp(w)<0$ at some prime $\fp$, while $\alpha$ is a unit; the rest is the proof of
+Proposition~\ref{prop:symbol}.
+\end{proof}
+
+For $a=2m$ this is Proposition~\ref{prop:symbol}. So among the units $\alpha_a$ only $a=1$ ($\varphi^{-1}$), $a=2$
+($\sqrt2-1$) and $a=4$ ($\sqrt5-2$) admit a Landen-type closed form; for odd $a\ge3$, $\chi_2(\alpha_a)$ has no expression
+through $\pi^2$ and products of logarithms by symbol-preserving dilogarithm identities.
+
+\emph{The inverse tangent integral.} With $\theta:=\arctan\beta_n$ we have $\sin2\theta=2\beta/(1+\beta^2)=2/n$, and
+\[
+  \Ti_2(\tan\theta)=\theta\log\tan\theta+\tfrac12\bigl(\Cl_2(2\theta)+\Cl_2(\pi-2\theta)\bigr),\qquad
+  \Cl_2(x)=\sum_{k\ge1}\frac{\sin kx}{k^2},
+\]
+a classical formula \cite[Ch.~2]{Lewin1981}, which we checked numerically to $80$ digits at $n=5,8,12,22,71$. For $n\ge5$
+the value $\sin2\theta=2/n$ is rational and not in $\{0,\pm\frac12,\pm1\}$, so $2\theta$ is not a rational multiple of
+$\pi$ \cite[Cor.~3.12]{Niven1956}. Only $n=4$ gives a rational angle ($2\theta=\pi/6$), and there
+$\Ti_2(2-\sqrt3)=\frac23G-\frac\pi{12}\log(2+\sqrt3)$.
+
+\begin{proposition}\label{prop:symbolti}
+Let $n\ge5$, $\zeta:=e^{2i\theta}=(\sqrt{n^2-4}+2i)/n$ and $\cF=\QQ(i,\sqrt{n^2-4})$. Then $\zeta$ is not an algebraic
+integer, and $\bar\zeta\wedge\beta_n\ne0$ in $\Lambda^2(\cF^\times)\otimes\QQ$. Modulo torsion, $\bar\zeta\wedge\beta_n$
+is the symbol of $\Ti_2(\beta_n)$.
+\end{proposition}
+
+\begin{proof}
+$\zeta$ and $\bar\zeta=\zeta^{-1}$ are the roots of $X^2-bX+1$ with $b=2\sqrt{n^2-4}/n$, and $b^2=4-16/n^2\notin\ZZ$ for
+$n\ge5$; so $b$, and hence $\zeta$, is not integral, $v_\fp(\zeta)\ne0$ at some prime $\fp$ of $\cF$, and $\zeta$ is
+multiplicatively independent of the unit $\beta_n$. For the symbol, $\Ti_2(x)=(\Li_2(ix)-\Li_2(-ix))/(2i)$ and
+$\delta\Li_2(u)=-(1-u)\wedge u$ give, modulo torsion, $\pm\frac{1-i\beta}{1+i\beta}\wedge\beta$, and
+$(1-i\tan\theta)/(1+i\tan\theta)=e^{-2i\theta}=\bar\zeta$.
+\end{proof}
+
+So for $n\ge5$ no symbol-preserving identity expresses $\Ti_2(\beta_n)$ through $\pi^2$, $G$ and products of logarithms.
+The symbol $\bar\zeta\wedge\beta_n$ lies in the part $S^1\wedge\RR_{>0}$ of $\Lambda^2(\mathbb C^\times)\otimes\QQ$, while the
+symbols of the real values $\chi_2(\alpha_a)$ of Theorems~\ref{thm:V} and~\ref{thm:Vodd} do not; this suggests, but does
+not prove, that the numbers of Theorem~\ref{thm:Vi} are not rational combinations of those of Theorems~\ref{thm:V}
+and~\ref{thm:Vodd}. As a numerical check, PSLQ at $320$ digits with coefficients up to $10^{12}$ was run on the $20$
+numbers $\Ti_2(\beta_n)$, $1$, $\pi^2$, $G$, $\pi\log\beta_n$, $\log^2\beta_n$, $\pi\log2$, $\log2\log\beta_n$, $\log^22$,
+$\chi_2(\beta_n)$, $\Li_2(\beta_n)$, $\sqrt{|D|}\,L(2,\chi_D)$ (with $D$ the discriminant of $\QQ(\sqrt{-(n^2-4)})$),
+$\theta\log\beta_n$, $\theta\pi$, $\theta^2$, $\theta\log n$, and four values $\chi_2(z_{m'})$ with $m'$ near $n/2$ and $m'=n$. It
+found no relation at $n=5,8,9,10,12,22$. At $n=6$ it found only a relation without $\Ti_2$ among $\chi_2(\beta_6)$,
+$\Li_2(\beta_6)$, $\pi^2$, $\log^2\beta_6$, as expected since $\beta_6=(\sqrt2-1)^2$, and none after removing $\Li_2$; as a
+control, at $n=4$ it found $3\Ti_2(\beta_4)=2G+3\theta\log\beta_4$.
+
+\emph{Known criteria.} The evaluation of \cite[Thm.~1]{DHK2022b} in Section~\ref{sec:lit} uses only the real place and
+the height $\log(1/z)$ of $z^{-2}$, so it does not depend on the parity of $a$: since $\log(1/\alpha_a)=\operatorname{arsinh}(a/2)$,
+the key quantity $\operatorname{arsinh}(a/2)-15.977968\ldots$ changes sign between $a=8\,692\,473$ and $a=8\,692\,474$, and
+the criterion gives the stronger $\chi_2(\alpha_a)\notin\KK$ for $a\ge8\,692\,474$. For the inverse tangent integral,
+$\Ti_2(z)=z+\frac z4\Phi_2(\frac12,-z^2)$, and the same evaluation, with $\log(1/\beta_n)=\operatorname{arcosh}(n/2)$,
+gives $\Ti_2(\beta_n)\notin\KK$ for $n\gtrsim8.69\cdot10^6$ (for even $n$: $m\gtrsim4.35\cdot10^6$). These are our
+evaluations; for the argument $-z^2$ we have transferred our reading of the criterion without re-checking it against
+the paper. What Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} add is therefore the odd $a$ with $59\le a\le8\,692\,473$,
+$a\notin\cE_{\mathrm{odd}}$; the odd $n$ with $71\le n<8.69\cdot10^6$, $n\notin\cE_i$; and the $m$ with
+$4\le m<4.35\cdot10^6$, $m\notin\{5,7,9,15\}$.
+
+\emph{Literature.} For odd $a$ we searched our own notes and the web (two queries); we found closed forms at
+$\varphi^{-1}$ and $\varphi^{-3}$, results at rational points and identities, but no irrationality result for $\chi_2$ or
+$\Li_2$ at the units $\alpha_a$ with odd $a$. For $\Ti_2$ we searched our own notes, which include an earlier sweep of
+arXiv (2007--2026) for irrationality results on related values, and the web (two queries); we found only identities for
+$\Ti_2$ and $\Cl_2$, and no irrationality result for $\Ti_2$ or $\Cl_2$ at points of this kind. These searches were
+carried out by AI systems; a MathSciNet search and an expert query are still owed, so we make no claim beyond the
+statement that we know of no earlier result in these ranges.
 
 % ===========================================================================
 \section{Two points}\label{sec:M1}
@@ -1616,7 +2123,10 @@ $20{,}100$ lines, of which about $7{,}800$ are ported verbatim from the
 formalisation of \cite{Chi2Paper} \cite{Chi2Repo}: the prime number theorem, the interval arithmetic, the generic
 analytic files, the criterion and the definition of $\chi_2$. All declarations are in the namespace \lean{Chi2U}. The
 project is available at \url{https://github.com/telaviv/chi2-quadratic-units-irrationality} \cite{PiTwoRepo}, together with
-a copy of this paper and the scripts of Section~\ref{sec:comp}. Theorem~\ref{thm:M1} is not formalised.
+a copy of this paper and the scripts of Section~\ref{sec:comp}. Theorem~\ref{thm:M1} is not formalised. Nor are the
+extensions of Section~\ref{sec:ext}: Theorem~\ref{thm:Vodd}, Corollary~\ref{cor:normminus} and Theorem~\ref{thm:Vi} are
+not formalised, and nothing in the Lean project concerns odd $a$ or the inverse tangent integral; only
+Theorem~\ref{thm:V} and Corollary~\ref{thm:U}, with the identity \eqref{eq:closedform}, are formalised.
 
 \subsection{The statement}
 The definitions that the reader has to check are in \lean{Defs.lean}, \lean{Statement.lean},
@@ -1811,6 +2321,23 @@ uses Lean v4.35.0 and Mathlib v4.35.0.
   implementation of the machine for general $m$, which checked these lemmas in $47$ pairs $(m,h)$ and reproduced the
   scores it recomputed; the referee also re-ran \texttt{cert\_V.py} at $m=4$ (same result bit for bit), compared it with
   an independent primal computation, and recomputed the margins with its own code.
+\item \emph{The extensions} (Section~\ref{sec:ext}). Proof inputs: \texttt{cert\_za.py}, the program
+  \texttt{cert\_V.py} with $z=\alpha_a$, for the ten certificates of Table~\ref{tab:certodd} (run with arguments
+  \texttt{1600 32 2 4} and the value of $a$ in the environment variable \texttt{CERT\_A}; about ten seconds each);
+  \texttt{margins\_odd.py} (Arb at $200$ bits) for the margin table of Proposition~\ref{prop:marginsodd} (odd $a\le5001$,
+  with and without the certificates); \texttt{margins\_ti2.py} (Arb at $200$ bits) for the table $5\le n\le20\,000$ and the
+  uniform tail of Proposition~\ref{prop:marginsti}. Checks, not used by the proofs: \texttt{vodd.py} (Lemma~\ref{lem:tenzero}
+  entrywise, Lemma~\ref{lem:S} and Lemma~\ref{lem:P} on exact data at odd $a$); \texttt{sharpS\_check.py} (the sharper,
+  unproved special-prime bound in the remark after Theorem~\ref{thm:Vodd}); \texttt{wlib.py} (exact library for the
+  weighted machines, including the $\chi_4$ machine) with \texttt{wprofile.py} (exact contents and Arb scores, e.g.\ at
+  $n=8$); \texttt{margins\_ti.py} (the first margin table for Theorem~\ref{thm:Vi}, up to $n\le2000$, and a check of the
+  Clausen form; superseded by \texttt{margins\_ti2.py}); \texttt{lemmaP\_ti.py} (Lemma~\ref{lem:Pti} at $n=4,8,12$);
+  \texttt{step1\_parity.py} (the exact check of the sign rule of Remark~\ref{rem:signrule}); \texttt{energy.py} (a
+  floating-point model of the equilibrium problem, used only for the statement about $n=4$). The AI referees of the two
+  extensions wrote independent implementations (the machine at odd $a$, the identity of Lemma~\ref{lem:identity} with its
+  own arithmetic in $\QQ(i,\sqrt d)$, entrywise and Newton-polygon checks, interval margins with mpmath, the PSLQ runs);
+  for this revision the ten certificates were re-run, bit for bit, and every number of Section~\ref{sec:ext} and
+  Section~\ref{sec:closed-ext} was recomputed with separate code.
 \end{itemize}
 The scripts are in the folder \texttt{scripts/paper} of the repository \cite{PiTwoRepo} (those
 for Section~\ref{sec:M1} in \texttt{scripts/paper/m1}), with a README that gives the command line for each of them and
@@ -1818,6 +2345,7 @@ the small result files quoted here. Not included are the referees' own check scr
 and the earlier script that produced the exact profiles for $h\le128$ in Table~\ref{tab:evidence}; those profiles are
 included as data, and \texttt{u\_profile.py} computes the same quantities (checked at $h=16$). The scripts for general
 $m$ named above are in \texttt{scripts/paper/v}.
+The scripts of the extensions named above are in \texttt{scripts/paper/ext/vodd} and \texttt{scripts/paper/ext/ti2}.
 
 \subsection{Numerical evidence}
 Table~\ref{tab:evidence} shows exact scores at $m=2$, and Table~\ref{tab:evidenceV} at other $m$. The arithmetic column
@@ -1874,7 +2402,8 @@ computation gave the same values.}\label{tab:evidenceV}
 \subsection{Controls}
 No false instance of the method is available, since no unit with rational $\chi_2$ is known. As substitutes: the proved
 finite-$h$ bound of Remark~\ref{rem:effective} lies above the exact score at every tested $h$, and every per-prime
-inequality holds on the exact profiles, often with equality; for a unit of norm $+1$ the reflection breaks; with poles
+inequality holds on the exact profiles, often with equality; for a unit of norm $+1$ the reflection breaks (for the untwisted machine; with $\chi_4$ on the
+atoms it holds again, Remark~\ref{rem:signrule}); with poles
 on one side only the conjugate place costs $+0.50$ per $h^2$ at $h=16$; and at the points $\sqrt2-1$ and $\varphi^{-1}$ the
 corresponding scores are positive (primal lower bounds $+0.3286$ and $+0.6572$ for the limiting exponent), so the
 method does not conclude there. At $\sqrt2-1=z_1$ the exact scores are positive and rising (Section~\ref{sec:margins}),
@@ -1882,14 +2411,18 @@ and Lemma~\ref{lem:P} fails at $\ell\mid m$ (Section~\ref{sec:nonvan}), as it mu
 method does not conclude at $n=6$ ($M_1(6)\approx+0.477$), $n=400$ ($M_1(400)\ge+0.070$) or $n=720$ (numerical values).
 
 \section*{Acknowledgements and disclosure}
-% Updated after the whole-paper referee of this revision (REFEREE_PAPER_V.md, 2026-11-08).
+% Updated after the whole-paper referee of this revision (REFEREE_PAPER_V.md, 2026-11-08), and after the whole-paper
+% referee of the extensions revision (REFEREE_PAPER_EXT.md, 2026-11-08).
 The research, the construction, the proofs, the certificate programs, the Lean formalisation, the literature searches and
 the text of this paper were produced largely by AI models (Claude, Anthropic), working under the direction of the author.
 Apart from the check by the Lean kernel, all verification so far, including the internal reviews of the argument by AI
 referees, was carried out by AI systems. The proof of Theorem~\ref{thm:V} for general $m$ was checked by one AI referee,
 at a single gate, with an independent implementation of the machine, and it is formalised in Lean
 (Section~\ref{sec:lean}). No MathSciNet search or expert query has been made for it. The text of this revision, which
-adds Theorem~\ref{thm:V}, was reviewed as a whole by one further AI referee. No human expert has yet reviewed the mathematics or the Lean code; we would be grateful for corrections. The
+adds Theorem~\ref{thm:V}, was reviewed as a whole by one further AI referee. The extensions of Section~\ref{sec:ext}
+(Theorems~\ref{thm:Vodd} and~\ref{thm:Vi}) were each checked by one AI gate referee, with independent code, and are not
+formalised; no human has checked them, and no MathSciNet search or expert query has been made for them. The text of the
+present revision, which adds these extensions, was reviewed as a whole by one further AI referee. No human expert has yet reviewed the mathematics or the Lean code; we would be grateful for corrections. The
 prime number theorem in the formalisation is ported from the PrimeNumberTheoremAnd project of A.~Kontorovich, T.~Tao and
 collaborators \cite{PNTplus}, through the \lean{zeta5} repository of C\'esar Del Solar \cite{zeta5} and the formalisation
 of \cite{Chi2Paper}.
