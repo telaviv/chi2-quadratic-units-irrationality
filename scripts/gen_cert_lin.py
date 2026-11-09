@@ -41,6 +41,7 @@ PB = 40
 # the shared log table: `--tab Lean.name N file` (entries log 1 .. log N; its Braun-tree literal `def tab` in `file`)
 TABARGS = sys.argv[sys.argv.index('--tab') + 1:sys.argv.index('--tab') + 4] if '--tab' in sys.argv else     ['DataU.tab', '2004', 'Chi2U/Cert/DataU.lean']
 TABNAME, TABN, TABFILE = TABARGS[0], int(TABARGS[1]), TABARGS[2]
+TABMOD = TABFILE[:-len('.lean')].replace('/', '.')
 args = [x for x in args if x not in TABARGS]
 
 
@@ -411,7 +412,8 @@ PHIC = {59: Q(-543651289535819, 200000000000000), 61: Q(-546976568036957, 200000
         95: Q(-1185028703313147, 400000000000000), 111: Q(-121338609879819, 40000000000000),
         117: Q(-306657008537873, 100000000000000), 123: Q(-308457439547709, 100000000000000),
         135: Q(-10062052121822453, 3200000000000000), 147: Q(-634659666560277, 200000000000000),
-        195: Q(-20713985034247, 6250000000000), 4: Q(-13538792, 10 ** 7)}
+        195: Q(-20713985034247, 6250000000000),
+        4: Q(-677, 500)}   # a = 4 (Theorem U): -1.354 < -1.3538792 = Phi_L (`exists_certU'`)
 target = PHIC.get(A_)
 rec = {"a": A_, "N": Ncell, "s": s, "L": L, "X": X, "K": K, "Knz": Knz, "PhiLin": float(PhiV),
        "PhiLin_exactint": float(PhiExact),
@@ -429,6 +431,22 @@ if '--checktab' in sys.argv:   # the table equals the shared table (its Braun-tr
     src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', TABFILE), encoding='utf-8').read()
     assert ("def tab : LTree := " + braun(1, 0) + chr(10)) in src, "table differs from " + TABNAME
     print("checktab: table identical to", TABNAME, "in", TABFILE)
+
+
+if '--tabout' in sys.argv:   # write the shared table module (TABFILE): namespace = TABNAME without `.tab`
+    def braun(m, o):
+        if o >= len(tab): return ".leaf"
+        return f"(.node {braun(2 * m, o + m)} ({tab[o]}) {braun(2 * m, o + 2 * m)})"
+    ns = "Chi2U.Cert." + TABNAME[:-len('.tab')]
+    with open(TABFILE, 'w', encoding='utf-8', newline=chr(10)) as f:
+        f.write(f"/-\n# The shared log table of the linear-majorant certificates (written by `scripts/gen_cert_lin.py "
+                f"... --tabout`)\n\nEntry `i` encloses `log (i + 1)` in `[t, t + 2]·2^{{-40}}`, `i < {TABN}` (enough for "
+                f"grids `L ≤ {(TABN - 4) // 10}` on `[0, 4]`).\nUntrusted data, checked by the kernel (`tabOK`).\n-/\n")
+        f.write(f"import Chi2U.Cert.Core\n\nnamespace {ns}\n\nopen Chi2U.Cert\n\nset_option maxRecDepth 100000\n\n")
+        f.write("/-- The log table (a Braun tree). -/\ndef tab : LTree := " + braun(1, 0) + "\n\n")
+        f.write("lemma tabOK : checkTab tab = true := by decide +kernel\n\n")
+        f.write(f"end {ns}\n")
+    print("tabout: wrote", TABFILE)
 
 
 def ql(x):  # Lean rational literal
@@ -451,7 +469,7 @@ if '--lean' in sys.argv:
                 f"`Cert/LinInstance.lean`). μ on {K} cells of width {s}/{L} (from {Ncell} cells of [0, 2]), grid 1/{L} on "
                 f"[0, {X}],\nlog table `{TABNAME}` (`{TABFILE}`).\n"
                 f"PhiQ = {float(PhiV):.10f} (exact `{num(PhiV)}/{den(PhiV)}`) < {tgt} = {float(target):.10f}.\n-/\n")
-        f.write("import Chi2U.Cert.LinInstance\nimport Chi2U.Cert.CertU\nimport Chi2U.VOdd.Defs\n\n")
+        f.write("import Chi2U.Cert.LinInstance\nimport " + TABMOD + ("\nimport Chi2U.VOdd.Defs" if A_ != 4 else "") + "\n\n")
         f.write(f"namespace {NS}\n\nopen Chi2U Chi2U.Cert CDataLin\n\nset_option maxRecDepth 100000\n\n")
         f.write("/-- Heights of the step density (multiples of `2^{-16}`, in `[0, 1]`). -/\n")
         f.write("def cs : List ℚ := [" + ", ".join(ql(v) for v in cs) + "]\n\n")

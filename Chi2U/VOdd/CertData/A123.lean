@@ -3,11 +3,11 @@
 
 The data are untrusted; every number is re-checked by `decide +kernel` below (`CDataLin.Valid`,
 `Cert/LinInstance.lean`). μ on 5 cells of width 4/20 (from 10 cells of [0, 2]), grid 1/20 on [0, 4],
-log table `Cert.DataU.tab` (checked in `Cert/CertU.lean`).
+log table `LogTab.tab` (`Chi2U/Cert/LogTab.lean`).
 PhiQ = -3.0875631104 (exact `-4940100976579/1600000000000`) < PhiC 123 = -3.0845743955.
 -/
 import Chi2U.Cert.LinInstance
-import Chi2U.Cert.CertU
+import Chi2U.Cert.LogTab
 import Chi2U.VOdd.Defs
 
 namespace Chi2U.VOdd.CertData.A123
@@ -32,7 +32,7 @@ def data : CDataLin where
   s := 4
   K := 5
   X := 4
-  tab := DataU.tab
+  tab := LogTab.tab
   cs := cs
   lam := (-6474397499 / 1000000000 : ℚ)
   e0s := e0s
@@ -72,7 +72,7 @@ theorem valid : data.Valid where
   zhi2 := by decide +kernel
   zhi5 := by decide +kernel
   lw := lwOK
-  tab := DataU.tabOK
+  tab := LogTab.tabOK
   cells := data.cells_of_chunks 40 2 cells_all (by decide +kernel)
   tail := tailOK
   E := EOK
