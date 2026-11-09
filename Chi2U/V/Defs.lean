@@ -49,7 +49,8 @@ noncomputable def alphaV (m : ℕ) : ℝ := 4 / 3 + c2V m + cSV m
 /-- `L(m) = log(z₂/z_m) = log((m + √(m² + 1))/(2 + √5))` (machine traces `4` and `2m`: `zU_four`, `zU_two_mul`). -/
 noncomputable def Lshift (m : ℕ) : ℝ := Real.log (zU 4) - Real.log (zU (2 * m))
 
-/-- `Φ_L = −1.3538792`, the exponent of Theorem U's Lean certificate (`exists_certU'`). -/
+/-- `Φ_L = −1.3538792`, a rounded upper bound for the exponent of Theorem U's Lean certificate, proved by
+`exists_certU'` (the current certificate, `Cert/DataU.lean`, gives `Φ ≤ −1.354`). -/
 noncomputable def PhiL : ℝ := -13538792 / 10000000
 
 /-! ## Exponents -/

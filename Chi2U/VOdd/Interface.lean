@@ -8,15 +8,16 @@ The machine at the trace `az = a` (stage C0) and the trace-generic ingredients o
 `padicNorm_Delta_odd` (odd `p ∤ a`, Lemmas 8′, 8A′, 9′), `theoremA`, `V.lemmaS` (odd `p ∣ a`), `V.AK_levels_size`,
 `V.shift_lemma` (`a ≥ 4`), `V.lemmaP_m` (`ℓ ∤ a(a² + 4)`), Theorem B′ (`DualCertU.analytic`). New ingredients:
 
-| ingredient | PROOF_VODD | statement (proof) |
-|---|---|---|
-| `lemma10_0` | §2, Lemma 10_0 | odd `a`: `n₂ ≤ h²/2 + h` |
-| `lemma10_0_size` | §2 ("consequently") | **proved** in `VOdd/Defs` |
-| `exists_certOdd` | §0, §3 (certificates) | `a ∈ certA` (11 traces): a certificate with `Φ ≤ PhiC a` |
-| `margin_VOdd` | §0, §4 | `alphaO a + betaO a < 0` for odd `a ≥ 5`, `a ∉ EOdd` |
+| ingredient | PROOF_VODD | statement | proof |
+|---|---|---|---|
+| `lemma10_0` | §2, Lemma 10_0 | odd `a`: `n₂ ≤ h²/2 + h` | `lemma10_0_proof` (`VOdd/TenZero`) |
+| `lemma10_0_size` | §2 ("consequently") | `n2O h · log 2 ≤ (½ log 2 + ε) h²` | `lemma10_0_size` (`VOdd/Defs`) |
+| `exists_certOdd` | §0, §3 (certificates) | `a ∈ certA` (11 traces): a certificate with `Φ ≤ PhiC a` | `exists_certOdd_proof` (`VOdd/CertOdd`, data `VOdd/CertData/A*`) |
+| `margin_VOdd` | §0, §4 | `alphaO a + betaO a < 0` for odd `a ≥ 5`, `a ∉ EOdd` | `margin_VOdd_proof` (`VOdd/Margin`) |
 
-Constants: `Φ_L = −1.3538792` (Theorem U's Lean certificate) for the shift lemma, so `a = 123` needs a direct certificate
-too (PROOF_VODD's ten plus 123); `c₂ = ½ log 2`; the special primes as in PROOF_VODD (`e/4 + 1/(4(p − 1))`).
+Constants: `Φ_L = −1.3538792` for the shift lemma (a rounded upper bound for the exponent of Theorem U's Lean
+certificate, proved by `exists_certU'`), so `a = 123` needs a direct certificate too (PROOF_VODD's ten plus 123);
+`c₂ = ½ log 2`; the special primes as in PROOF_VODD (`e/4 + 1/(4(p − 1))`).
 -/
 import Chi2U.VOdd.Defs
 import Chi2U.VOdd.TenZero
