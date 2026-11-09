@@ -19,6 +19,9 @@ Constants: `Φ_L = −1.3538792` (Theorem U's Lean certificate) for the shift le
 too (PROOF_VODD's ten plus 123); `c₂ = ½ log 2`; the special primes as in PROOF_VODD (`e/4 + 1/(4(p − 1))`).
 -/
 import Chi2U.VOdd.Defs
+import Chi2U.VOdd.TenZero
+import Chi2U.VOdd.Margin
+import Chi2U.VOdd.CertOdd
 import Chi2U.V.Interface
 
 namespace Chi2U
@@ -30,16 +33,16 @@ open Polynomial Filter Finset V
 
 /-- **Lemma 10_0** (PROOF_VODD §2): at odd `a` (`2` inert), `n₂(Δ_h) ≤ h²/2 + h` for even `h ≥ 2`. -/
 theorem lemma10_0 (az : ℕ) [Fact (1 ≤ az)] (ha : Odd az) {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (k : ℕ) :
-    padicNorm 2 ((Delta az h).coeff k) ≤ (2 : ℚ) ^ n2O h := by
-  sorry
+    padicNorm 2 ((Delta az h).coeff k) ≤ (2 : ℚ) ^ n2O h :=
+  lemma10_0_proof az ha hh h2 k
 
 /-- **Direct certificates** (PROOF_VODD §0, §3) at the 11 traces of `certA`, in the format of `DualCertU`. -/
-theorem exists_certOdd {a : ℕ} [Fact (1 ≤ a)] (ha : a ∈ certA) : ∃ C : DualCertU a, C.Phi ≤ PhiC a := by
-  sorry
+theorem exists_certOdd {a : ℕ} [Fact (1 ≤ a)] (ha : a ∈ certA) : ∃ C : DualCertU a, C.Phi ≤ PhiC a :=
+  exists_certOdd_proof ha
 
 /-- **The margin inequality** (PROOF_VODD §0, §4) with Lean's constants. -/
-theorem margin_VOdd {a : ℕ} (ho : Odd a) (h5 : 5 ≤ a) (hE : a ∉ EOdd) : alphaO a + betaO a < 0 := by
-  sorry
+theorem margin_VOdd {a : ℕ} (ho : Odd a) (h5 : 5 ≤ a) (hE : a ∉ EOdd) : alphaO a + betaO a < 0 :=
+  margin_VOdd_proof ho h5 hE
 
 /-! ## Assembly -/
 

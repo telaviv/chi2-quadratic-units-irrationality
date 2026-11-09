@@ -28,6 +28,9 @@ import Chi2U.Cert.CertU
 import Chi2U.Cert.Core
 import Chi2U.Cert.DataU
 import Chi2U.Cert.Instance
+import Chi2U.Cert.Lin
+import Chi2U.Cert.LinInstance
+import Chi2U.Cert.LogTab
 import Chi2U.Criterion
 import Chi2U.Defs
 import Chi2U.Field
@@ -61,3 +64,4 @@ import Chi2U.PNT.Theta
 import Chi2U.PoleExpansion
 import Chi2U.Statement
 import Chi2U.V.Interface
+import Chi2U.VOdd.Interface

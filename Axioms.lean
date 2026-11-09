@@ -30,3 +30,8 @@ import Chi2U
 #print axioms Chi2U.V.shift_lemma
 #print axioms Chi2U.V.margin_V
 #print axioms Chi2U.V.lemmaP_m
+#print axioms Chi2U.VOdd.theoremVOdd
+#print axioms Chi2U.VOdd.lemma10_0
+#print axioms Chi2U.VOdd.exists_certOdd
+#print axioms Chi2U.VOdd.margin_VOdd
+#print axioms Chi2U.exists_certU
