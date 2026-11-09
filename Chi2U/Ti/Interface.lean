@@ -22,6 +22,8 @@ import Chi2U.V.Interface
 import Chi2U.Ti.Analytic
 import Chi2U.Ti.Lemma10nu
 import Chi2U.Ti.TenZero
+import Chi2U.Ti.OddExp
+import Chi2U.Ti.LemmaS
 
 namespace Chi2U
 namespace Ti
@@ -33,14 +35,14 @@ open Polynomial Filter Finset
 /-- **Generic odd primes** (PROOF_V §3.1 verbatim, Lemmas 8′, 8A′, 9′ and the row claim): for an odd prime `p ∤ n`,
 `|coeff|_p ≤ p^{eOdd h p}`. The χ₂ version is `Chi2U.padicNorm_Delta_odd` (`Arith/OddExp`). -/
 theorem padicNorm_Delta_odd (n : ℕ) [Fact (3 ≤ n)] {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) (hpn : ¬ p ∣ n) {h : ℕ}
-    (hh : Even h) (k : ℕ) : padicNorm p ((Delta n h).coeff k) ≤ (p : ℚ) ^ eOdd h p := by
-  sorry
+    (hh : Even h) (k : ℕ) : padicNorm p ((Delta n h).coeff k) ≤ (p : ℚ) ^ eOdd h p :=
+  padicNorm_Delta_odd_proof n hp hpn hh k
 
 /-- **Lemma S** (PROOF_V §3.2 with `e = v_p(n)`): for an odd prime `p ∣ n`, `|coeff|_p ≤ p^{eSA n h p}`. The χ₂ version is
 `Chi2U.V.lemmaS`. -/
 theorem lemmaS (n : ℕ) [Fact (3 ≤ n)] {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) (hpn : p ∣ n) {h : ℕ} (hh : Even h)
-    (k : ℕ) : padicNorm p ((Delta n h).coeff k) ≤ (p : ℚ) ^ V.eSA n h p := by
-  sorry
+    (k : ℕ) : padicNorm p ((Delta n h).coeff k) ≤ (p : ℚ) ^ V.eSA n h p :=
+  lemmaS_proof n hp hpn hh k
 
 /-- **Lemma 10_ν** (PROOF_V §4) at an even trace `n` (`ν = v₂(n) ≥ 1`). The χ₂ version is `Chi2U.V.lemma10nu`. -/
 theorem lemma10nu (n : ℕ) [Fact (3 ≤ n)] (hn : Even n) {h : ℕ} (hh : Even h) (h2 : 2 ≤ h) (k : ℕ) :
