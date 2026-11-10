@@ -87,33 +87,15 @@ Hankel determinants, units of real quadratic fields, logarithmic potential theor
 \date{\today}
 
 \begin{abstract}
-We prove that the value $\chi_2(\sqrt{m^2+1}-m)$ of Legendre's chi function is irrational for every integer $m\ge2$
-except $m=3,5,7,9,15$, that is, for $m=2,4,6,8$, $10\le m\le14$ and every $m\ge16$. For $m=2$ this says that
-$\pi^2-18\log^2\varphi$ is irrational, where $\varphi$ is the golden ratio, since
-$\chi_2(\sqrt5-2)=\pi^2/24-(3/4)\log^2\varphi$. By our evaluation of the linear independence criterion of David,
-Hirata-Kohno and Kawashima (2022), the stronger statement $\chi_2(\sqrt{m^2+1}-m)\notin\QQ(\sqrt{m^2+1})$ holds for
-every $m\ge4\,346\,237$; their earlier criterion (2020), whose proof is given there only in outline, would give it for
-every $m\ge2\,517\,046$. The new range is $2\le m\le2\,517\,045$, $m\notin\{3,5,7,9,15\}$, where we know of no earlier
-result; if the result announced in 2020 is set aside, it extends to $m\le4\,346\,236$. The point $z_m=\sqrt{m^2+1}-m$ is a unit of norm $-1$ in $\QQ(\sqrt{m^2+1})$. Other cases are
-$\chi_2(\sqrt{17}-4)$, $\chi_2(\sqrt{37}-6)$, $\chi_2(\sqrt{65}-8)\notin\QQ$; for $m\ge3$ these values have no
-Landen-type closed form (we show this at the level of symbols). We take poles at the
-even integers $\pm2j$, $|j|\le h/2$, and atoms at the odd positive integers. A reflection $t\mapsto-t$, combined with the
-Galois conjugation $z\mapsto-1/z$, shows that the Hankel determinants are values of polynomials with rational
-coefficients, so the conjugate place, where the series diverges, costs nothing. The odd primes not dividing $m$ cost at
-most $4/3$ per $h^2$; the odd primes dividing $m$ and the prime $2$ cost explicit amounts that depend on $m$. The size is
-bounded by a discrete log-gas argument against a dual certificate checked in interval arithmetic at $m=2$, and a shift
-lemma carries this bound to every $m$. Nonvanishing comes from a reduction modulo a prime $\ell=(h+1)/3$. The theorem,
-for every $m$, is formalised in Lean~4 with Mathlib, using only Lean's three standard axioms.
-With one new $2$-adic lemma the method extends to the units $(\sqrt{a^2+4}-a)/2$ with $a$ odd, and so shows that
-$\chi_2(\eps)\notin\QQ$ for every unit $\eps\in(0,1)$ of norm $-1$ of a real quadratic field outside an explicit set of
-$47$ units; through an identity that turns the $\chi_4$-twisted machine at $z$ into the machine above at $iz$, it also
-shows that the inverse tangent integral $\Ti_2(m-\sqrt{m^2-1})$ is irrational for $m\ge4$, $m\notin\{5,7,9,15\}$, and
-likewise $\Ti_2$ at the units of norm $+1$ with odd trace $n\ge71$ outside $17$ values. Both extensions are also
-formalised in Lean, with the same three axioms.
-We also prove a two-point statement at units of a family of biquadratic fields: for
-$n\in\{730,740,750,760,800,1000\}$, either $\chi_2(z)+\chi_2(w)\notin\QQ$ or $\chi_2(z)-\chi_2(w)\notin\sqrt{n^2-16}\,\QQ$,
-where $z>w$ are the two roots in $(0,1)$ of $X^4+nX^3+2X^2-nX+1$. This two-point result is computer-assisted and not
-formalised.
+We prove that $\chi_2(\sqrt{m^2+1}-m)$, a value of Legendre's chi function at a unit of norm $-1$, is irrational for
+every integer $m\ge2$ except $m=3,5,7,9,15$. For $m=2$ this shows that $\pi^2-18\log^2\varphi$ is irrational, where
+$\varphi$ is the golden ratio. The method extends to all units of norm $-1$ in real quadratic fields, giving
+$\chi_2(\eps)\notin\QQ$ outside an explicit set of $47$ units, and, through a twist identity, to the inverse tangent
+integral $\Ti_2$ at units of norm $+1$, outside $57$ units. The proof combines Hankel determinants of a
+reflection-symmetric Pad\'e machine, arithmetic bounds on their denominators, a discrete log-gas bound certified in
+interval arithmetic, and a nonvanishing argument modulo a prime. Below the range covered by the criteria of David,
+Hirata-Kohno and Kawashima, these results appear to be new. All three theorems are formalised in Lean~4 with Mathlib,
+using only the standard axioms.
 \end{abstract}
 
 \maketitle
