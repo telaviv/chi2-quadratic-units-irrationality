@@ -13,9 +13,10 @@
 % irrational", sponsor Shawn Krisman, current version v2, 30 pp.). Hexagon 2611.00170 (Waldschmidt subgroup theorem in
 % Lean) and 2611.00171 (four exponentials at CM and Beta periods) are not cited: this paper does not refer to that work.
 % The chi_2(1/3) paper is in the public repository telaviv/chi2-irrationality as paper/chi2-irrationality.pdf
-% (added in commit 55fa479, 2026-10-18; HEAD 35b030db9fdae70b97583f6ded0781bf1b379fdc = origin/main, checked
-% with git on 2026-11-07). That paper cites its own repository as the entry Chi2Repo below (with commit 0d781d2);
-% we cite the current HEAD.
+% (added in commit 55fa479, 2026-10-18). That paper cites its own repository as the entry Chi2Repo below (with
+% commit 0d781d2). We cite commit 35b030d (2026-10-22), from which the ported files were taken; it was origin/main
+% on 2026-11-07. Reference check 2026-11-09: the public main of telaviv/chi2-irrationality is now 184b987
+% (2026-11-10 UTC, GitHub API); 35b030d is still in its history. The pinned commit is kept.
 @misc{Chi2Paper,
   author       = {Krisman, S.},
   title        = {$\chi_2(1/3)$ and $\chi_2(1/5)$ are irrational},
@@ -35,12 +36,12 @@
 
 % The repository of this paper: the Lean project (development name lean_chi2u), this paper as
 % paper/chi2-quadratic-units-irrationality.pdf, and the computation scripts of Section 11 under scripts/paper/.
-% No commit hash: the paper is part of the repository's initial commit.
-% 2026-11-08 (whole-paper referee): title updated to the repository README's title (it now formalises Theorem V).
-% The URL is the planned one: the repository was not public on 2026-11-08 (HTTP 404); lean_chi2u has no git remote.
+% Reference check 2026-11-09: the repository is public (created 2026-11-08 23:46 UTC; default branch master, at
+% bfba108 = "V_i docs", 2026-11-09, GitHub API). Title = the README title. No commit hash in the entry: the paper is
+% itself part of the repository.
 @misc{PiTwoRepo,
   author       = {Krisman, S.},
-  title        = {Lean formalisation: {$\chi_2(\sqrt{m^2+1}-m)$} is irrational for every {$m\ge16$}},
+  title        = {Irrationality of $\chi_2$ and $\mathrm{Ti}_2$ at units of real quadratic fields: a {L}ean~4 proof},
   howpublished = {\url{https://github.com/telaviv/chi2-quadratic-units-irrationality}},
   year         = {2026},
   note         = {Lean proof, this paper, and the computation scripts (folder \texttt{scripts/paper})}
@@ -306,7 +307,7 @@
   eprint        = {2611.01066},
   archivePrefix = {arXiv},
   primaryClass  = {math.NT},
-  note          = {Preprint; not peer reviewed},
+  note          = {Preprint; not peer reviewed (AI-assisted, see the paper's acknowledgments)},
 }
 
 @article{RhinViola2019,
@@ -369,12 +370,14 @@
 % Section 0 states the fact; pilot_w3/RESULT.md Section 3.2 names Niven). Title, author, series, publisher and year checked
 % against library catalogue records and the MAA/AMS bookstore listing (Carus Mathematical Monographs 11); the corollary
 % number 3.12 (p. 41) is taken from secondary sources (Wikipedia, "Niven's theorem"); the book text was not seen.
+% Reference check 2026-11-09: zbMATH 0070.27101 gives "The Carus Mathematical Monographs. No. 11. New York: John Wiley
+% and Sons, Inc., Publ. by The Mathematical Association of America, xii+164 p. (1956)"; address set accordingly.
 @book{Niven1956,
   author    = {Niven, Ivan},
   title     = {Irrational Numbers},
   series    = {The Carus Mathematical Monographs},
   number    = {11},
   publisher = {Mathematical Association of America},
-  address   = {Washington, DC},
+  address   = {New York (distributed by John Wiley and Sons)},
   year      = {1956},
 }

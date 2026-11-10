@@ -90,10 +90,11 @@ Hankel determinants, units of real quadratic fields, logarithmic potential theor
 We prove that the value $\chi_2(\sqrt{m^2+1}-m)$ of Legendre's chi function is irrational for every integer $m\ge2$
 except $m=3,5,7,9,15$, that is, for $m=2,4,6,8$, $10\le m\le14$ and every $m\ge16$. For $m=2$ this says that
 $\pi^2-18\log^2\varphi$ is irrational, where $\varphi$ is the golden ratio, since
-$\chi_2(\sqrt5-2)=\pi^2/24-(3/4)\log^2\varphi$. The stronger statement
-$\chi_2(\sqrt{m^2+1}-m)\notin\QQ(\sqrt{m^2+1})$ is already due to David, Hirata-Kohno and Kawashima (2022) for every
-$m\ge4\,346\,237$, through their linear independence criterion; the new range is $2\le m\le4\,346\,236$, $m\notin\{3,5,7,9,15\}$, where we know
-of no earlier result. The point $z_m=\sqrt{m^2+1}-m$ is a unit of norm $-1$ in $\QQ(\sqrt{m^2+1})$. Other cases are
+$\chi_2(\sqrt5-2)=\pi^2/24-(3/4)\log^2\varphi$. By our evaluation of the linear independence criterion of David,
+Hirata-Kohno and Kawashima (2022), the stronger statement $\chi_2(\sqrt{m^2+1}-m)\notin\QQ(\sqrt{m^2+1})$ holds for
+every $m\ge4\,346\,237$; their earlier criterion (2020), whose proof is given there only in outline, would give it for
+every $m\ge2\,517\,046$. The new range is $2\le m\le2\,517\,045$, $m\notin\{3,5,7,9,15\}$, where we know of no earlier
+result; if the result announced in 2020 is set aside, it extends to $m\le4\,346\,236$. The point $z_m=\sqrt{m^2+1}-m$ is a unit of norm $-1$ in $\QQ(\sqrt{m^2+1})$. Other cases are
 $\chi_2(\sqrt{17}-4)$, $\chi_2(\sqrt{37}-6)$, $\chi_2(\sqrt{65}-8)\notin\QQ$; for $m\ge3$ these values have no
 Landen-type closed form (we show this at the level of symbols). We take poles at the
 even integers $\pm2j$, $|j|\le h/2$, and atoms at the odd positive integers. A reflection $t\mapsto-t$, combined with the
@@ -127,7 +128,7 @@ For $|q|\le1$ let
 \[
   \chi_2(q)=\sum_{n=0}^{\infty}\frac{q^{2n+1}}{(2n+1)^2}=\tfrac12\bigl(\Li_2(q)-\Li_2(-q)\bigr)
 \]
-be Legendre's chi function \cite[\S1.8]{Lewin1981}. For an integer $m\ge1$ put
+be Legendre's chi function (see \cite{Lewin1981}). For an integer $m\ge1$ put
 \[
   z_m:=\sqrt{m^2+1}-m\in(0,1).
 \]
@@ -138,9 +139,12 @@ Galois conjugate $-1/z_m$. Put $\cE:=\{3,5,7,9,15\}$.
 For every integer $m\ge2$ with $m\notin\cE$, the number $\chi_2(\sqrt{m^2+1}-m)$ is irrational.
 \end{theorem}
 
-For $m\ge4\,346\,237$ the stronger statement $\chi_2(z_m)\notin\QQ(\sqrt{m^2+1})$ is due to David, Hirata-Kohno and
-Kawashima \cite[Thm.~1]{DHK2022b} (Section~\ref{sec:lit}). What Theorem~\ref{thm:V} adds is the range
-$2\le m\le4\,346\,236$ with $m\notin\cE$, where we know of no earlier result. The proof is computer-assisted: it uses
+For $m\ge4\,346\,237$ the stronger statement $\chi_2(z_m)\notin\QQ(\sqrt{m^2+1})$ follows from the criterion of
+David, Hirata-Kohno and Kawashima \cite[Thm.~1]{DHK2022b} (our evaluation, Section~\ref{sec:lit}). Their earlier
+criterion \cite[Thm.~2.1]{DHK2020}, whose proof is given there only in outline and which \cite[Rem.~1(iii)]{DHK2022b}
+describes as announced without proof, would give the same conclusion already for $m\ge2\,517\,046$. What
+Theorem~\ref{thm:V} adds is the range $2\le m\le2\,517\,045$ with $m\notin\cE$, where we know of no earlier result,
+and, if the announced result is set aside, the range up to $m=4\,346\,236$. The proof is computer-assisted: it uses
 one dual certificate checked in interval arithmetic (at $m=2$) and a table of
 margins for the odd $m\le65$, also computed in interval arithmetic. The case $m=2$ is the golden-ratio statement. Let
 $\varphi=(1+\sqrt5)/2$.
@@ -163,7 +167,7 @@ The two forms are equivalent by the identity
 \end{equation}
 which follows from Landen's identity
 $\chi_2\bigl(\tfrac{1-x}{1+x}\bigr)+\chi_2(x)=\tfrac{\pi^2}{8}+\tfrac12\log x\,\log\tfrac{1+x}{1-x}$
-\cite[App.~A.2.1, (24)]{Lewin1981} at $x=\sqrt5-2=\varphi^{-3}$, for which $(1-x)/(1+x)=\varphi^{-1}$, together with the
+(see \cite{Lewin1981}) at $x=\sqrt5-2=\varphi^{-3}$, for which $(1-x)/(1+x)=\varphi^{-1}$, together with the
 classical value $\chi_2(\varphi^{-1})=\pi^2/12-\frac34\log^2\varphi$. Theorem~\ref{thm:V}, Corollary~\ref{thm:U} and the identity
 \eqref{eq:closedform} are formalised in Lean (Section~\ref{sec:lean}), and so are Theorems~\ref{thm:Vodd}
 and~\ref{thm:Vi} below.
@@ -219,7 +223,7 @@ $\Ti_2(x):=\sum_{k\ge0}(-1)^kx^{2k+1}/(2k+1)^2$ be the inverse tangent integral 
 \end{theorem}
 
 The points are the units $\beta_n:=(n-\sqrt{n^2-4})/2\in(0,1)$ of norm $+1$, with trace $n$ ($n=2m$ in (a)); every unit
-of norm $+1$ in $(0,1)$ is one of them. With $\theta:=\arctan\beta_n$ one has $\sin2\theta=2/n$ and Lewin's formula
+of norm $+1$ in $(0,1)$ is one of them. With $\theta:=\arctan\beta_n$ one has $\sin2\theta=2/n$ and the classical formula (see \cite{Lewin1981})
 \[
   \Ti_2(\tan\theta)=\theta\log\tan\theta+\tfrac12\bigl(\Cl_2(2\theta)+\Cl_2(\pi-2\theta)\bigr),
 \]
@@ -233,8 +237,9 @@ $\Ti_2(2-\sqrt3)=\frac23G-\frac\pi{12}\log(2+\sqrt3)$ is classical, $G$ Catalan'
 odd $n\le69$. So, outside an explicit set of $57$ units, $\Ti_2(\eps)\notin\QQ$ for every unit $\eps\in(0,1)$ of norm
 $+1$ of a real quadratic field.
 
-As for Theorem~\ref{thm:V}, the criterion of \cite{DHK2022b} gives stronger conclusions far out, for $a\ge8\,692\,474$
-and for $n\gtrsim8.69\cdot10^6$ (Section~\ref{sec:closed-ext}). Each extension was checked by one AI referee.
+As for Theorem~\ref{thm:V}, the criteria of David, Hirata-Kohno and Kawashima give stronger conclusions far out:
+\cite[Thm.~1]{DHK2022b} for $a\ge8\,692\,474$ and $n\ge8\,692\,474$, and \cite[Thm.~2.1]{DHK2020}, as stated and with
+its proof only outlined, already for $a\ge5\,034\,092$ and $n\ge5\,034\,092$ (Section~\ref{sec:closed-ext}). Each extension was checked by one AI referee.
 Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} are formalised in Lean, with only Lean's three standard axioms
 (Section~\ref{sec:lean}). So, with Theorem~\ref{thm:V}, every unit covered by Corollary~\ref{cor:normminus}, and every
 unit of norm $+1$ outside the $57$ just mentioned, is covered by a formal statement; the corollary and the statement on
@@ -246,16 +251,19 @@ units of norm $+1$ are not themselves stated in Lean.
 % pilot_V/referee/REFEREE_V.md Sections 5 and 7.
 \emph{General $m$.} For $m\ge4\,346\,237$, Theorem~1 of David, Hirata-Kohno and Kawashima \cite{DHK2022b} gives
 $\chi_2(z_m)\notin\QQ(\sqrt{m^2+1})$, which is stronger than Theorem~\ref{thm:V}; this is our evaluation of their
-criterion (Section~\ref{sec:lit}). So the infinite part of Theorem~\ref{thm:V} is not new by itself. We have found no
-result that covers any $m$ with $2\le m\le4\,346\,236$. For $m\ge3$ that search was short: our own notes, two web
-searches, and a reading of the criteria listed in Section~\ref{sec:lit}; it did not cover MathSciNet, and no expert has
-been consulted. Our method also covers the range of \cite{DHK2022b} independently, with the weaker conclusion.
+criterion (Section~\ref{sec:lit}). Theorem~2.1 of their earlier paper \cite{DHK2020}, as stated, would give the same already
+for $m\ge2\,517\,046$; its proof is only outlined there, and \cite{DHK2022b} describes it as announced without proof. So
+the infinite part of Theorem~\ref{thm:V} is not new by itself. We have found no result that covers any $m$ with
+$2\le m\le2\,517\,045$, and no proved result that covers any $m$ with $2\le m\le4\,346\,236$. For $m\ge3$ that search
+was short: our own notes, two web searches, and a reading of the criteria listed in Section~\ref{sec:lit}; it did not
+cover MathSciNet, and no expert has been consulted. Our method also covers the ranges of these criteria independently,
+with the weaker conclusion.
 
 \emph{The extensions.} For Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} the searches were of the same limited kind (our own
 notes, two web searches for each, and for $\Ti_2$ an earlier sweep of arXiv for irrationality results on related
 values); they found closed-form identities but no irrationality result for $\chi_2$ at the units $\alpha_a$ with odd
-$a$, or for $\Ti_2$ or $\Cl_2$ at the points $\beta_n$, below the thresholds of \cite{DHK2022b}
-(Section~\ref{sec:closed-ext}).
+$a$, or for $\Ti_2$ or $\Cl_2$ at the points $\beta_n$, below the thresholds of \cite{DHK2020} (announced) and
+\cite{DHK2022b} (proved) (Section~\ref{sec:closed-ext}).
 
 \emph{The case $m=2$.} We have not found Corollary~\ref{thm:U}, or the irrationality of any number
 $\pi^2+c\log^2\varphi$ with $c\in\QQ\setminus\{0\}$, in the literature, and as far as we can see it does not follow
@@ -287,8 +295,9 @@ $\chi_5$ modulo $5$, so the corollary can also be written as $6\zeta(2)-\frac{45
   $\Phi_2(x,q)=\sum_{k\ge0}q^{k+1}/(k+x+1)^2$ is the Lerch function and $z=\sqrt5-2=\varphi^{-3}$ is a unit of height
   $\frac32\log\varphi=0.7218\ldots$ whose conjugate $-\varphi^3$ has absolute value $>1$, so that $|z|\,|\sigma z|=1$.
   Evaluating the criteria in the form they are stated, their key quantity is negative by a wide margin at this
-  point: about $-26.1$ for \cite[Thm.~2.2]{Kawashima2026}, and about $-15.1$ and $-14.5$ for the two ways of applying
-  \cite[Thm.~1]{DHK2022b} (through $\Li_2(\pm z)$, or through $\Phi_2(\frac12,z^2)$). The
+  point: about $-26.1$ for \cite[Thm.~2.2]{Kawashima2026}, about $-15.1$ and $-14.5$ for the two ways of applying
+  \cite[Thm.~1]{DHK2022b} (through $\Li_2(\pm z)$, or through $\Phi_2(\frac12,z^2)$), and about $-14.0$ for
+  \cite[Thm.~2.1]{DHK2020} (through $\Phi_2(\frac12,z^2)$, normalised as in Section~\ref{sec:lit}). The
   Bombieri--Andr\'e bound of \cite{Orr2026}, applied to this system, needs by our estimate a height of about $1450$.
   These evaluations are ours and have not been checked by the authors of the criteria.
 \item \emph{Rational points.} The irrationality and linear independence results for dilogarithms at rational points
@@ -1784,8 +1793,12 @@ Table~\ref{tab:lit} compares Theorem~\ref{thm:V} with the general criteria of Se
 $z_m$ at the real place where $z_m$ is small. As there, $\chi_2(z)=z+\frac z4\Phi_2(\frac12,z^2)$, and the height of
 $z_m^{-2}$ at that place is $\log(1/z_m)$. The evaluations are ours; that of \cite[Thm.~1]{DHK2022b} through
 $\Phi_2(\frac12,z^2)$ was re-derived by the AI referee of Theorem~\ref{thm:V} from the statement in the arXiv version
-(arXiv:2010.09167) of \cite{DHK2022b}. None of them
-has been checked by the authors of the criteria.
+(arXiv:2010.09167) of \cite{DHK2022b}, and that of \cite[Thm.~2.1]{DHK2020} by a separate reference check from the
+statement in arXiv:1912.03811v2. The absolute values of \cite{DHK2020} are not normalised by the degree; there, with
+$r=2$, the point $1$, $\beta=z_m^{-2}$, $x=\frac12$ and $\KK$ real quadratic, the quantity of Theorem~2.1 is
+$2\log(1/z_m)-16-\log2\,851\,875=2\log(1/z_m)-30.863487\ldots$, and the table lists half of it. The thresholds in the
+table and in Section~\ref{sec:closed-ext} are certified in interval arithmetic from these formulas. None of the
+evaluations has been checked by the authors of the criteria.
 
 \begin{table}[ht]
 \centering\small
@@ -1795,7 +1808,7 @@ criterion & key quantity at $z_m$ & covers\\
 \midrule
 \cite[Thm.~1]{DHK2022b}, via $\Phi_2(\frac12,z^2)$ & $\log(1/z_m)-15.977968\ldots$ & $m\ge4\,346\,237$, with $\chi_2(z_m)\notin\KK$\\
 \cite[Thm.~1]{DHK2022b}, via $\Li_2(\pm z)$ & $\frac12\log(1/z_m)-15.78$ & $m\gtrsim e^{31.5}/2$\\
-\cite{DHK2020} & weaker than \cite{DHK2022b} & nothing more\\
+\cite[Thm.~2.1]{DHK2020} (proof only outlined), via $\Phi_2(\frac12,z^2)$ & $\log(1/z_m)-15.431744\ldots$ & $m\ge2\,517\,046$, with $\chi_2(z_m)\notin\KK$\\
 \cite[Thm.~2.2]{Kawashima2026} (unrefereed) & $\frac12\log(1/z_m)-26.84$ & $m\gtrsim e^{53.7}/2$\\
 Bombieri--Andr\'e via \cite{Orr2026} (unrefereed) & height $\frac12\log(1/z_m)$ against about $1450$ & $m\gtrsim e^{2900}$\\
 results at rational points & --- & none\\
@@ -1804,12 +1817,18 @@ results at rational points & --- & none\\
 \caption{General criteria at $z_m$ (our evaluations).}\label{tab:lit}
 \end{table}
 
-At $m=4$ the first quantity is $-13.88$. The criterion of \cite{DHK2022b} gives the linear independence of $1$,
-$\Phi_1(\frac12,z^2)$, $\Phi_2(\frac12,z^2)$ over $\KK$, hence $\chi_2(z_m)\notin\KK$, a stronger conclusion than ours in
-its range. So the infinite tail of Theorem~\ref{thm:V} is due to \cite{DHK2022b}, and what Theorem~\ref{thm:V} adds is
-the range $2\le m\le4\,346\,236$ with $m\notin\cE$, by one argument for all $m$. As far as our searches show, no result in
-the literature covers any $m$ in this range; for $m\ge3$ the searches were limited (Section~\ref{sec:context}), and a
-MathSciNet search and an expert query are still owed.
+At $m=4$ the first quantity is $-13.88$ and the third $-13.34$. The criterion of \cite{DHK2022b} gives the linear
+independence of $1$, $\Phi_1(\frac12,z^2)$, $\Phi_2(\frac12,z^2)$ over $\KK$, hence $\chi_2(z_m)\notin\KK$, a stronger
+conclusion than ours in its range. So the infinite tail $m\ge4\,346\,237$ of Theorem~\ref{thm:V} is due to
+\cite{DHK2022b}. Theorem~2.1 of \cite{DHK2020}, as stated, has the same conclusion and would give it already for
+$m\ge2\,517\,046$. Its proof, however, is given only in outline, with the details deferred to forthcoming articles;
+\cite[Rem.~1(iii)]{DHK2022b} refers to it as the result announced without proof, says that the result of
+\cite{DHK2022b} is better in general but not always, and its comparison \cite[Prop.~4]{DHK2022b} does not cover the case
+$r=2$ with one point used here. What Theorem~\ref{thm:V} adds is therefore the range $2\le m\le2\,517\,045$ with
+$m\notin\cE$, by one argument for all $m$, and, if the announced result of \cite{DHK2020} is set aside, the range
+$2\le m\le4\,346\,236$. As far as our searches show, no result in the literature covers any $m$ with
+$2\le m\le2\,517\,045$; for $m\ge3$ the searches were limited (Section~\ref{sec:context}), and a MathSciNet search and an
+expert query are still owed.
 
 \subsection{The extensions}\label{sec:closed-ext}
 \emph{Odd $a$.} Proposition~\ref{prop:symbol} extends to every $a$.
@@ -1836,7 +1855,7 @@ through $\pi^2$ and products of logarithms by symbol-preserving dilogarithm iden
   \Ti_2(\tan\theta)=\theta\log\tan\theta+\tfrac12\bigl(\Cl_2(2\theta)+\Cl_2(\pi-2\theta)\bigr),\qquad
   \Cl_2(x)=\sum_{k\ge1}\frac{\sin kx}{k^2},
 \]
-a classical formula \cite[Ch.~2]{Lewin1981}, which we checked numerically to $80$ digits at $n=5,8,12,22,71$. For $n\ge5$
+a classical formula (see \cite{Lewin1981}), which we checked numerically to $80$ digits at $n=5,8,12,22,71$. For $n\ge5$
 the value $\sin2\theta=2/n$ is rational and not in $\{0,\pm\frac12,\pm1\}$, so $2\theta$ is not a rational multiple of
 $\pi$ \cite[Cor.~3.12]{Niven1956}. Only $n=4$ gives a rational angle ($2\theta=\pi/6$), and there
 $\Ti_2(2-\sqrt3)=\frac23G-\frac\pi{12}\log(2+\sqrt3)$.
@@ -1867,16 +1886,22 @@ found no relation at $n=5,8,9,10,12,22$. At $n=6$ it found only a relation witho
 $\Li_2(\beta_6)$, $\pi^2$, $\log^2\beta_6$, as expected since $\beta_6=(\sqrt2-1)^2$, and none after removing $\Li_2$; as a
 control, at $n=4$ it found $3\Ti_2(\beta_4)=2G+3\theta\log\beta_4$.
 
-\emph{Known criteria.} The evaluation of \cite[Thm.~1]{DHK2022b} in Section~\ref{sec:lit} uses only the real place and
-the height $\log(1/z)$ of $z^{-2}$, so it does not depend on the parity of $a$: since $\log(1/\alpha_a)=\operatorname{arsinh}(a/2)$,
-the key quantity $\operatorname{arsinh}(a/2)-15.977968\ldots$ changes sign between $a=8\,692\,473$ and $a=8\,692\,474$, and
-the criterion gives the stronger $\chi_2(\alpha_a)\notin\KK$ for $a\ge8\,692\,474$. For the inverse tangent integral,
-$\Ti_2(z)=z+\frac z4\Phi_2(\frac12,-z^2)$, and the same evaluation, with $\log(1/\beta_n)=\operatorname{arcosh}(n/2)$,
-gives $\Ti_2(\beta_n)\notin\KK$ for $n\gtrsim8.69\cdot10^6$ (for even $n$: $m\gtrsim4.35\cdot10^6$). These are our
-evaluations; for the argument $-z^2$ we have transferred our reading of the criterion without re-checking it against
-the paper. What Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} add is therefore the odd $a$ with $59\le a\le8\,692\,473$,
-$a\notin\cE_{\mathrm{odd}}$; the odd $n$ with $71\le n<8.69\cdot10^6$, $n\notin\cE_i$; and the $m$ with
-$4\le m<4.35\cdot10^6$, $m\notin\{5,7,9,15\}$.
+\emph{Known criteria.} The evaluations of \cite[Thm.~1]{DHK2022b} and \cite[Thm.~2.1]{DHK2020} in
+Section~\ref{sec:lit} use only the real place and the height $\log(1/z)$ of $z^{-2}$ (the point $z^{-2}$ is an algebraic integer, so no
+denominator enters), so they do not depend on the parity of $a$: since
+$\log(1/\alpha_a)=\operatorname{arsinh}(a/2)$, the key quantity $\operatorname{arsinh}(a/2)-15.977968\ldots$ of
+\cite{DHK2022b} changes sign between $a=8\,692\,473$ and $a=8\,692\,474$, and that of \cite{DHK2020},
+$\operatorname{arsinh}(a/2)-15.431744\ldots$, between $a=5\,034\,091$ and $a=5\,034\,092$. So \cite{DHK2022b} gives the
+stronger $\chi_2(\alpha_a)\notin\KK$ for $a\ge8\,692\,474$, and \cite{DHK2020}, as stated, for $a\ge5\,034\,092$. For the
+inverse tangent integral, $\Ti_2(z)=z+\frac z4\Phi_2(\frac12,-z^2)$: the point $1$ is replaced by $-1$. Both criteria
+depend on the points only through their absolute values $|\cdot|_v$, and $|-1|_v=1$ at every place, so every constant
+is unchanged. With $\log(1/\beta_n)=\operatorname{arcosh}(n/2)$ this gives $\Ti_2(\beta_n)\notin\KK$ for
+$n\ge8\,692\,474$ by \cite{DHK2022b}, and for $n\ge5\,034\,092$ by \cite{DHK2020} as stated (for even $n=2m$:
+$m\ge4\,346\,237$ and $m\ge2\,517\,046$). These are our evaluations, not checked by the authors of the criteria. What
+Theorems~\ref{thm:Vodd} and~\ref{thm:Vi} add is therefore the odd $a$ with $59\le a\le5\,034\,091$,
+$a\notin\cE_{\mathrm{odd}}$; the odd $n$ with $71\le n\le5\,034\,091$, $n\notin\cE_i$; and the $m$ with
+$4\le m\le2\,517\,045$, $m\notin\{5,7,9,15\}$. If the result announced in \cite{DHK2020} is set aside (see
+Section~\ref{sec:lit}), the upper limits become $8\,692\,473$, $8\,692\,473$ and $4\,346\,236$.
 
 \emph{Literature.} For odd $a$ we searched our own notes and the web (two queries); we found closed forms at
 $\varphi^{-1}$ and $\varphi^{-3}$, results at rational points and identities, but no irrationality result for $\chi_2$ or
@@ -2105,11 +2130,16 @@ We state the limits of Theorem~\ref{thm:M1} explicitly.
 \begin{itemize}
 \item It is a disjunction. We do not know which of the two statements holds, and neither is known by other means:
   $T_n\notin\QQ$ is a statement of strong-four-exponentials type, and we know of no result on $T_z-T_w$.
-\item For very large $n$ a general criterion may apply: our evaluation of \cite[Thm.~1]{DHK2022b} with the shift
-  $\frac12$ at $w^2$, at the real place where $w$ is small, suggests that its condition holds once
-  $n\gtrsim7.6\cdot10^{13}$, which would give $\chi_2(w)\notin\cK$ and hence $\mathrm{M1}(n)$ for those even $n$. This
-  evaluation is a sketch that has not been checked in detail or by a referee. For $730\le n\le1000$ the same quantity lies
-  between $-12.7$ and $-12.5$, so Theorem~\ref{thm:M1} is not implied.
+\item For very large $n$ general criteria apply. Take the shift $\frac12$ at $w^2$ (the point $1$, $\beta=w^{-2}$), at
+  the real place where $w$ is small; the conjugates of $w^{-2}$ are $w^{-2}$, $z^{-2}$, $w^2$, $z^2$. By our evaluation,
+  the condition of \cite[Thm.~1]{DHK2022b}, $\frac12\log(1/w)-\log(1/z)-15.977968\ldots>0$, holds for every even
+  $n\ge75\,559\,095\,378\,072\approx7.56\cdot10^{13}$, and that of \cite[Thm.~2.1]{DHK2020} (as stated, with its proof
+  only outlined; see Section~\ref{sec:lit}), $2\log(1/w)-32-\log(5^4\cdot3^5\cdot13^4)-4\log(1/z)-2\log(4+9z^{-2})>0$,
+  for every even $n\ge7\,608\,252\,420\,528\approx7.61\cdot10^{12}$. Either gives $\chi_2(w)\notin\cK$, and hence
+  $\mathrm{M1}(n)$, for those $n$. The thresholds are certified in interval arithmetic from these formulas; our reading
+  of the two statements has not been checked by a referee or by their authors. For $730\le n\le1000$ the two quantities
+  (the second divided by $[\cK:\QQ]=4$) lie between $-12.7$ and $-12.5$, and between $-11.6$ and $-11.3$, so
+  Theorem~\ref{thm:M1} is not implied.
 \item It is proved for the six listed values of $n$ only, each with its own certificates. Even $n$ between them are not
   covered, and odd $n$ are not covered at all: Lemma~\ref{lem:tenpp} needs $n$ even, and for odd $n$ one prime above
   $2$ has $v(1-y)=0$.
@@ -2143,8 +2173,8 @@ project is available at \url{https://github.com/telaviv/chi2-quadratic-units-irr
 a copy of this paper and the scripts of Section~\ref{sec:comp}. Theorem~\ref{thm:M1} is not formalised.
 Corollary~\ref{cor:normminus} and the statement on the units of norm $+1$ after Theorem~\ref{thm:Vi} are not stated in
 Lean; the first follows from Theorems~\ref{thm:V} and~\ref{thm:Vodd} as explained after its statement, the second from
-Theorem~\ref{thm:Vi}, since every unit of norm $+1$ in $(0,1)$ is some $\beta_n$. Lewin's Clausen form of
-Theorem~\ref{thm:Vi} is not formalised either.
+Theorem~\ref{thm:Vi}, since every unit of norm $+1$ in $(0,1)$ is some $\beta_n$. The Clausen form of
+Theorem~\ref{thm:Vi}, through the classical formula (see \cite{Lewin1981}), is not formalised either.
 
 \subsection{The statement}
 The definitions that the reader has to check are in \lean{Defs.lean}, \lean{Statement.lean},

@@ -98,9 +98,11 @@ The paper, "Irrationality of χ₂ and Ti₂ at units of real quadratic fields",
 We have not found Theorem V, Theorem V_odd, Theorem V_i, Theorem U, or the irrationality of any number π² + c log²φ
 with c ∈ ℚ \ {0}, in the literature. For m ≥ 3 the values χ₂(√(m² + 1) − m) have no expression through π² and
 logarithms by symbol-preserving dilogarithm identities (paper, Proposition on the symbol); only m = 1, 2 have a Landen closed form.
-Explicit linear independence criteria at algebraic points (David–Hirata-Kohno–Kawashima) cover χ₂(√(m² + 1) − m) only
-for m ≥ 4 346 237, χ₂((√(a² + 4) − a)/2) for odd a only for a ≥ 8 692 474, and Ti₂ at the units of norm +1 only for
-traces n ≳ 8.69·10⁶, by our evaluation. Through Lewin's formula, Theorem V_i is a statement about Clausen values at the
+Explicit linear independence criteria at algebraic points (David–Hirata-Kohno–Kawashima) cover, by our evaluation,
+χ₂(√(m² + 1) − m) for m ≥ 4 346 237, χ₂((√(a² + 4) − a)/2) for odd a ≥ 8 692 475, and Ti₂ at the units of norm +1 for
+traces n ≥ 8 692 474 (DHK 2022, proved). Their earlier criterion (DHK 2020, Theorem 2.1), whose proof is only outlined
+and which DHK 2022 describe as announced without proof, would give the same already for m ≥ 2 517 046, odd
+a ≥ 5 034 093 and n ≥ 5 034 092. Through the classical formula (see Lewin), Theorem V_i is a statement about Clausen values at the
 angles arcsin(2/n), which for n ≥ 5 are not rational multiples of π (paper, section on closed forms).
 
 - **Other golden-ratio values.** The classical dilogarithm evaluations Li₂(φ⁻²), Li₂(φ⁻¹), Li₂(−φ⁻¹), Li₂(−φ) all lie
