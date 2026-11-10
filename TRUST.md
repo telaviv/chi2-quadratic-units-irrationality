@@ -52,7 +52,9 @@ for m in $(find Chi2U -name "*.lean" | sed 's/\.lean$//; s#/#.#g'); do lake env 
 All 62 modules pass (≈ 42 minutes in total; per-module results and timings in `scripts/leanchecker.log`). After a
 docstring-only edit to `Statement.lean`, that module was rebuilt and `Statement`, `Main` and `Golden.Corollary` were
 replayed again; all pass. Each module is replayed against the compiled environment of its imports, so Mathlib itself is
-not re-checked (that would need `leanchecker --fresh`, which has not been run).
+not re-checked by these per-module replays. **Fresh replay (2026-11-09):** `lake env leanchecker --fresh Chi2U` replays
+the whole environment of the root module from scratch, Mathlib included; it passes (exit code 0, 2499 s ≈ 42 min;
+`scripts/leanchecker_fresh.log`), at commit 5246009 (Lean files as of bfba108).
 
 ## Fresh-clone check
 

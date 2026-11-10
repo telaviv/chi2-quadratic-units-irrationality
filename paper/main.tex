@@ -2419,7 +2419,8 @@ numbers, \lean{tsum}, \lean{Real.sqrt}, \lean{Real.log}, \lean{Real.pi}, \lean{g
 To avoid trusting the elaborator's handling of the environment, every declaration of all $130$ project modules was
 replayed through the kernel with \lean{leanchecker} (shipped with the Lean toolchain), each module against the compiled
 environment of its imports, on 9 November 2026; all modules passed, in about $56$ minutes in total.
-Mathlib itself was not replayed from scratch (\lean{--fresh}). Four AI referees, for Corollary~\ref{thm:U},
+In addition, the whole environment of the root module, Mathlib included, was replayed from scratch through the kernel
+(\lean{leanchecker --fresh}) on 9 November 2026; it passed, in about $42$ minutes. Four AI referees, for Corollary~\ref{thm:U},
 Theorem~\ref{thm:V}, Theorem~\ref{thm:Vodd} and Theorem~\ref{thm:Vi}, checked the fidelity of the statements (the
 definitions above, traced to Mathlib, and the absence of hypotheses, custom axioms and compiler trust) and found them
 faithful; the second also confirmed the exception set $\cE$ independently in interval arithmetic for $m\le3000$, the
